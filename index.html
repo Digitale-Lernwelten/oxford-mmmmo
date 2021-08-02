@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>MMMMO Interactive Map</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+    <link href='style.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div id='map'>
+        <div id="taskbar">
+            <div id="slider-container">
+                <input type="range" min="1300" max="1850" value="1850" step="50" id="slider">
+                <output id="slider-value">1850</output>
+            </div>
+            <button id="btn-language" onclick="ToggleLanguageList()">
+                <svg width="100%" height="100%" viewBox="0 0 64 64" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                    <g transform="matrix(-1.0888,-8.88461e-17,1.04904e-16,-1.05644,173.171,49.5164)">
+                        <path d="M129.657,0C151.561,-10.978 154.108,-12.274 154.108,-12.274C154.108,-12.274 153.575,-9.573 150.435,6.657C155.754,10.769 159.047,16.449 159.047,22.718C159.047,35.256 145.878,45.435 129.657,45.435C113.436,45.435 100.267,35.256 100.267,22.718C100.267,10.179 113.436,0 129.657,0ZM129.657,5.679C130.492,5.679 131.316,5.484 132.067,5.108C138.337,1.965 143.023,-0.385 146.519,-2.139C146.103,0.006 145.611,2.545 145.03,5.546C144.616,7.69 145.431,9.889 147.128,11.201C150.977,14.176 153.536,18.182 153.536,22.718C153.536,26.264 151.955,29.502 149.433,32.161C144.983,36.851 137.751,39.756 129.657,39.756C121.563,39.756 114.33,36.851 109.881,32.161C107.359,29.502 105.777,26.264 105.777,22.718C105.777,19.171 107.359,15.934 109.881,13.275C114.33,8.584 121.563,5.679 129.657,5.679Z" style="fill:rgb(70,70,70);"/>
+                    </g>
+                </svg>
+                <fieldset id="select-language" class="select-field">
+                    <div>
+                        <input type="checkbox" name="ob" value="icons-ob" onclick="return UpdateLanguage(value, checked)" checked>
+                        <label for="ob">Oberdeutsch</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="nm" value="icons-nm" onclick="return UpdateLanguage(value, checked)" checked>
+                        <label for="nm">Nieder- & Mitteldeutsch</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="lt" value="icons-lt" onclick="return UpdateLanguage(value, checked)" checked>
+                        <label for="lt">Latein</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="fr" value="icons-fr" onclick="return UpdateLanguage(value, checked)" checked>
+                        <label for="fr">Fremdsprachig</label>
+                    </div>
+                </fieldset>
+            </button>
+            <button id="btn-order" onclick="ToggleOrderList()">
+                <svg width="100%" height="100%" viewBox="0 0 64 64" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                    <g transform="matrix(1.33327,0,0,1.33327,-3.7428,-21.3292)">
+                        <path d="M5.057,15.998L48.559,15.998L48.559,42.249C48.559,54.254 38.813,64 26.808,64C14.804,64 5.057,54.254 5.057,42.249L5.057,15.998ZM9.558,20.498L44.059,20.498C44.059,20.498 44.059,42.249 44.059,42.249C44.059,51.77 36.329,59.5 26.808,59.5C17.287,59.5 9.558,51.77 9.558,42.249L9.558,20.498Z" style="fill:rgb(70,70,70);"/>
+                    </g>
+                </svg>
+                <fieldset id="select-order" class="select-field">
+                    <div>
+                        <input type="checkbox" name="aug" value="Augustiner" onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="aug">Augustiner</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="ben" value="Benediktiner" onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="ben">Benediktiner</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="dom" value="Dominikaner" onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="dom">Dominikaner</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="fran" value="Franziskaner" onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="fran">Franziskaner</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="jes" value="Jesuiten" onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="jes">Jesuiten</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="kart" value="Kartäuser" onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="kart">Kartäuser</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="zist" value="Zisterzienser" onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="zist">Zisterzienser</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="priv" value="Privatbesitz" onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="priv">Privatbesitz</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="sonst" value="Sonstige Orden" onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="sonst">Sonstige Orden</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="unb" value="Unbekannt" onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="unb">Unbekannt</label>
+                    </div>
+                </fieldset>
+            </button>
+            <button id="btn-filter" onclick="ToggleFilterList()">
+                <svg width="100%" height="100%" viewBox="0 0 64 64" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                    <g transform="matrix(0.996976,0,0,0.860596,-171.286,22.2773)">
+                        <rect x="187.854" y="7.812" width="48.146" height="6.972" style="fill:rgb(70,70,70);"/>
+                    </g>
+                    <g transform="matrix(0.996976,0,0,0.860596,-171.286,4.27725)">
+                        <rect x="187.854" y="7.812" width="48.146" height="6.972" style="fill:rgb(70,70,70);"/>
+                    </g>
+                    <g transform="matrix(0.996976,0,0,0.860596,-171.286,40.2773)">
+                        <rect x="187.854" y="7.812" width="48.146" height="6.972" style="fill:rgb(70,70,70);"/>
+                    </g>
+                    <g transform="matrix(0.860264,0,0,0.860264,-151.733,0.537097)">
+                        <circle cx="181.03" cy="15.65" r="4.65" style="fill:rgb(70,70,70);"/>
+                    </g>
+                    <g transform="matrix(0.860264,0,0,0.860264,-151.733,18.5371)">
+                        <circle cx="181.03" cy="15.65" r="4.65" style="fill:rgb(70,70,70);"/>
+                    </g>
+                    <g transform="matrix(0.860264,0,0,0.860264,-151.733,36.5371)">
+                        <circle cx="181.03" cy="15.65" r="4.65" style="fill:rgb(70,70,70);"/>
+                    </g>
+                </svg>
+                <fieldset id="select-filter" class="select-field">
+                    <div>
+                        <input id="checkbox-names" type="checkbox" name="names" onclick="return UpdateNameLayers(checked)" checked>
+                        <label for="names">Namen</label>
+                    </div>
+                    <div>
+                        <input id="checkbox-borders" type="checkbox" name="borders" onclick="return UpdateBorderLayers(checked)" checked>
+                        <label for="borders">Grenzen</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="infrastructure" onclick="return UpdateInfrastructureLayers(checked)" checked>
+                        <label for="infrastructure">Infrastruktur</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="radius" value="radius" checked>
+                        <label for="radius">Radius</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="lines" value="lines" checked>
+                        <label for="lines">Verbindungen</label>
+                    </div>
+                </fieldset>
+            </button>
+            <input id="searchbar" type="text" placeholder="Suchbegriff eingeben">
+        </div>
+    </div>
+    <div id="side">
+        <nav>
+            <ul>
+                <li id="nav-home" onclick="NavControls(this)">HOME</li>
+                <li id="nav-manuscripts" onclick="NavControls(this)">MANUSKRIPTE</li>
+                <li id="nav-mechthild" onclick="NavControls(this)">MECHTHILD</li>
+                <li id="nav-controls" onclick="NavControls(this)">BEDIENUNG</li>
+            </ul>
+        </nav>
+        <div id="side-home">
+            <h1>MMMMO</h1>
+            <h2>Mechthild's Medieval Mystical Manuscripts Online</h2>
+            <hr>
+            <p>
+                The 'Liber specialis gratiae' by Mechthild of Hackeborn is considered to be one of the most widely read
+                mystical texts, associated with a female figure,
+                within Medieval Europe. Around 330 manuscripts in Latin and German have been discovered so far, while
+                there
+                are also versions in Middle English, Italian,
+                Swedish, and Danish. Thus, the text can be claimed to be a European bestseller, as it was read from
+                Ireland
+                to Italy, and from Sweden to Spain.
+            </p>
+            <p>
+                This online database presents an overview of all existing manuscripts of the 'Liber specialis gratiae',
+                providing, for the first time, relevant details
+                about each item, as well as placing them in the context of their transmission.
+            </p>
+            <button id="btn-browse">Browse manuscripts</button>
+        </div>
+        <div id="side-manuscripts">
+
+        </div>
+        <div id="side-mechthild">
+            <h2>Wer war Mechthild von Hackeborn?</h2>
+            <figure>
+                <img src="assets/img-mechthild.jpg" alt="Fotografie einer Statue von Mechthild von Hackerborn.">
+                <figcaption>Statue der heiligen Mechthild in der Stiftskirche Engelszell, entstanden um 1760 (Wolfgang Sauber, https://w.wiki/3d$g)</figcaption>
+            </figure>
+            <p>Mechthild von Hackeborn (1241-1299) war eine Zisterzienserin und Mystikerin. Sie wird in der römisch-katholischen Kirche als Heilige verehrt.</p>
+            <p>Im Alter von 7 Jahren kam sie als Klosterschülerin auf das Kloster Sankt Marien zu Helfta. Aufgrund ihrer Begabungen machte man sie zur Chorleiterin, später hatte sie das Amt der Novizenmeisterin inne.</p>
+            <p>Mechthild verfasste mehrere Gebete. Nach langer schwerer Krankheit starb sie im Alter von 58 Jahren.</p>
+            <h2>Das Kloster Sankt Marien zu Helfta</h2>
+            <figure>
+                <img src="assets/img-kloster-helfta.jpg" alt="Fotografie des Klosters Helfta.">
+                <figcaption>Klosterkirche und Liboriushaus des Klosters Sankt Marien zu Helfta (Rabanus Flavus, https://w.wiki/3d$m)</figcaption>
+            </figure>
+            <p>Das Kloster Sankt Marien zu Helfta ist ein Zisterzienserinnen-Kloster im Ortsteil Helfta der Lutherstadt Eisleben in Sachsen-Anhalt.</p>
+            <p>Aufgrund zahlreicher bedeutender Mystikerinnen und Theologinnen galt das Kloster im 13. Jahrhundert als Zentrum der deutschen Frauenmystik. Ab 1251 stand Mechthilds ältere Schwester, Gertrud von Hackeborn, dem Kloster als Äbtissin vor.</p>
+            <p>Nach der Reformation wurde das Kloster 1542 säkularisiert. Heute ist es ein Bildungszentrum und eine Station an der Straße der Romanik.</p>
+            <h2>Der Liber specialis gratiae</h2>
+            <figure>
+                <img src="assets/img-liber-specialis-gratiae.jpg" alt="Fotografie einer Buchseite aus dem Liber speciales gratiae.">
+                <figcaption>Auszug aus dem Liber specialis gratiae (Ausgabe aus dem 15. Jh.) (https://w.wiki/3d$j)</figcaption>
+            </figure>
+            <p>Im <i>Liber specialis gratiae</i> ("Buch der besonderen Gnade") zeichneten Mechthilds Mitschwestern die Erlebnisse Mechthilds auf. Das Werk umfasst sechs Bücher, das sechste Buch handelt jedoch ausschließlich von Gertrud von Hackeborn.</p>
+            <p>Das Werk wurde handschriftlich verbreitet und überarbeitet. Die Entstehung des Liber specialis gratiae erfolgte angeblich ohne Mechthilds Wissen. Die Verbreitung der Schrift soll jedoch später von ihr autorisiert worden sein.</p>
+            <p>Mechthild spricht über typisch brautmystische Themen. Einen großen Raum nehmen die Darstellungen des Jesuskindes ein. Zudem lobt Mechthild in dem Werk ihre Kasteiungen.</p>
+            <p>Die handschriftliche Ausgabe der redactio brevior aus dem Kreuzherrenkonvent Marienfrede bei Wesel (1849) <a href="http://digital.ub.uni-duesseldorf.de/ms/content/pageview/9524259" target="_blank">kann online eingesehen werden.</a></p>
+        </div>
+        <div id="side-controls"></div>
+        <div id="side-info">
+            <button class="btn-back" onclick="backToHome()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24" width="100%" fill="#FFFFFF">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+                </svg>
+            </button>
+            <h2 id="feature-name"></h2>
+            <h3 id="feature-year"></h3>
+            <p id="feature-category"></p>
+            <hr>
+            <p id="feature-description"></p>
+        </div>
+    </div>
+    <script src="createMap.js" type="text/javascript"></script>
+</body>

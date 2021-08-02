@@ -1,0 +1,239 @@
+@font-face {
+    font-family: 'D-DIN-PRO';
+    src: url('assets/D-DIN-PRO-400-Regular.otf');
+}
+
+body {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    display: flex;
+    max-height: 100vh;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button {
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+#map {
+    width: 70%;
+    height: 100vh;
+}
+
+#taskbar {
+    position: absolute;
+    width: 90%;
+    height: 3rem;
+    left: 5%;
+    bottom: 60px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    opacity: 0.8;
+    border-radius: 1.5rem;
+    padding-left: 1.5rem;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#slider-container {
+    flex: 1;
+    position: relative;
+    margin-right: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
+#slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 2px;
+    background: #3f3f3f;
+    outline: none;
+    cursor: pointer;
+}
+
+#slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 4px;
+    height: 12px;
+    background: #464646;
+    cursor: pointer;
+    border-radius: 2px;
+    z-index: 101;
+}
+
+#slider::-moz-range-thumb {
+    width: 4px;
+    height: 12px;
+    background: #464646;
+    cursor: pointer;
+    border-radius: 2px;
+    z-index: 101;
+}
+
+#slider-value {
+    color: #464646;
+    font-family: 'D-DIN-Pro', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    position: absolute;
+    transform: translateX(-50%);
+    left: 0;
+}
+
+#taskbar > button {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0 1rem;
+}
+
+#searchbar {
+    width: 20%;
+    height: 1.5rem;
+    margin: 0 0.5rem;
+    border-radius: 1rem;
+    padding-left: 0.5rem;
+    border: 1 px solid #464646;
+}
+
+#searchbar::placeholder {
+    color: #464646;
+    font-weight: 500;
+}
+
+#taskbar fieldset {
+    border: none;
+    padding: 1rem;
+    margin: none;
+    position: relative;
+    width: auto;
+    height: auto;
+    background: white;
+    border-radius: 0.5rem;
+    bottom: 2.25rem;
+    left: 0.75rem;
+    transform: translate(-50%, -100%);
+    display: none;
+    flex-direction: column;
+    text-align: left;
+    font-size: 14px;
+    color: #464646;
+}
+
+#taskbar fieldset div {
+    display: flex;
+}
+
+#side {
+    width: 30%;
+    padding: 1rem;
+    color: #3f3f3f;
+    overflow-y: scroll;
+}
+
+#side img {
+    width: 100%;
+    height: auto;
+}
+
+#side-home {
+    display: block;
+    margin-top: 3rem;
+}
+
+#side-toc {
+    display: none;
+}
+
+#side-mechthild {
+    display: none;
+}
+
+#side-info {
+    display: none;
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 1rem;
+    font-weight: 900;
+}
+
+h2 {
+    font-size: 20px;
+    margin-top: 1rem;
+    font-weight: 100;
+}
+
+p {
+    text-align: justify;
+}
+
+nav {
+    display: block;
+    width: 100%;
+}
+
+nav ul {
+    list-style-type: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-evenly;
+    position: sticky;
+}
+
+nav li {
+    cursor: pointer;
+    color: #2772d7;
+    font-family: 'D-DIN-Pro', sans-serif;
+    font-size: 14px;
+    padding: 0.2rem;
+    border-bottom: 4px solid white;
+}
+
+nav li:hover {
+    font-weight: 600;
+}
+
+#nav-home {
+    border-bottom: 4px solid #2772d7;
+}
+
+.btn-back {
+    background-color: #2772d7;
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1.5rem;
+    border: none;
+}
+
+#btn-browse {
+    display: block;
+    background-color: #2772d7;
+    color: white;
+    margin: 0 auto;
+    font-size: 16px;
+    font-weight: 700;
+    height: 3rem;
+    width: 50%;
+    border-radius: 1.5rem;
+    border: none;
+    margin-top: 4rem;
+}
+
+.mapboxgl-marker:hover {
+    cursor: pointer;
+}

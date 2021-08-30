@@ -75,6 +75,8 @@ function AddIconImages() {
 
 function AddMapInfo() {
     console.log('add map info');
+
+    // add icon layers
     for (let i = 0; i < iconLayers.length; i++) {
         map.addSource(iconLayers[i].source, {
             type: 'geojson',
@@ -88,6 +90,21 @@ function AddMapInfo() {
             map.getCanvas().style.cursor = '';
         });
     }
+
+    // add archive layer
+    map.addSource(archiveIconLayer.source, {
+        type: 'geojson',
+        data: archiveIconSources
+    });
+    map.addLayer(archiveIconLayer);
+    map.on('mousemove', archiveIconLayer.id, (e) => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', archiveIconLayer.id, (e) => {
+        map.getCanvas().style.cursor = '';
+    });
+
+    // add radius layers
     for (let i = 0; i < circleLayers.length; i++) {
         map.addSource(circleLayers[i].source, {
             type: 'geojson',
@@ -98,6 +115,8 @@ function AddMapInfo() {
 
         console.log('add circle layer', circleLayers[i]);
     }
+
+    // add line layers
     for (let i = 0; i < lineLayers.length; i++) {
         map.addSource(lineLayers[i].source, {
             type: 'geojson',
@@ -105,6 +124,8 @@ function AddMapInfo() {
         });
         map.addLayer(lineLayers[i], circleLayers[i].id);
     }
+
+    // add dash layers
     for (let i = 0; i < dashLayers.length; i++) {
         map.addSource(dashLayers[i].source, {
             type: 'geojson',

@@ -1,12 +1,14 @@
-const orderIcons = ['icon-aug', 'icon-ben', 'icon-dom', 'icon-fran', 'icon-jes', 'icon-kart', 'icon-zist', 'icon-priv', 'icon-sonst', 'icon-unb'];
+const orderIcons = ['icon-aug', 'icon-ben', 'icon-dom', 'icon-fran', 'icon-kart', 'icon-kreu', 'icon-zist', 'icon-sonst', 'icon-unb', 'icon-mult', 'icon-lib'];
 
 const iconColors = {
-    od: ['#A6644A', '#A66A53', '#A6705C', '#A67665', '#A67C6E', '#A68277', '#A68880', '#A68E89', '#A69492', '#A69A9B', '#A6A0A4'],
-    md: ['#A64A46', '#A6534F', '#A65C58', '#A66561', '#A66E6A', '#A67773', '#A6807C', '#A68985', '#A6928E', '#A69B97', '#A6A4A0'],
-    nd: ['#A4466A', '#A44F70', '#A45876', '#A4617C', '#A46A82', '#A47388', '#A47C8E', '#A48594', '#A48E9A', '#A497A0', '#A4A0A6'],
-    lt: ['#466AA4', '#4F70A4', '#5876A4', '#617CA4', '#6A82A4', '#7388A4', '#7C8EA4', '#8594A4', '#8E9AA4', '#97A0A4', 'A0A6A4'],
-    fr: ['#46A64A', '#4FA653', '#58A65C', '#61A665', '#6AA66E', '#73A677', '#7CA680', '#85A689', '#8EA692', '#97A69B', '#A0A6A4'],
-    grey: ['#464646', '#6A6A6A', '#A6A6A6']
+    od: '#277BB2',
+    md: '#7B27B2',
+    nd: '#B2277B',
+    lt: '#B27B27',
+    fr: '#27B27B',
+    darkGrey: '#272727',
+    mediumGrey: '#7B7B7B',
+    lightGrey: '#B2B2B2'
 };
 
 const stateNameLayers = ['country-label', 'state-label'];
@@ -31,22 +33,21 @@ const iconLayers = [
                 'Benediktiner', orderIcons[1],
                 'Dominikaner', orderIcons[2],
                 'Franziskaner', orderIcons[3],
-                'Jesuiten', orderIcons[4],
-                'Kartäuser', orderIcons[5],
+                'Kartäuser', orderIcons[4],
+                'Kreuzherren', orderIcons[5],
                 'Zisterzienser', orderIcons[6],
-                'Privatbesitz', orderIcons[7],
-                'Sonstiger Orden', orderIcons[8],
-                'Unbekannter Orden', orderIcons[9],
-                /*fallback*/ orderIcons[9]],
+                'Sonstiges', orderIcons[7],
+                'Unbekannt', orderIcons[8],
+                /*fallback*/ orderIcons[8]],
             'icon-size': 1,
             'icon-allow-overlap': true,
             'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
             'symbol-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'icon-color': iconColors.od[0],
+            'icon-color': iconColors.od,
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-halo-color': iconColors.grey[0],
+            'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-opacity': 0.8
         }
@@ -61,22 +62,21 @@ const iconLayers = [
                 'Benediktiner', orderIcons[1],
                 'Dominikaner', orderIcons[2],
                 'Franziskaner', orderIcons[3],
-                'Jesuiten', orderIcons[4],
-                'Kartäuser', orderIcons[5],
+                'Kartäuser', orderIcons[4],
+                'Kreuzherren', orderIcons[5],
                 'Zisterzienser', orderIcons[6],
-                'Privatbesitz', orderIcons[7],
-                'Sonstiger Orden', orderIcons[8],
-                'Unbekannter Orden', orderIcons[9],
-                /*fallback*/ orderIcons[9]],
+                'Sonstiges', orderIcons[7],
+                'Unbekannt', orderIcons[8],
+                /*fallback*/ orderIcons[8]],
             'icon-size': 1,
             'icon-allow-overlap': true,
             'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
             'symbol-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'icon-color': iconColors.md[0],
+            'icon-color': iconColors.md,
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-halo-color': iconColors.grey[0],
+            'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-opacity': 0.8
         }
@@ -91,22 +91,21 @@ const iconLayers = [
                 'Benediktiner', orderIcons[1],
                 'Dominikaner', orderIcons[2],
                 'Franziskaner', orderIcons[3],
-                'Jesuiten', orderIcons[4],
-                'Kartäuser', orderIcons[5],
+                'Kartäuser', orderIcons[4],
+                'Kreuzherren', orderIcons[5],
                 'Zisterzienser', orderIcons[6],
-                'Privatbesitz', orderIcons[7],
-                'Sonstiger Orden', orderIcons[8],
-                'Unbekannter Orden', orderIcons[9],
-                /*fallback*/ orderIcons[9]],
+                'Sonstiges', orderIcons[7],
+                'Unbekannt', orderIcons[8],
+                /*fallback*/ orderIcons[8]],
             'icon-size': 1,
             'icon-allow-overlap': true,
             'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
             'symbol-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'icon-color': iconColors.nd[0],
+            'icon-color': iconColors.nd,
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-halo-color': iconColors.grey[0],
+            'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-opacity': 0.8
         }
@@ -121,22 +120,21 @@ const iconLayers = [
                 'Benediktiner', orderIcons[1],
                 'Dominikaner', orderIcons[2],
                 'Franziskaner', orderIcons[3],
-                'Jesuiten', orderIcons[4],
-                'Kartäuser', orderIcons[5],
+                'Kartäuser', orderIcons[4],
+                'Kreuzherren', orderIcons[5],
                 'Zisterzienser', orderIcons[6],
-                'Privatbesitz', orderIcons[7],
-                'Sonstiger Orden', orderIcons[8],
-                'Unbekannter Orden', orderIcons[9],
-                /*fallback*/ orderIcons[9]],
+                'Sonstiges', orderIcons[7],
+                'Unbekannt', orderIcons[8],
+                /*fallback*/ orderIcons[8]],
             'icon-size': 1,
             'icon-allow-overlap': true,
             'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
             'symbol-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'icon-color': iconColors.lt[0],
+            'icon-color': iconColors.lt,
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-halo-color': iconColors.grey[0],
+            'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-opacity': 0.8
         }
@@ -151,27 +149,45 @@ const iconLayers = [
                 'Benediktiner', orderIcons[1],
                 'Dominikaner', orderIcons[2],
                 'Franziskaner', orderIcons[3],
-                'Jesuiten', orderIcons[4],
-                'Kartäuser', orderIcons[5],
+                'Kartäuser', orderIcons[4],
+                'Kreuzherren', orderIcons[5],
                 'Zisterzienser', orderIcons[6],
-                'Privatbesitz', orderIcons[7],
-                'Sonstiger Orden', orderIcons[8],
-                'Unbekannter Orden', orderIcons[9],
-                /*fallback*/ orderIcons[9]],
+                'Sonstiges', orderIcons[7],
+                'Unbekannt', orderIcons[8],
+                /*fallback*/ orderIcons[8]],
             'icon-size': 1,
             'icon-allow-overlap': true,
             'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
             'symbol-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'icon-color': iconColors.fr[0],
+            'icon-color': iconColors.fr,
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-halo-color': iconColors.grey[0],
+            'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-opacity': 0.8
         }
     }
 ];
+
+const archiveIconLayer = {
+    id: 'layer-icons-lib',
+    source: 'data-icons-lib',
+    type: 'symbol',
+    layout: {
+        'icon-image': orderIcons[10],
+        'icon-size': 1,
+        'icon-allow-overlap': true,
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
+    },
+    paint: {
+        'icon-color': iconColors.mediumGrey,
+        'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
+        'icon-halo-color': iconColors.darkGrey,
+        'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
+        'icon-opacity': 0.8
+    }
+}
 
 const circleLayers = [
     {
@@ -182,7 +198,7 @@ const circleLayers = [
             'fill-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'fill-color': iconColors.od[0],
+            'fill-color': iconColors.od,
             'fill-opacity': 0.1
         }
     },
@@ -194,7 +210,7 @@ const circleLayers = [
             'fill-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'fill-color': iconColors.md[0],
+            'fill-color': iconColors.md,
             'fill-opacity': 0.1
         }
     },
@@ -206,7 +222,7 @@ const circleLayers = [
             'fill-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'fill-color': iconColors.nd[0],
+            'fill-color': iconColors.nd,
             'fill-opacity': 0.1
         }
     },
@@ -218,7 +234,7 @@ const circleLayers = [
             'fill-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'fill-color': iconColors.lt[0],
+            'fill-color': iconColors.lt,
             'fill-opacity': 0.1
         }
     },
@@ -230,7 +246,7 @@ const circleLayers = [
             'fill-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'fill-color': iconColors.fr[0],
+            'fill-color': iconColors.fr,
             'fill-opacity': 0.1
         }
     }

@@ -22,6 +22,9 @@ let dashSourcesND = { 'type': 'FeatureCollection', 'features': [] };
 let dashSourcesLT = { 'type': 'FeatureCollection', 'features': [] };
 let dashSourcesFR = { 'type': 'FeatureCollection', 'features': [] };
 
+let archiveIconSources = { 'type': 'FeatureCollection', 'features': [] };
+let archiveLineSources = { 'type': 'FeatureCollection', 'features': [] };
+
 const iconSources = [iconSourcesOD, iconSourcesMD, iconSourcesND, iconSourcesLT, iconSourcesFR];
 const circleSources = [circleSourcesOD, circleSourcesMD, circleSourcesND, circleSourcesLT, circleSourcesFR];
 const lineSources = [lineSourcesOD, lineSourcesMD, lineSourcesND, lineSourcesLT, lineSourcesFR];
@@ -35,25 +38,9 @@ const sheets = [
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=1628743925&single=true&output=csv',
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=1534789364&single=true&output=csv',
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=2043396227&single=true&output=csv',
-    'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=1032692029&single=true&output=csv'
+    'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=1032692029&single=true&output=csv',
+    'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=1000674006&single=true&output=csv'
 ];
-
-const lineTemplate = {
-    'type': 'Feature',
-    'properties': {
-        'id': '',
-        'year': '',
-        'order': '',
-        'moved': ''
-    },
-    'geometry': {
-        'type': 'LineString',
-        'coordinates': [
-            [0, 0],
-            [0, 0]
-        ]
-    }
-}
 
 Papa.parsePromise = function (file) {
     return new Promise(function (complete, error) {
@@ -64,7 +51,7 @@ Papa.parsePromise = function (file) {
 function ImportData() {
     console.log('start data import');
     let papaPromises = [];
-    for (let i = 0; i < iconSources.length; i++) {
+    for (let i = 0; i < sheets.length; i++) {
         papaPromises.push(Papa.parsePromise(sheets[i]));
     }
 
@@ -184,7 +171,23 @@ function ImportData() {
                 }
             }
         }
-        console.log('data imported');
+
+        for (let i = 1; i < results[5].data.length; i++) {
+            archiveIconSources.features.push({
+                'type': 'Feature',
+                    'properties': {
+                        'id': results[5].data[i][0],
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [
+                            parseFloat(results[5].data[i][1]),
+                            parseFloat(results[5].data[i][2])
+                        ]
+                    }
+            });
+        }
+        console.log('data imported', archiveIconSources);
         AddMapInfo();
     });
 }

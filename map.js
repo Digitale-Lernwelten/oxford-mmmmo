@@ -43,6 +43,7 @@ map.on('style.load', () => {
     ImportData();
     AddIconImages();
 });
+
 map.on('click', function (e) {
     let features = map.queryRenderedFeatures(e.point, {
         layers: iconLayers
@@ -51,7 +52,7 @@ map.on('click', function (e) {
         return;
     }
     let feature = features[0];
-    ShowFeatureInfo(feature.properties.name, feature.properties.year, feature.properties.category, feature.properties.description);
+    //ShowFeatureInfo(feature.properties.name, feature.properties.year, feature.properties.category, feature.properties.description);
 });
 
 function AddIconImages() {
@@ -145,7 +146,6 @@ function UpdateYear() {
 }
 
 function UpdateIconFilters() {
-    console.log(map.getSource('data-icons-nd'));
     iconLayers.forEach((layer) => {
         map.setFilter(layer.id, ['all', filterYear, filterOrder]);
     });

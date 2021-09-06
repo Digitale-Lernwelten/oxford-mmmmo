@@ -256,6 +256,7 @@ function ImportData() {
         // set lines and dashes
         for (let i = 0; i < iconSources.length; i++) {
             for (let j = 0; j < iconSources[i].features.length; j++) {
+                // set move lines
                 if (iconSources[i].features[j].properties.moved != '') {
                     const originSource = hTable.getItem('i' + iconSources[i].features[j].properties.moved);
                     console.log('get item: i' + iconSources[i].features[j].properties.moved);
@@ -278,6 +279,7 @@ function ImportData() {
                     lineSources[i].features.push(lineSource);
                     hTable.setItem('l' + lineSource.properties.id, lineSource);
                 }
+                // set origin dashes
                 if (iconSources[i].features[j].properties.origin != '') {
                     const originSource = hTable.getItem('i' + iconSources[i].features[j].properties.origin);
                     const dashSource = {
@@ -297,6 +299,26 @@ function ImportData() {
                     };
                     dashSources[i].features.push(dashSource);
                     hTable.setItem('d' + dashSource.properties.id, dashSource);
+                }
+                // set archive lines
+                if (iconSources[i].features[j].properties.archive != '') {
+                    const targetSource = hTable.getItem('lib' + iconSources[i].features[j].properties.archive);
+                    const archiveLineSource = {
+                        'type': 'Feature',
+                        'properties': {
+                            'id': iconSources[i].features[j].properties.id,
+                            'order': iconSources[i].features[j].properties.order
+                        },
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': [
+                                [iconSources[i].features[j].geometry.coordinates[0], iconSources[i].features[j].geometry.coordinates[1]],
+                                [targetSource.geometry.coordinates[0], targetSource.geometry.coordinates[1]]
+                            ]
+                        }
+                    };
+                    archiveLineSources[i].features.push(archiveLineSource);
+                    hTable.setItem('a' + archiveLineSource.properties.id, archiveLineSource);
                 }
             }
         }

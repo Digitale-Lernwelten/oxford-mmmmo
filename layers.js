@@ -49,7 +49,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.8]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]
         }
     },
     {
@@ -78,7 +78,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.8]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]
         }
     },
     {
@@ -107,7 +107,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.8]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]
         }
     },
     {
@@ -136,7 +136,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.8]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]
         }
     },
     {
@@ -165,7 +165,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.8]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]
         }
     }
 ];
@@ -178,14 +178,15 @@ const archiveIconLayer = {
         'icon-image': orderIcons[10],
         'icon-size': 1,
         'icon-allow-overlap': true,
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.3, 14, 1.2],
+        'visibility': 'visible'
     },
     paint: {
         'icon-color': iconColors.mediumGrey,
-        'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
+        'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.6, 14, 2.4],
         'icon-halo-color': iconColors.darkGrey,
-        'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-        'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.8]
+        'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.6, 14, 2.4],
+        'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.6]
     }
 }
 
@@ -199,7 +200,7 @@ const circleLayers = [
         },
         paint: {
             'fill-color': iconColors.od,
-            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.1]
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]
         }
     },
     {
@@ -211,7 +212,7 @@ const circleLayers = [
         },
         paint: {
             'fill-color': iconColors.md,
-            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.1]
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]
         }
     },
     {
@@ -223,7 +224,7 @@ const circleLayers = [
         },
         paint: {
             'fill-color': iconColors.nd,
-            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.1]
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]
         }
     },
     {
@@ -235,7 +236,7 @@ const circleLayers = [
         },
         paint: {
             'fill-color': iconColors.lt,
-            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.1]
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]
         }
     },
     {
@@ -247,7 +248,7 @@ const circleLayers = [
         },
         paint: {
             'fill-color': iconColors.fr,
-            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.1]
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]
         }
     }
 ];
@@ -261,7 +262,7 @@ const lineLayers = [
             'line-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'line-opacity': 0.8,
+            'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
             'line-pattern': ['image', 'line']
@@ -275,7 +276,7 @@ const lineLayers = [
             'line-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'line-opacity': 0.8,
+            'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
             'line-pattern': ['image', 'line']
@@ -289,7 +290,7 @@ const lineLayers = [
             'line-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'line-opacity': 0.8,
+            'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
             'line-pattern': ['image', 'line']
@@ -303,7 +304,7 @@ const lineLayers = [
             'line-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'line-opacity': 0.8,
+            'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
             'line-pattern': ['image', 'line']
@@ -317,7 +318,7 @@ const lineLayers = [
             'line-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'line-opacity': 0.8,
+            'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
             'line-pattern': ['image', 'line']
@@ -334,7 +335,7 @@ const dashLayers = [
             'line-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'line-opacity': 0.8,
+            'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
             'line-pattern': ['image', 'dash']
@@ -348,7 +349,7 @@ const dashLayers = [
             'line-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'line-opacity': 0.8,
+            'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
             'line-pattern': ['image', 'dash']
@@ -362,7 +363,7 @@ const dashLayers = [
             'line-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'line-opacity': 0.8,
+            'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
             'line-pattern': ['image', 'dash']
@@ -376,7 +377,7 @@ const dashLayers = [
             'line-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'line-opacity': 0.8,
+            'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
             'line-pattern': ['image', 'dash']
@@ -390,10 +391,68 @@ const dashLayers = [
             'line-sort-key': ['to-number', ['get', 'year']]
         },
         paint: {
-            'line-opacity': 0.8,
+            'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
             'line-pattern': ['image', 'dash']
+        }
+    }
+];
+
+const archiveLineLayers = [
+    {
+        id: 'layer-archive-lines-od',
+        source: 'data-archive-lines-od',
+        type: 'line',
+        paint: {
+            'line-opacity': 0.3,
+            'line-width': 1,
+            'line-blur': 1,
+            'line-color': iconColors.darkGrey
+        }
+    },
+    {
+        id: 'layer-archive-lines-md',
+        source: 'data-archive-lines-md',
+        type: 'line',
+        paint: {
+            'line-opacity': 0.3,
+            'line-width': 1,
+            'line-blur': 1,
+            'line-color': iconColors.darkGrey
+        }
+    },
+    {
+        id: 'layer-archive-lines-nd',
+        source: 'data-archive-lines-nd',
+        type: 'line',
+        paint: {
+            'line-opacity': 0.3,
+            'line-width': 1,
+            'line-blur': 1,
+            'line-color': iconColors.darkGrey
+        }
+    },
+    {
+        id: 'layer-archive-lines-lt',
+        source: 'data-archive-lines-lt',
+        type: 'line',
+        paint: {
+            'line-opacity': 0.3,
+            'line-width': 1,
+            'line-blur': 1,
+            'line-color': iconColors.darkGrey
+        }
+    },
+    {
+        id: 'layer-archive-lines-fr',
+        source: 'data-archive-lines-fr',
+        type: 'line',
+        paint: {
+            'line-opacity': 0.3,
+            'line-width': 1,
+            'line-blur': 1,
+            'line-color': iconColors.darkGrey
         }
     }
 ];

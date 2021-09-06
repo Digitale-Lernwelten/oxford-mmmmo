@@ -21,7 +21,7 @@ const checkboxNames = document.getElementById('checkbox-names');
 const checkboxRadius = document.getElementById('checkbox-radius');
 const checkboxLines = document.getElementById('checkbox-lines');
 
-let orders = ['Augustiner', 'Benediktiner', 'Dominikaner', 'Franziskaner', 'Jesuiten', 'Kartäuser', 'Zisterzienser', 'Privatbesitz', 'Sonstiger Orden', 'Unbekannter Orden'];
+let orders = ['Augustiner', 'Benediktiner', 'Dominikaner', 'Franziskaner', 'Kartäuser', 'Kreuzherren', 'Zisterzienser', 'Sonstiges', 'Unbekannt'];
 
 let filterYear = ['>=', ['to-number', slider.value], ['to-number', ['get', 'year']]];
 let filterOrder = ['in', ['get', 'order'], ['literal', orders]];
@@ -29,6 +29,8 @@ let filters = ['all', filterYear, filterOrder];
 
 let currentBorderLayers = borderLayers;
 let currentNameLayers = stateNameLayers.concat(otherNameLayers);
+
+let hoveredIconID = null;
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZGx3LW1tbW1vIiwiYSI6ImNrcXRvZ2JuaTAwMmkzMW8zMmJlOGpveDUifQ.5XieGJGXyN1EOV0i-fDReA';
 const map = new mapboxgl.Map({
@@ -39,7 +41,6 @@ const map = new mapboxgl.Map({
 });
 
 map.on('style.load', () => {
-    console.log("map object: ", map);
     ImportData();
     AddIconImages();
 });
@@ -66,17 +67,15 @@ function AddIconImages() {
     });
     map.loadImage('assets/line.png', (error, imgData) => {
         if (error) throw error;
-        map.addImage ('line', imgData);
+        map.addImage('line', imgData);
     });
     map.loadImage('assets/dash.png', (error, imgData) => {
         if (error) throw error;
-        map.addImage ('dash', imgData);
+        map.addImage('dash', imgData);
     });
 }
 
 function AddMapInfo() {
-    console.log('add map info');
-
     // add icon layers
     for (let i = 0; i < iconLayers.length; i++) {
         map.addSource(iconLayers[i].source, {
@@ -86,9 +85,32 @@ function AddMapInfo() {
         map.addLayer(iconLayers[i]);
         map.on('mousemove', iconLayers[i].id, (e) => {
             map.getCanvas().style.cursor = 'pointer';
+            /*if (e.features.length > 0) {
+                if (hoveredIconID !== null) {
+                    map.setFeatureState(
+                        { source: iconLayers[i].source, id: hoveredIconID },
+                        { hover: false }
+                    );
+                }
+                hoveredIconID = e.features[0].id;
+                console.log(hoveredIconID);
+                map.setFeatureState(
+                    { source: iconLayers[i].source, id: hoveredIconID },
+                    { hover: true }
+                );
+            }*/
         });
         map.on('mouseleave', iconLayers[i].id, (e) => {
             map.getCanvas().style.cursor = '';
+            /*if (e.features.length > 0) {
+                if (hoveredIconID !== null) {
+                    map.setFeatureState(
+                        { source: iconLayers[i].source, id: hoveredIconID },
+                        { hover: false }
+                    );
+                }
+                hoveredIconID = null;
+            }*/
         });
     }
 
@@ -111,10 +133,7 @@ function AddMapInfo() {
             type: 'geojson',
             data: circleSources[i]
         });
-        console.log('add circle source', circleSources[i]);
-        map.addLayer(circleLayers[i], iconLayers[i].id);
-
-        console.log('add circle layer', circleLayers[i]);
+        map.addLayer(circleLayers[i], iconLayers[0].id);
     }
 
     // add line layers
@@ -123,7 +142,7 @@ function AddMapInfo() {
             type: 'geojson',
             data: lineSources[i]
         });
-        map.addLayer(lineLayers[i], circleLayers[i].id);
+        map.addLayer(lineLayers[i], circleLayers[0].id);
     }
 
     // add dash layers
@@ -133,39 +152,59 @@ function AddMapInfo() {
             lineMetrics: true,
             data: dashSources[i]
         });
-        map.addLayer(dashLayers[i], lineLayers[i].id);
+        map.addLayer(dashLayers[i], lineLayers[0].id);
     }
-    console.log('map info added');
+
+    // add archive lines
+    for (let i = 0; i < archiveLineLayers.length; i++) {
+        map.addSource(archiveLineLayers[i].source, {
+            type: 'geojson',
+            data: archiveLineSources[i]
+        });
+        map.addLayer(archiveLineLayers[i], iconLayers[0].id);
+    }
+
+    console.log('map info added', map);
 }
 
 function UpdateYear() {
     UpdateBorderLayers(checkboxBorders.checked);
     UpdateNameLayers(checkboxNames.checked);
     filterYear = ['>=', ['to-number', slider.value], ['to-number', ['get', 'year']]];
-    UpdateIconFilters();
+    const checkVisibility = map.getLayoutProperty(archiveIconLayer.id, 'visibility');
+    if (slider.value === slider.max && checkVisibility === 'none') {
+        for (let i = 0; i < iconLayers.length; i++) {
+            map.setPaintProperty(iconLayers[i].id, 'icon-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]);
+            map.setPaintProperty(circleLayers[i].id, 'fill-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]);
+            map.setPaintProperty(lineLayers[i].id, 'line-opacity', 0.1);
+            map.setPaintProperty(dashLayers[i].id, 'line-opacity', 0.1);
+            map.setPaintProperty(archiveLineLayers[i].id, 'line-opacity', 0.3);
+        }
+        map.setLayoutProperty(archiveIconLayer.id, 'visibility', 'visible');
+    } else if (slider.value !== slider.max && checkVisibility === 'visible') {
+        for (let i = 0; i < iconLayers.length; i++) {
+            map.setPaintProperty(iconLayers[i].id, 'icon-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.6]);
+            map.setPaintProperty(circleLayers[i].id, 'fill-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.1]);
+            map.setPaintProperty(lineLayers[i].id, 'line-opacity', 0.3);
+            map.setPaintProperty(dashLayers[i].id, 'line-opacity', 0.3);
+            map.setPaintProperty(archiveLineLayers[i].id, 'line-opacity', 0);
+        }
+        map.setLayoutProperty(archiveIconLayer.id, 'visibility', 'none');
+    }
+    UpdateFilters();
 }
 
-function UpdateIconFilters() {
+function UpdateFilters() {
     iconLayers.forEach((layer) => {
         map.setFilter(layer.id, ['all', filterYear, filterOrder]);
     });
-    UpdateCircleFilters();
-    UpdateLineFilters();
-}
-
-function UpdateCircleFilters() {
-    circleLayers.forEach((layer) => {
-        map.setFilter(layer.id, ['all', filterYear, filterOrder]);
-    });
-}
-
-function UpdateLineFilters() {
-    lineLayers.forEach((layer) => {
-        map.setFilter(layer.id, ['all', filterYear, filterOrder]);
-    });
-    dashLayers.forEach((layer) => {
-        map.setFilter(layer.id, ['all', filterYear, filterOrder]);
-    });
+    for (let i = 0; i < iconLayers.length; i++) {
+        map.setFilter(iconLayers[0].id, ['all', filterYear, filterOrder]);
+        map.setFilter(circleLayers[0].id, ['all', filterYear, filterOrder]);
+        map.setFilter(lineLayers[0].id, ['all', filterYear, filterOrder]);
+        map.setFilter(dashLayers[0].id, ['all', filterYear, filterOrder]);
+        map.setFilter(archiveLineLayers[0].id, filterOrder);
+    }
 }
 
 function UpdateLanguage(value, checked) {
@@ -175,14 +214,16 @@ function UpdateLanguage(value, checked) {
             map.setLayoutProperty('layer-circles-' + value, 'visibility', 'visible');
         }
         if (checkboxLines.checked) {
-            map.setLayoutProperty('layer-lines-'+ value, 'visibility', 'visible');
-            map.setLayoutProperty('layer-dashes-'+ value, 'visibility', 'visible');
+            map.setLayoutProperty('layer-lines-' + value, 'visibility', 'visible');
+            map.setLayoutProperty('layer-dashes-' + value, 'visibility', 'visible');
+            map.setLayoutProperty('layer-archive-lines-' + value, 'visibility', 'visible');
         }
     } else {
         map.setLayoutProperty('layer-icons-' + value, 'visibility', 'none');
         map.setLayoutProperty('layer-circles-' + value, 'visibility', 'none');
         map.setLayoutProperty('layer-lines-' + value, 'visibility', 'none');
         map.setLayoutProperty('layer-dashes-' + value, 'visibility', 'none');
+        map.setLayoutProperty('layer-archive-lines-' + value, 'visibility', 'none');
     }
 }
 
@@ -195,7 +236,7 @@ function UpdateOrder(value, checked) {
         orders = orders.filter(item => item !== value);
     }
     filterOrder = ['in', ['get', 'order'], ['literal', orders]];
-    UpdateIconFilters();
+    UpdateFilters();
 }
 
 function UpdateNameLayers(checked) {
@@ -259,11 +300,13 @@ function UpdateLineLayers(checked) {
             if (checkboxesLang[i].checked) {
                 map.setLayoutProperty(lineLayers[i].id, 'visibility', 'visible');
                 map.setLayoutProperty(dashLayers[i].id, 'visibility', 'visible');
+                map.setLayoutProperty(archiveLineLayers[i].id, 'visibility', 'visible');
             }
         }
     } else {
         lineLayers.forEach((layer) => { map.setLayoutProperty(layer.id, 'visibility', 'none') });
         dashLayers.forEach((layer) => { map.setLayoutProperty(layer.id, 'visibility', 'none') });
+        archiveLineLayers.forEach((layer) => { map.setLayoutProperty(layer.id, 'visibility', 'none') });
     }
 }
 

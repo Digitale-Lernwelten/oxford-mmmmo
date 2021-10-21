@@ -29,6 +29,7 @@ let archiveLineSourcesLT = { 'type': 'FeatureCollection', 'features': [] };
 let archiveLineSourcesFR = { 'type': 'FeatureCollection', 'features': [] };
 
 let archiveIconSources = { 'type': 'FeatureCollection', 'features': [] };
+let archiveIndices = {};
 
 const iconSources = [iconSourcesOD, iconSourcesMD, iconSourcesND, iconSourcesLT, iconSourcesFR];
 const circleSources = [circleSourcesOD, circleSourcesMD, circleSourcesND, circleSourcesLT, circleSourcesFR];
@@ -36,6 +37,7 @@ const lineSources = [lineSourcesOD, lineSourcesMD, lineSourcesND, lineSourcesLT,
 const dashSources = [dashSourcesOD, dashSourcesMD, dashSourcesND, dashSourcesLT, dashSourcesFR];
 const archiveLineSources = [archiveLineSourcesOD, archiveLineSourcesMD, archiveLineSourcesND, archiveLineSourcesLT, archiveLineSourcesFR]
 
+// URLs to google sheets for each language: 0 = OD, 1 = MD, 2 = ND, 3 = LT, 4 = FR
 const sheets = [
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=0&single=true&output=csv',
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=1628743925&single=true&output=csv',
@@ -45,118 +47,79 @@ const sheets = [
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=1000674006&single=true&output=csv'
 ];
 
-function CreateHash(s) {
-    let hash = 0;
-    if (s.startsWith('iod')) {
-        hash = 0;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('imd')) {
-        hash = 300;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('ind')) {
-        hash = 6000;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('ilt')) {
-        hash = 900;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('ifr')) {
-        hash = 1200;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('cod')) {
-        hash = 1500;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('cmd')) {
-        hash = 1700;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('cnd')) {
-        hash = 1900;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('clt')) {
-        hash = 2100;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('cfr')) {
-        hash = 2300;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('lod')) {
-        hash = 2500;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('lmd')) {
-        hash = 2700;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('lnd')) {
-        hash = 2900;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('llt')) {
-        hash = 3100;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('lfr')) {
-        hash = 3300;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('dod')) {
-        hash = 3500;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('dmd')) {
-        hash = 3700;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('dnd')) {
-        hash = 3900;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('dlt')) {
-        hash = 410;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('dfr')) {
-        hash = 4300;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('aod')) {
-        hash = 4500;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('amd')) {
-        hash = 4800;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('and')) {
-        hash = 5100;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('alt')) {
-        hash = 5400;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('afr')) {
-        hash = 5700;
-        hash += parseInt(s.substring(3));
-    } else if (s.startsWith('lib')) {
-        hash = 6000;
-        hash = (hash + (((s.charCodeAt(3) * 3) + (s.charCodeAt(4) * 2) + (s.charCodeAt(5))))) % 7499;
+const hTable = new Array(6899);
+
+function createHash(s) {
+    let n = 0, m = 0, mult = 2;
+    let firstChar = s.charAt(0);
+    let secondChar = s.charAt(1);
+    if (s.match(/^\d/)) {
+       return 6000 + parseInt(s.split('*')[0]);
+    }
+    switch (firstChar) {
+        case 'i':
+            mult = 3;
+            break;
+        case 'c':
+            n = 1500;
+            break;
+        case 'l':
+            n = 2500;
+            break;
+        case 'd':
+            n = 3500;
+            break;
+        case 'a':
+            n = 4500;
+            mult = 3;
+            break;
+        default:
+            console.log('unexpected string, creating hash failed');
+            return null;
+    }
+    switch (secondChar) {
+        case 'o':
+            break;
+        case 'm':
+            m = 100;
+            break;
+        case 'n':
+            m = 200;
+            break;
+        case 'l':
+            m = 300;
+            break;
+        case 'f':
+            m = 400;
+            break;
+        default:
+            console.log('unexpected string, creating hash failed');
+            return null;
+    }
+    
+    const idx = parseInt(s.substr(3));
+    return n + (mult * m) + idx;
+}
+
+function setItem(key, value) {
+    const idx = createHash(key);
+    value.id = idx;
+    /*if (hTable[idx]) {
+        hTable[idx].push([key, value]);
     } else {
-        console.log('unexpected string, creating hash failed');
+        hTable[idx] = [[key, value]];
+    }*/
+    hTable[idx] = value;
+}
+
+function getItem(key) {
+    const idx = createHash(key);
+    if (!hTable[idx]) {
+        console.log('idx not found');
         return null;
     }
-    return hash;
+    return hTable[idx];
 }
-
-class HashTable {
-    table = new Array(7499);
-
-    setItem = (key, value) => {
-        const idx = CreateHash(key);
-        if (this.table[idx]) {
-            this.table[idx].push([key, value]);
-        } else {
-            this.table[idx] = [[key, value]];
-        }
-    }
-
-    getItem = key => {
-        const idx = CreateHash(key);
-
-        if (!this.table[idx]) {
-            console.log('idx not found');
-            return null;
-        }
-
-        return this.table[idx].find(x => x[0] === key)[1];
-    }
-}
-
-const hTable = new HashTable();
 
 Papa.parsePromise = function (file) {
     return new Promise(function (complete, error) {
@@ -164,7 +127,7 @@ Papa.parsePromise = function (file) {
     });
 };
 
-function ImportData() {
+function importData() {
     console.log('start data import');
     let papaPromises = [];
     for (let i = 0; i < sheets.length; i++) {
@@ -176,7 +139,6 @@ function ImportData() {
         // set data for the first 5 sheets (od, md, nd, lt, fr)
         for (let i = 0; i < iconSources.length; i++) {
             for (let j = 1; j < results[i].data.length; j++) {
-                
                 // set geojson from data
                 const iconSource = {
                     'type': 'Feature',
@@ -185,7 +147,7 @@ function ImportData() {
                         'name': results[i].data[j][1],
                         'year': parseInt(results[i].data[j][2]),
                         'order': results[i].data[j][3],
-                        'archive': results[i].data[j][4],
+                        'archive': results[i].data[j][4], //!!!
                         'category': results[i].data[j][5],
                         'description': results[i].data[j][6],
                         'hsc': results[i].data[j][7],
@@ -193,6 +155,7 @@ function ImportData() {
                         'digitalisat': results[i].data[j][9],
                         'moved': results[i].data[j][10],
                         'origin': results[i].data[j][11],
+                        'radius': parseFloat(results[i].data[j][12])
                     },
                     'geometry': {
                         'type': 'Point',
@@ -200,16 +163,17 @@ function ImportData() {
                             parseFloat(results[i].data[j][13]),
                             parseFloat(results[i].data[j][14])
                         ]
-                    }
+                    },
+                    'id': 0
                 };
 
                 iconSources[i].features.push(iconSource); // push to layer source
-                hTable.setItem('i' + iconSource.properties.id, iconSource); // push to hash table
+                setItem('i' + iconSource.properties.id, iconSource); // push to hash table
 
                 // set circle if source has radius
                 if (results[i].data[j][12] > 0) {
                     // draw circular polygon from coordinates and radius
-                    let points = DrawCircle(results[i].data[j][12], results[i].data[j][13], results[i].data[j][14]);
+                    let points = drawCircle(results[i].data[j][12], results[i].data[j][13], results[i].data[j][14]);
 
                     // set geojson from data
                     const circleSource = {
@@ -223,23 +187,27 @@ function ImportData() {
                         'geometry': {
                             'type': 'Polygon',
                             'coordinates': points
-                        }
+                        },
+                        'id': 0
                     };
 
                     circleSources[i].features.push(circleSource); // push to layer source
-                    hTable.setItem('c' + circleSource.properties.id, circleSource); // push to hash table
+                    setItem('c' + circleSource.properties.id, circleSource); // push to hash table
                 }
             }
         }
 
         // set data for the 6th sheet (archives)
         for (let i = 1; i < results[5].data.length; i++) {
-
+            const key = results[5].data[i][0];
+            const value = i.toString();
+            Object.assign(archiveIndices, {[key]: value});
+            
             // set geojson from data
             const archiveIconSource = {
                 'type': 'Feature',
                 'properties': {
-                    'id': results[5].data[i][0],
+                    'id': value + '*' + key,
                 },
                 'geometry': {
                     'type': 'Point',
@@ -247,20 +215,21 @@ function ImportData() {
                         parseFloat(results[5].data[i][1]),
                         parseFloat(results[5].data[i][2])
                     ]
-                }
+                },
+                'id': 0
             };
             archiveIconSources.features.push(archiveIconSource); // push to layer source
-            hTable.setItem('lib' + archiveIconSource.properties.id, archiveIconSource); // push to hash table
+            setItem(archiveIconSource.properties.id, archiveIconSource); // push to hash table
         }
 
         // set lines and dashes
         for (let i = 0; i < iconSources.length; i++) {
             for (let j = 0; j < iconSources[i].features.length; j++) {
                 // set move lines
-                if (iconSources[i].features[j].properties.moved != '') {
-                    const originSource = hTable.getItem('i' + iconSources[i].features[j].properties.moved);
-                    console.log('get item: i' + iconSources[i].features[j].properties.moved);
-                    console.log('got item: ', originSource);
+                if (iconSources[i].features[j].properties.moved !== '') {
+                    const originSource = getItem('i' + iconSources[i].features[j].properties.moved);
+                    originSource.properties.target = iconSources[i].features[j].properties.id;
+
                     const lineSource = {
                         'type': 'Feature',
                         'properties': {
@@ -274,14 +243,21 @@ function ImportData() {
                                 [originSource.geometry.coordinates[0], originSource.geometry.coordinates[1]],
                                 [iconSources[i].features[j].geometry.coordinates[0], iconSources[i].features[j].geometry.coordinates[1]]
                             ]
-                        }
+                        },
+                        'id': 0
                     };
                     lineSources[i].features.push(lineSource);
-                    hTable.setItem('l' + lineSource.properties.id, lineSource);
+                    setItem('l' + lineSource.properties.id, lineSource);
                 }
                 // set origin dashes
-                if (iconSources[i].features[j].properties.origin != '') {
-                    const originSource = hTable.getItem('i' + iconSources[i].features[j].properties.origin);
+                if (iconSources[i].features[j].properties.origin !== '') {
+                    const originSource = getItem('i' + iconSources[i].features[j].properties.origin);
+                    if (originSource.properties.copies) {
+                        originSource.properties.copies += ',' + iconSources[i].features[j].properties.id;
+                    } else {
+                        originSource.properties.copies = iconSources[i].features[j].properties.id;
+                    }
+
                     const dashSource = {
                         'type': 'Feature',
                         'properties': {
@@ -295,14 +271,17 @@ function ImportData() {
                                 [originSource.geometry.coordinates[0], originSource.geometry.coordinates[1]],
                                 [iconSources[i].features[j].geometry.coordinates[0], iconSources[i].features[j].geometry.coordinates[1]]
                             ]
-                        }
+                        },
+                        'id': 0
                     };
                     dashSources[i].features.push(dashSource);
-                    hTable.setItem('d' + dashSource.properties.id, dashSource);
+                    setItem('d' + dashSource.properties.id, dashSource);
                 }
                 // set archive lines
                 if (iconSources[i].features[j].properties.archive != '') {
-                    const targetSource = hTable.getItem('lib' + iconSources[i].features[j].properties.archive);
+                    const key = iconSources[i].features[j].properties.archive;
+                    const value = archiveIndices[key];
+                    const targetSource = getItem(value + '*' + key);
                     const archiveLineSource = {
                         'type': 'Feature',
                         'properties': {
@@ -315,20 +294,21 @@ function ImportData() {
                                 [iconSources[i].features[j].geometry.coordinates[0], iconSources[i].features[j].geometry.coordinates[1]],
                                 [targetSource.geometry.coordinates[0], targetSource.geometry.coordinates[1]]
                             ]
-                        }
+                        },
+                        id: 0
                     };
                     archiveLineSources[i].features.push(archiveLineSource);
-                    hTable.setItem('a' + archiveLineSource.properties.id, archiveLineSource);
+                    setItem('a' + archiveLineSource.properties.id, archiveLineSource);
                 }
             }
         }
-        
+
         console.log('data imported', hTable);
-        AddMapInfo();
+        addMapInfo();
     });
 }
 
-function DrawCircle(radius, long, lat) {
+function drawCircle(radius, long, lat) {
     radius = parseFloat(radius);
     long = parseFloat(long);
     lat = parseFloat(lat);

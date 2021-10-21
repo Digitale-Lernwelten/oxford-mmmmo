@@ -30,143 +30,6 @@ let filters = ['all', filterYear, filterOrder];
 let currentBorderLayers = borderLayers;
 let currentNameLayers = stateNameLayers.concat(otherNameLayers);
 
-let hoveredIconID = null;
-
-mapboxgl.accessToken = 'pk.eyJ1IjoiZGx3LW1tbW1vIiwiYSI6ImNrcXRvZ2JuaTAwMmkzMW8zMmJlOGpveDUifQ.5XieGJGXyN1EOV0i-fDReA';
-const map = new mapboxgl.Map({
-    container: 'map', // container ID
-    style: 'mapbox://styles/dlw-mmmmo/ckqtp7u2f03aq18qqzaspevm8', // style URL
-    center: [10, 52], // starting position [lng, lat]
-    zoom: 4.8 // starting zoom
-});
-
-map.on('style.load', () => {
-    ImportData();
-    AddIconImages();
-});
-
-map.on('click', function (e) {
-    let features = map.queryRenderedFeatures(e.point, {
-        layers: iconLayers
-    });
-    if (!features.length) {
-        return;
-    }
-    let feature = features[0];
-    //ShowFeatureInfo(feature.properties.name, feature.properties.year, feature.properties.category, feature.properties.description);
-});
-
-function AddIconImages() {
-    orderIcons.forEach((icon) => {
-        map.loadImage('assets/' + icon + '.png', (error, imgData) => {
-            if (error) throw error;
-            map.addImage(icon, imgData, {
-                sdf: true
-            });
-        });
-    });
-    map.loadImage('assets/line.png', (error, imgData) => {
-        if (error) throw error;
-        map.addImage('line', imgData);
-    });
-    map.loadImage('assets/dash.png', (error, imgData) => {
-        if (error) throw error;
-        map.addImage('dash', imgData);
-    });
-}
-
-function AddMapInfo() {
-    // add icon layers
-    for (let i = 0; i < iconLayers.length; i++) {
-        map.addSource(iconLayers[i].source, {
-            type: 'geojson',
-            data: iconSources[i]
-        });
-        map.addLayer(iconLayers[i]);
-        map.on('mousemove', iconLayers[i].id, (e) => {
-            map.getCanvas().style.cursor = 'pointer';
-            /*if (e.features.length > 0) {
-                if (hoveredIconID !== null) {
-                    map.setFeatureState(
-                        { source: iconLayers[i].source, id: hoveredIconID },
-                        { hover: false }
-                    );
-                }
-                hoveredIconID = e.features[0].id;
-                console.log(hoveredIconID);
-                map.setFeatureState(
-                    { source: iconLayers[i].source, id: hoveredIconID },
-                    { hover: true }
-                );
-            }*/
-        });
-        map.on('mouseleave', iconLayers[i].id, (e) => {
-            map.getCanvas().style.cursor = '';
-            /*if (e.features.length > 0) {
-                if (hoveredIconID !== null) {
-                    map.setFeatureState(
-                        { source: iconLayers[i].source, id: hoveredIconID },
-                        { hover: false }
-                    );
-                }
-                hoveredIconID = null;
-            }*/
-        });
-    }
-
-    // add archive layer
-    map.addSource(archiveIconLayer.source, {
-        type: 'geojson',
-        data: archiveIconSources
-    });
-    map.addLayer(archiveIconLayer);
-    map.on('mousemove', archiveIconLayer.id, (e) => {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-    map.on('mouseleave', archiveIconLayer.id, (e) => {
-        map.getCanvas().style.cursor = '';
-    });
-
-    // add radius layers
-    for (let i = 0; i < circleLayers.length; i++) {
-        map.addSource(circleLayers[i].source, {
-            type: 'geojson',
-            data: circleSources[i]
-        });
-        map.addLayer(circleLayers[i], iconLayers[0].id);
-    }
-
-    // add line layers
-    for (let i = 0; i < lineLayers.length; i++) {
-        map.addSource(lineLayers[i].source, {
-            type: 'geojson',
-            data: lineSources[i]
-        });
-        map.addLayer(lineLayers[i], circleLayers[0].id);
-    }
-
-    // add dash layers
-    for (let i = 0; i < dashLayers.length; i++) {
-        map.addSource(dashLayers[i].source, {
-            type: 'geojson',
-            lineMetrics: true,
-            data: dashSources[i]
-        });
-        map.addLayer(dashLayers[i], lineLayers[0].id);
-    }
-
-    // add archive lines
-    for (let i = 0; i < archiveLineLayers.length; i++) {
-        map.addSource(archiveLineLayers[i].source, {
-            type: 'geojson',
-            data: archiveLineSources[i]
-        });
-        map.addLayer(archiveLineLayers[i], iconLayers[0].id);
-    }
-
-    console.log('map info added', map);
-}
-
 function UpdateYear() {
     UpdateBorderLayers(checkboxBorders.checked);
     UpdateNameLayers(checkboxNames.checked);
@@ -174,19 +37,19 @@ function UpdateYear() {
     const checkVisibility = map.getLayoutProperty(archiveIconLayer.id, 'visibility');
     if (slider.value === slider.max && checkVisibility === 'none') {
         for (let i = 0; i < iconLayers.length; i++) {
-            map.setPaintProperty(iconLayers[i].id, 'icon-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]);
-            map.setPaintProperty(circleLayers[i].id, 'fill-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]);
-            map.setPaintProperty(lineLayers[i].id, 'line-opacity', 0.1);
-            map.setPaintProperty(dashLayers[i].id, 'line-opacity', 0.1);
-            map.setPaintProperty(archiveLineLayers[i].id, 'line-opacity', 0.3);
+            map.setPaintProperty(iconLayers[i].id, 'icon-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]);
+            map.setPaintProperty(circleLayers[i].id, 'fill-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, ['boolean', ['feature-state', 'selected'], false], 0.2, 0.05]);
+            map.setPaintProperty(lineLayers[i].id, 'line-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.6, ['boolean', ['feature-state', 'selected'], false], 0.6, 0.1]);
+            map.setPaintProperty(dashLayers[i].id, 'line-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.6, ['boolean', ['feature-state', 'selected'], false], 0.6, 0.1]);
+            map.setPaintProperty(archiveLineLayers[i].id, 'line-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.6, ['boolean', ['feature-state', 'selected'], false], 0.6, 0.3]);
         }
         map.setLayoutProperty(archiveIconLayer.id, 'visibility', 'visible');
     } else if (slider.value !== slider.max && checkVisibility === 'visible') {
         for (let i = 0; i < iconLayers.length; i++) {
-            map.setPaintProperty(iconLayers[i].id, 'icon-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.6]);
-            map.setPaintProperty(circleLayers[i].id, 'fill-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.1]);
-            map.setPaintProperty(lineLayers[i].id, 'line-opacity', 0.3);
-            map.setPaintProperty(dashLayers[i].id, 'line-opacity', 0.3);
+            map.setPaintProperty(iconLayers[i].id, 'icon-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.6]);
+            map.setPaintProperty(circleLayers[i].id, 'fill-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, ['boolean', ['feature-state', 'selected'], false], 0.2, 0.1]);
+            map.setPaintProperty(lineLayers[i].id, 'line-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.6, ['boolean', ['feature-state', 'selected'], false], 0.6, 0.3]);
+            map.setPaintProperty(dashLayers[i].id, 'line-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.6, ['boolean', ['feature-state', 'selected'], false], 0.6, 0.3]);
             map.setPaintProperty(archiveLineLayers[i].id, 'line-opacity', 0);
         }
         map.setLayoutProperty(archiveIconLayer.id, 'visibility', 'none');
@@ -199,11 +62,11 @@ function UpdateFilters() {
         map.setFilter(layer.id, ['all', filterYear, filterOrder]);
     });
     for (let i = 0; i < iconLayers.length; i++) {
-        map.setFilter(iconLayers[0].id, ['all', filterYear, filterOrder]);
-        map.setFilter(circleLayers[0].id, ['all', filterYear, filterOrder]);
-        map.setFilter(lineLayers[0].id, ['all', filterYear, filterOrder]);
-        map.setFilter(dashLayers[0].id, ['all', filterYear, filterOrder]);
-        map.setFilter(archiveLineLayers[0].id, filterOrder);
+        map.setFilter(iconLayers[i].id, ['all', filterYear, filterOrder]);
+        map.setFilter(circleLayers[i].id, ['all', filterYear, filterOrder]);
+        map.setFilter(lineLayers[i].id, ['all', filterYear, filterOrder]);
+        map.setFilter(dashLayers[i].id, ['all', filterYear, filterOrder]);
+        map.setFilter(archiveLineLayers[i].id, filterOrder);
     }
 }
 

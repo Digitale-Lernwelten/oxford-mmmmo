@@ -49,7 +49,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]
         }
     },
     {
@@ -78,7 +78,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]
         }
     },
     {
@@ -107,7 +107,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]
         }
     },
     {
@@ -136,7 +136,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]
         }
     },
     {
@@ -165,7 +165,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.3]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]
         }
     }
 ];
@@ -178,15 +178,15 @@ const archiveIconLayer = {
         'icon-image': orderIcons[10],
         'icon-size': 1,
         'icon-allow-overlap': true,
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.3, 14, 1.2],
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.25, 14, 1],
         'visibility': 'visible'
     },
     paint: {
-        'icon-color': iconColors.mediumGrey,
-        'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.6, 14, 2.4],
+        'icon-color': iconColors.darkGrey,
+        'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.5, 14, 2],
         'icon-halo-color': iconColors.darkGrey,
-        'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.6, 14, 2.4],
-        'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0.6]
+        'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.5, 14, 2],
+        'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.6]
     }
 }
 
@@ -200,7 +200,7 @@ const circleLayers = [
         },
         paint: {
             'fill-color': iconColors.od,
-            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, ['boolean', ['feature-state', 'selected'], false], 0.2, 0.05]
         }
     },
     {
@@ -212,7 +212,7 @@ const circleLayers = [
         },
         paint: {
             'fill-color': iconColors.md,
-            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, ['boolean', ['feature-state', 'selected'], false], 0.2, 0.05]
         }
     },
     {
@@ -224,7 +224,7 @@ const circleLayers = [
         },
         paint: {
             'fill-color': iconColors.nd,
-            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, ['boolean', ['feature-state', 'selected'], false], 0.2, 0.05]
         }
     },
     {
@@ -236,7 +236,7 @@ const circleLayers = [
         },
         paint: {
             'fill-color': iconColors.lt,
-            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, ['boolean', ['feature-state', 'selected'], false], 0.2, 0.05]
         }
     },
     {
@@ -248,7 +248,7 @@ const circleLayers = [
         },
         paint: {
             'fill-color': iconColors.fr,
-            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, 0.05]
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, ['boolean', ['feature-state', 'selected'], false], 0.2, 0.05]
         }
     }
 ];

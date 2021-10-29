@@ -37,6 +37,14 @@ const lineSources = [lineSourcesOD, lineSourcesMD, lineSourcesND, lineSourcesLT,
 const dashSources = [dashSourcesOD, dashSourcesMD, dashSourcesND, dashSourcesLT, dashSourcesFR];
 const archiveLineSources = [archiveLineSourcesOD, archiveLineSourcesMD, archiveLineSourcesND, archiveLineSourcesLT, archiveLineSourcesFR]
 
+// Variables to display entries in the sidebar
+const tableOD = document.getElementById('table-od');
+const tableMD = document.getElementById('table-md');
+const tableND = document.getElementById('table-nd');
+const tableLT = document.getElementById('table-lt');
+const tableFR = document.getElementById('table-fr');
+const tables = [tableOD, tableMD, tableND, tableLT, tableFR];
+
 // URLs to google sheets for each language: 0 = OD, 1 = MD, 2 = ND, 3 = LT, 4 = FR
 const sheets = [
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=0&single=true&output=csv',
@@ -54,7 +62,7 @@ function createHash(s) {
     let firstChar = s.charAt(0);
     let secondChar = s.charAt(1);
     if (s.match(/^\d/)) {
-       return 6000 + parseInt(s.split('*')[0]);
+        return 6000 + parseInt(s.split('*')[0]);
     }
     switch (firstChar) {
         case 'i':
@@ -96,7 +104,7 @@ function createHash(s) {
             console.log('unexpected string, creating hash failed');
             return null;
     }
-    
+
     const idx = parseInt(s.substr(3));
     return n + (mult * m) + idx;
 }
@@ -139,60 +147,71 @@ function importData() {
         // set data for the first 5 sheets (od, md, nd, lt, fr)
         for (let i = 0; i < iconSources.length; i++) {
             for (let j = 1; j < results[i].data.length; j++) {
-                // set geojson from data
-                const iconSource = {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': results[i].data[j][0],
-                        'name': results[i].data[j][1],
-                        'year': parseInt(results[i].data[j][2]),
-                        'order': results[i].data[j][3],
-                        'archive': results[i].data[j][4], //!!!
-                        'category': results[i].data[j][5],
-                        'description': results[i].data[j][6],
-                        'hsc': results[i].data[j][7],
-                        'catalog': results[i].data[j][8],
-                        'digitalisat': results[i].data[j][9],
-                        'moved': results[i].data[j][10],
-                        'origin': results[i].data[j][11],
-                        'radius': parseFloat(results[i].data[j][12])
-                    },
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': [
-                            parseFloat(results[i].data[j][13]),
-                            parseFloat(results[i].data[j][14])
-                        ]
-                    },
-                    'id': 0
-                };
-
-                iconSources[i].features.push(iconSource); // push to layer source
-                setItem('i' + iconSource.properties.id, iconSource); // push to hash table
-
-                // set circle if source has radius
-                if (results[i].data[j][12] > 0) {
-                    // draw circular polygon from coordinates and radius
-                    let points = drawCircle(results[i].data[j][12], results[i].data[j][13], results[i].data[j][14]);
-
+                if (results[i].data[j][0] !== "" && results[i].data[j][1] !== "") {
                     // set geojson from data
-                    const circleSource = {
+                    const iconSource = {
                         'type': 'Feature',
                         'properties': {
                             'id': results[i].data[j][0],
+                            'name': results[i].data[j][1],
                             'year': parseInt(results[i].data[j][2]),
-                            'order': results[i].data[j][3]
-
+                            'order': results[i].data[j][3],
+                            'archive': results[i].data[j][4], //!!!
+                            'category': results[i].data[j][5],
+                            'description': results[i].data[j][6],
+                            'hsc': results[i].data[j][7],
+                            'catalog': results[i].data[j][8],
+                            'digitalisat': results[i].data[j][9],
+                            'moved': results[i].data[j][10],
+                            'origin': results[i].data[j][11],
+                            'radius': parseFloat(results[i].data[j][12])
                         },
                         'geometry': {
-                            'type': 'Polygon',
-                            'coordinates': points
+                            'type': 'Point',
+                            'coordinates': [
+                                parseFloat(results[i].data[j][13]),
+                                parseFloat(results[i].data[j][14])
+                            ]
                         },
                         'id': 0
                     };
 
-                    circleSources[i].features.push(circleSource); // push to layer source
-                    setItem('c' + circleSource.properties.id, circleSource); // push to hash table
+                    iconSources[i].features.push(iconSource); // push to layer source
+                    setItem('i' + iconSource.properties.id, iconSource); // push to hash table
+
+                    // push to table
+                    const newTR = document.createElement('tr');
+                    newTR.setAttribute('id', results[i].data[j][0]);
+                    newTR.className = 'row-entry';
+                    newTR.role = 'button';
+                    newTR.onclick = function () { showEntryInfo(newTR.id); };
+                    newTR.innerHTML = '<td>' + iconSource.properties.order + '</td><td>' + iconSource.properties.name + '</td>';
+                    tables[i].appendChild(newTR);
+
+                    // set circle if source has radius
+                    if (results[i].data[j][12] > 0) {
+                        // draw circular polygon from coordinates and radius
+                        let points = drawCircle(results[i].data[j][12], results[i].data[j][13], results[i].data[j][14]);
+
+                        // set geojson from data
+                        const circleSource = {
+                            'type': 'Feature',
+                            'properties': {
+                                'id': results[i].data[j][0],
+                                'year': parseInt(results[i].data[j][2]),
+                                'order': results[i].data[j][3]
+
+                            },
+                            'geometry': {
+                                'type': 'Polygon',
+                                'coordinates': points
+                            },
+                            'id': 0
+                        };
+
+                        circleSources[i].features.push(circleSource); // push to layer source
+                        setItem('c' + circleSource.properties.id, circleSource); // push to hash table
+                    }
                 }
             }
         }
@@ -201,8 +220,8 @@ function importData() {
         for (let i = 1; i < results[5].data.length; i++) {
             const key = results[5].data[i][0];
             const value = i.toString();
-            Object.assign(archiveIndices, {[key]: value});
-            
+            Object.assign(archiveIndices, { [key]: value });
+
             // set geojson from data
             const archiveIconSource = {
                 'type': 'Feature',

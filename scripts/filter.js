@@ -68,6 +68,11 @@ function UpdateFilters() {
         map.setFilter(dashLayers[i].id, ['all', filterYear, filterOrder]);
         map.setFilter(archiveLineLayers[i].id, filterOrder);
     }
+
+    // if entries in the sidebar are currently shown, update which entries are currently visible
+    if (document.getElementById('side-entries').style.display === 'block') {
+        showInactiveEntries();
+    }
 }
 
 function UpdateLanguage(value, checked) {
@@ -87,6 +92,11 @@ function UpdateLanguage(value, checked) {
         map.setLayoutProperty('layer-lines-' + value, 'visibility', 'none');
         map.setLayoutProperty('layer-dashes-' + value, 'visibility', 'none');
         map.setLayoutProperty('layer-archive-lines-' + value, 'visibility', 'none');
+    }
+
+    // if entries in the sidebar are currently shown, update which entries are currently visible
+    if (document.getElementById('side-entries').style.display === 'block') {
+        showInactiveEntries();
     }
 }
 

@@ -177,102 +177,190 @@
                 <li id="nav-controls" onclick="NavControls(this)">BEDIENUNG</li>
             </ul>
         </nav>-->
-        <div id="side-home">
+        <div id="side-home" class="side-panel">
             <img id="logo" src="assets/side/logo.svg">
             <div class="tile-container">
-                <button class="tile-button" onclick="toggleOptions(true)">
+                <button class="tile-button" onclick="toggleSide('side-controls')">
                     <div class="tile-icon"><img src="assets/side/icon-map.svg"></div>
                     <div class="tile-title">Kartenoptionen</div>
                 </button>
-                <button class="tile-button" onclick="toggleInfo(true)">
+                <button class="tile-button" onclick="toggleSide('side-info')">
                     <div class="tile-icon"><img src="assets/side/icon-info.svg"></div>
                     <div class="tile-title">Zum Projekt<br>'MMMMO'</div>
                 </button>
-                <button class="tile-button" onclick="toggleMystic(true)">
+                <button class="tile-button" onclick="toggleSide('side-mystic')">
                     <div class="tile-icon"><img src="assets/side/icon-mystic.svg"></div>
                     <div class="tile-title">Die Mystik<br>des <i>Liber</i></div>
                 </button>
-                <button class="tile-button" onclick="toggleLiber(true)">
+                <button class="tile-button" onclick="toggleSide('side-liber')">
                     <div class="tile-icon"><img src="assets/side/icon-liber.svg"></div>
                     <div class="tile-title">Der <i>Liber<br>specialis gratiae</i></div>
                 </button>
-                <button class="tile-button" onclick="toggleMonastery(true)">
+                <button class="tile-button" onclick="toggleSide('side-monastery')">
                     <div class="tile-icon"><img src="assets/side/icon-monastery.svg"></div>
                     <div class="tile-title">Kloster Helfta</div>
                 </button>
-                <button class="tile-button" onclick="toggleMechthild(true)">
+                <button class="tile-button" onclick="toggleSide('side-mechthild')">
                     <div class="tile-icon"><img src="assets/side/icon-nun.svg"></div>
                     <div class="tile-title">Mechthild v.<br>Hackeborn</div>
                 </button>
-                <button class="tile-button" style="flex-grow: 2">
+                <button class="tile-button" style="flex-grow: 2" onclick="toggleSide('side-entries'); openTab('tablink-od', 'tab-od')">
                     <div class="tile-icon"><img src="assets/side/icon-sources.svg"></div>
                     <div class="tile-title">Einträge ansehen</div>
                 </button>
             </div>
             <p id="footer"><span onclick="toggleImpress(true)">Impressum</span> | <span
-                onclick="togglePrivacy(true)">Datenschutz</span></p>
+                    onclick="togglePrivacy(true)">Datenschutz</span></p>
         </div>
-        <div id="side-entries"></div>
-        <div id="side-mechthild">
+        <div id="side-entries" class="side-panel">
             <div class="side-header">
-                <button class="side-back-button" onclick="toggleMechthild(false)">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">Einträge</span>
+            </div>
+            <div class="tab">
+                <button id="tablink-od" class="tablink" onclick="openTab(id, 'tab-od')">OD.</button>
+                <button id="tablink-md" class="tablink" onclick="openTab(id, 'tab-md')">MD.</button>
+                <button id="tablink-nd" class="tablink" onclick="openTab(id, 'tab-nd')">ND.</button>
+                <button id="tablink-lt" class="tablink" onclick="openTab(id, 'tab-lt')">LATEIN</button>
+                <button id="tablink-fr" class="tablink" onclick="openTab(id, 'tab-fr')">ANDERE</button>
+            </div>
+            <div id="tab-od" class="tabcontent">
+                <table id="table-od">
+                    <tr>
+                        <th>Orden</th>
+                        <th>Signatur</th>
+                    </tr>
+                </table>
+            </div>
+            <div id="tab-md" class="tabcontent">
+                <table id="table-md">
+                    <tr>
+                        <th>Orden</th>
+                        <th>Signatur</th>
+                    </tr>
+                </table>
+            </div>
+            <div id="tab-nd" class="tabcontent">
+                <table id="table-nd">
+                    <tr>
+                        <th>Orden</th>
+                        <th>Signatur</th>
+                    </tr>
+                </table>
+            </div>
+            <div id="tab-lt" class="tabcontent">
+                <table id="table-lt">
+                    <tr>
+                        <th>Orden</th>
+                        <th>Signatur</th>
+                    </tr>
+                </table>
+            </div>
+            <div id="tab-fr" class="tabcontent">
+                <table id="table-fr">
+                    <tr>
+                        <th>Orden</th>
+                        <th>Signatur</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="side-mechthild" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Mechthild von Hackeborn</span>
             </div>
         </div>
-        <div id="side-monastery">
+        <div id="side-monastery" class="side-panel">
             <div class="side-header">
-                <button class="side-back-button" onclick="toggleMonastery(false)">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Kloster Helfta</span>
             </div>
         </div>
-        <div id="side-liber">
+        <div id="side-liber" class="side-panel">
             <div class="side-header">
-                <button class="side-back-button" onclick="toggleLiber(false)">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Der <i>Liber specialis gratiae</i></span>
             </div>
         </div>
-        <div id="side-mystic">
+        <div id="side-mystic" class="side-panel">
             <div class="side-header">
-                <button class="side-back-button" onclick="toggleMystic(false)">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Die Mystik des <i>Liber</i></span>
             </div>
         </div>
-        <div id="side-info">
+        <div id="side-info" class="side-panel">
             <div class="side-header">
-                <button class="side-back-button" onclick="toggleInfo(false)">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Zum Projekt 'MMMMO'</span>
             </div>
         </div>
-        <div id="side-controls">
+        <div id="side-controls" class="side-panel">
             <div class="side-header">
-                <button class="side-back-button" onclick="toggleControls(false)">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Kartenoptionen</span>
             </div>
         </div>
-        <div id="side-impress">
+        <div id="side-impress" class="side-panel">
             <div class="side-header">
-                <button class="side-back-button" onclick="toggleImpress(false)">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
+                <span class="side-title">Impressum</span>
             </div>
         </div>
-        <div id="side-privacy">
+        <div id="side-privacy" class="side-panel">
             <div class="side-header">
-                <button class="side-back-button" onclick="togglePrivacy(false)">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
+                <span class="side-title">Datenschutz</span>
+            </div>
+        </div>
+        <div id="side-entry" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">Details zum Eintrag</span>
+                <h1 id="entry-name"></h1>
+                <div>
+                    <img src="assets/map/icon-lib.png" alt="icon archiv" style="background-color: #7B7B7B">
+                    <p id="entry-archive"></p>
+                </div>
+                <div>
+                    <img id="entry-order-icon" src="assets/map/icon-unb.png" alt="icon archiv">
+                    <div>
+                        <p id="entry-language-text"></p>
+                        <p id="entry-order-text"></p>
+                    </div>
+                </div>
+                <h2>Kategorie:</h2>
+                <p id="entry-category"></p>
+                <hr>
+                <h2>Beschreibung:</h2>
+                <p id="entry-description"></p>
+                <hr>
+                <h2>Referenzen:</h2>
+                <ul id="entry-references">
+                    <li id="entry-hsc"></li>
+                    <li id="entry-catalog"></li>
+                    <li id="entry-digitalisat"></li>
+                </ul>
             </div>
         </div>
         <script src="https://unpkg.com/papaparse@5.3.1/papaparse.min.js"></script>

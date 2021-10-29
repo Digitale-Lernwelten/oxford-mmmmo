@@ -17,17 +17,6 @@ map.on('style.load', () => {
     addIconImages();
 });
 
-map.on('click', function (e) {
-    let features = map.queryRenderedFeatures(e.point, {
-        layers: iconLayers
-    });
-    if (!features.length) {
-        return;
-    }
-    let feature = features[0];
-    //ShowFeatureInfo(feature.properties.name, feature.properties.year, feature.properties.category, feature.properties.description);
-});
-
 function addIconImages() {
     orderIcons.forEach((icon) => {
         map.loadImage('assets/map/' + icon + '.png', (error, imgData) => {
@@ -55,6 +44,13 @@ function addMapInfo() {
             data: iconSources[i]
         });
         map.addLayer(iconLayers[i]);
+        map.on('click', iconLayers[i].id, (e) => {
+            console.log('click event');
+            if (e.features.length > 0) {
+                console.log('clicked on feature: ', e.features[0]);
+                showEntryInfo(e.features[0].properties.id);
+            }
+        });
         map.on('mousemove', iconLayers[i].id, (e) => {
             map.getCanvas().style.cursor = 'pointer';
             if (e.features.length > 0) {

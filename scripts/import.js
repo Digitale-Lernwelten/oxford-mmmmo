@@ -45,6 +45,8 @@ const tableLT = document.getElementById('table-lt');
 const tableFR = document.getElementById('table-fr');
 const tables = [tableOD, tableMD, tableND, tableLT, tableFR];
 
+const entryGroups = [];
+
 // URLs to google sheets for each language: 0 = OD, 1 = MD, 2 = ND, 3 = LT, 4 = FR
 const sheets = [
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=0&single=true&output=csv',
@@ -106,18 +108,17 @@ function createHash(s) {
     }
 
     const idx = parseInt(s.substr(3));
-    return n + (mult * m) + idx;
+    return (n + (mult * m) + idx) % hTable.length;
 }
 
 function setItem(key, value) {
     const idx = createHash(key);
     value.id = idx;
-    /*if (hTable[idx]) {
+    if (hTable[idx]) {
         hTable[idx].push([key, value]);
     } else {
         hTable[idx] = [[key, value]];
-    }*/
-    hTable[idx] = value;
+    }
 }
 
 function getItem(key) {
@@ -126,7 +127,7 @@ function getItem(key) {
         console.log('idx not found');
         return null;
     }
-    return hTable[idx];
+    return hTable[idx].find(x => x[0] === key)[1];
 }
 
 Papa.parsePromise = function (file) {
@@ -181,11 +182,54 @@ function importData() {
 
                     // push to table
                     const newTR = document.createElement('tr');
-                    newTR.setAttribute('id', results[i].data[j][0]);
-                    newTR.className = 'row-entry';
+                    newTR.setAttribute('id', iconSource.properties.id);
+                    if (isNaN(iconSource.properties.id.slice(-1))) {
+                        console.log('isNaN: ', iconSource.properties.id);
+                        const entryGroup = iconSource.properties.id.substr(0, iconSource.properties.id.length - 1);
+                        newTR.className = entryGroup + ' ';
+                        if (!entryGroups.includes(entryGroup)) {
+                            entryGroups.push(entryGroup);
+                        }
+                    }
+
+                    let orderImg;
+                    switch (iconSource.properties.order) {
+                        case 'Augustiner':
+                            orderImg = 'icon-aug';
+                            break;
+                        case 'Benediktiner':
+                            orderImg = 'icon-ben';
+                            break;
+                        case 'Dominikaner':
+                            orderImg = 'icon-dom';
+                            break;
+                        case 'Franziskaner':
+                            orderImg = 'icon-fran';
+                            break;
+                        case 'Kartäuser':
+                            orderImg = 'icon-kart';
+                            break;
+                        case 'Kreuzherren':
+                            orderImg = 'icon-kreu';
+                            break;
+                        case 'Zisterzienser':
+                            orderImg = 'icon-zist';
+                            break;
+                        case 'Sonstiges':
+                            orderImg = 'icon-sonst';
+                            break;
+                        case 'Unbekannt':
+                            orderImg = 'icon-unb';
+                            break;
+                        default:
+                            orderImg = 'icon-unb';
+                            break;
+                    }
+
+                    newTR.className += 'row-entry';
                     newTR.role = 'button';
-                    newTR.onclick = function () { showEntryInfo(newTR.id); };
-                    newTR.innerHTML = '<td>' + iconSource.properties.order + '</td><td>' + iconSource.properties.name + '</td>';
+                    newTR.onclick = function () { showEntryInfo(newTR.id, newTR.className); };
+                    newTR.innerHTML = '<td><img src="assets/side/' + orderImg + '.png" alt="icon ' + iconSource.properties.order + '"></td><td>' + iconSource.properties.name + '</td>';
                     tables[i].appendChild(newTR);
 
                     // set circle if source has radius

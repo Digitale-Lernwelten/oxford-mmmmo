@@ -71,7 +71,7 @@ function UpdateFilters() {
 
     // if entries in the sidebar are currently shown, update which entries are currently visible
     if (document.getElementById('side-entries').style.display === 'block') {
-        showInactiveEntries();
+        showActiveEntries();
     }
 }
 
@@ -96,7 +96,7 @@ function UpdateLanguage(value, checked) {
 
     // if entries in the sidebar are currently shown, update which entries are currently visible
     if (document.getElementById('side-entries').style.display === 'block') {
-        showInactiveEntries();
+        showActiveEntries();
     }
 }
 

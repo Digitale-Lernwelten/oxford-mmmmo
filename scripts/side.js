@@ -97,12 +97,31 @@ function openTab(tabLink, tabName) {
     activeTab.style.display = 'block';
     document.getElementById(tabLink).className += ' active';
 
-    showInactiveEntries();
+    showActiveEntries();
 }
 
-function showInactiveEntries() {
+function showActiveEntries() {
     const entries = activeTab.firstElementChild.children;
     const currentYear = slider.value;
+
+    // set display 'none' for multiple entries (16a, 16b etc.)
+    entryGroups.forEach((eg) => {
+        console.log('set display for entry group: ', eg);
+        const groupedEntries = document.getElementsByClassName(eg);
+        console.log('got entries: ', groupedEntries);
+        let displayedEntry;
+        let displayedEntryYear = 0;
+        for (let i = 0; i < groupedEntries.length; i++) {
+            groupedEntries[i].style.display = 'none';
+            const entryYear = getItem('i' + groupedEntries[i].id).properties.year;
+            if (i === 0 || (entryYear > displayedEntryYear && entryYear <= currentYear)) {
+                displayedEntry = groupedEntries[i];
+                displayedEntryYear = entryYear;
+            }
+        }
+        displayedEntry.style.display = 'table-row';
+    });
+
     if ((activeTab.id === 'tab-od' && !checkboxOD.checked) ||
         (activeTab.id === 'tab-md' && !checkboxMD.checked) ||
         (activeTab.id === 'tab-nd' && !checkboxND.checked) ||
@@ -131,12 +150,24 @@ function showInactiveEntries() {
 importContent();
 toggleSide('side-home');
 
-function showEntryInfo(entryID) {
-    console.log('show entry info');
+function showEntryInfo(entryID, cn) {
     toggleSide('side-entry');
     const item = getItem('i' + entryID);
     document.getElementById('entry-name').innerHTML = item.properties.name;
     document.getElementById('entry-archive').innerHTML = item.properties.archive;
+
+    if (!cn.includes('inactive')) {
+        let z = map.getZoom();
+        if (z < 8) {
+            z = 8;
+        }
+
+        map.flyTo({
+            center: item.geometry.coordinates,
+            zoom: z,
+            curve: 1
+        });
+    }
 
     const orderIcon = document.getElementById('entry-order-icon');
     let orderImg;
@@ -197,7 +228,7 @@ function showEntryInfo(entryID) {
             break;
     }
 
-    orderIcon.src = 'assets/map/' + orderImg + '.png';
+    orderIcon.src = 'assets/side/' + orderImg + '.png';
     document.getElementById('entry-order-text').innerHTML = item.properties.order;
 
     document.getElementById('entry-category').innerHTML = item.properties.category;

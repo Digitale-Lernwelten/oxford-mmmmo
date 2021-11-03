@@ -9,12 +9,18 @@ const map = new mapboxgl.Map({
     container: 'map', // container ID
     style: 'mapbox://styles/dlw-mmmmo/ckqtp7u2f03aq18qqzaspevm8', // style URL
     center: [10, 52], // starting position [lng, lat]
-    zoom: 4.8 // starting zoom
+    zoom: 4.8, // starting zoom
+    maxBounds: [
+        [-130, 20],
+        [45, 70]
+    ]
 });
 
 map.on('style.load', () => {
     importData();
     addIconImages();
+    map.dragRotate.disable();
+    map.touchZoomRotate.disableRotation();
 });
 
 function addIconImages() {
@@ -48,7 +54,7 @@ function addMapInfo() {
             console.log('click event');
             if (e.features.length > 0) {
                 console.log('clicked on feature: ', e.features[0]);
-                showEntryInfo(e.features[0].properties.id);
+                showEntryInfo(e.features[0].properties.id, '');
             }
         });
         map.on('mousemove', iconLayers[i].id, (e) => {

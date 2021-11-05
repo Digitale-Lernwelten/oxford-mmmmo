@@ -57,6 +57,13 @@ function addMapInfo() {
                 showEntryInfo(e.features[0].properties.id, '');
             }
         });
+        map.on('click', archiveIconLayer.id, (e) => {
+            console.log('clicked on archive');
+            if (e.features.length > 0) {
+                console.log('clicked on archive: ', e.features[0]);
+                showArchiveEntries(e.features[0].properties.id);
+            }
+        });
         map.on('mousemove', iconLayers[i].id, (e) => {
             map.getCanvas().style.cursor = 'pointer';
             if (e.features.length > 0) {

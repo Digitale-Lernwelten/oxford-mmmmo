@@ -204,7 +204,8 @@
                     <div class="tile-icon"><img src="assets/side/icon-nun.svg"></div>
                     <div class="tile-title">Mechthild v.<br>Hackeborn</div>
                 </button>
-                <button class="tile-button" style="flex-grow: 2" onclick="toggleSide('side-entries'); openTab('tablink-od', 'tab-od')">
+                <button class="tile-button" style="flex-grow: 2"
+                    onclick="toggleSide('side-entries'); openTab('tablink-od', 'tab-od')">
                     <div class="tile-icon"><img src="assets/side/icon-sources.svg"></div>
                     <div class="tile-title">Einträge ansehen</div>
                 </button>
@@ -227,43 +228,58 @@
                 <button id="tablink-fr" class="tablink" onclick="openTab(id, 'tab-fr')">ANDERE</button>
             </div>
             <div id="tab-od" class="tabcontent">
-                <table id="table-od">
-                    <tr>
-                        <th>Orden</th>
-                        <th>Signatur</th>
-                    </tr>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Orden</th>
+                            <th>Signatur</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-od"></tbody>
                 </table>
             </div>
             <div id="tab-md" class="tabcontent">
-                <table id="table-md">
-                    <tr>
-                        <th>Orden</th>
-                        <th>Signatur</th>
-                    </tr>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Orden</th>
+                            <th>Signatur</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-md"></tbody>
                 </table>
             </div>
             <div id="tab-nd" class="tabcontent">
-                <table id="table-nd">
-                    <tr>
-                        <th>Orden</th>
-                        <th>Signatur</th>
-                    </tr>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Orden</th>
+                            <th>Signatur</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-nd"></tbody>
                 </table>
             </div>
             <div id="tab-lt" class="tabcontent">
-                <table id="table-lt">
-                    <tr>
-                        <th>Orden</th>
-                        <th>Signatur</th>
-                    </tr>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Orden</th>
+                            <th>Signatur</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-lt"></tbody>
                 </table>
             </div>
             <div id="tab-fr" class="tabcontent">
-                <table id="table-fr">
-                    <tr>
-                        <th>Orden</th>
-                        <th>Signatur</th>
-                    </tr>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Orden</th>
+                            <th>Signatur</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-fr"></tbody>
                 </table>
             </div>
         </div>
@@ -337,31 +353,49 @@
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Details zum Eintrag</span>
-                <h1 id="entry-name"></h1>
-                <div>
-                    <img src="assets/side/icon-lib.png" alt="icon archiv" style="background-color: #7B7B7B">
-                    <p id="entry-archive"></p>
-                </div>
-                <div>
-                    <img id="entry-order-icon" src="assets/map/icon-unb.png" alt="icon archiv">
-                    <div>
-                        <p id="entry-language-text"></p>
-                        <p id="entry-order-text"></p>
-                    </div>
-                </div>
-                <h2>Kategorie:</h2>
-                <p id="entry-category"></p>
-                <hr>
-                <h2>Beschreibung:</h2>
-                <p id="entry-description"></p>
-                <hr>
-                <h2>Referenzen:</h2>
-                <ul id="entry-references">
-                    <li id="entry-hsc"></li>
-                    <li id="entry-catalog"></li>
-                    <li id="entry-digitalisat"></li>
-                </ul>
             </div>
+            <h1 id="entry-name"></h1>
+            <div>
+                <img src="assets/side/icon-lib.png" alt="icon archiv" style="background-color: #7B7B7B">
+                <p id="entry-archive"></p>
+            </div>
+            <div>
+                <img id="entry-order-icon" src="assets/map/icon-unb.png" alt="icon archiv">
+                <div>
+                    <p id="entry-language-text"></p>
+                    <p id="entry-order-text"></p>
+                </div>
+            </div>
+            <h2>Kategorie:</h2>
+            <p id="entry-category"></p>
+            <hr>
+            <h2>Beschreibung:</h2>
+            <p id="entry-description"></p>
+            <hr>
+            <h2>Referenzen:</h2>
+            <ul id="entry-references">
+                <li id="entry-hsc"></li>
+                <li id="entry-catalog"></li>
+                <li id="entry-digitalisat"></li>
+            </ul>
+        </div>
+        <div id="side-archive" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">Einträge</span>
+            </div>
+            <h1 id="archive-name"></h1>
+            <table>
+                <thead>
+                <tr>
+                    <th>Orden</th>
+                    <th>Signatur</th>
+                </tr>
+                </thead>
+                <tbody id="table-archive"></tbody>
+            </table>
         </div>
         <script src="https://unpkg.com/papaparse@5.3.1/papaparse.min.js"></script>
         <script src="scripts/import.js" type="text/javascript"></script>

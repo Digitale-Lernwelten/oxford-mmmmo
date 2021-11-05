@@ -47,6 +47,8 @@ const tables = [tableOD, tableMD, tableND, tableLT, tableFR];
 
 const entryGroups = [];
 
+const archives = {}
+
 // URLs to google sheets for each language: 0 = OD, 1 = MD, 2 = ND, 3 = LT, 4 = FR
 const sheets = [
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=0&single=true&output=csv',
@@ -192,45 +194,16 @@ function importData() {
                         }
                     }
 
-                    let orderImg;
-                    switch (iconSource.properties.order) {
-                        case 'Augustiner':
-                            orderImg = 'icon-aug';
-                            break;
-                        case 'Benediktiner':
-                            orderImg = 'icon-ben';
-                            break;
-                        case 'Dominikaner':
-                            orderImg = 'icon-dom';
-                            break;
-                        case 'Franziskaner':
-                            orderImg = 'icon-fran';
-                            break;
-                        case 'Kartäuser':
-                            orderImg = 'icon-kart';
-                            break;
-                        case 'Kreuzherren':
-                            orderImg = 'icon-kreu';
-                            break;
-                        case 'Zisterzienser':
-                            orderImg = 'icon-zist';
-                            break;
-                        case 'Sonstiges':
-                            orderImg = 'icon-sonst';
-                            break;
-                        case 'Unbekannt':
-                            orderImg = 'icon-unb';
-                            break;
-                        default:
-                            orderImg = 'icon-unb';
-                            break;
-                    }
+                    const orderImg = returnIcon(iconSource.properties.order);
 
                     newTR.className += 'row-entry';
                     newTR.role = 'button';
                     newTR.onclick = function () { showEntryInfo(newTR.id, newTR.className); };
                     newTR.innerHTML = '<td><img src="assets/side/' + orderImg + '.png" alt="icon ' + iconSource.properties.order + '"></td><td>' + iconSource.properties.name + '</td>';
                     tables[i].appendChild(newTR);
+
+                    //push to archive list
+                    pushToArchives(iconSource);
 
                     // set circle if source has radius
                     if (results[i].data[j][12] > 0) {
@@ -369,6 +342,57 @@ function importData() {
         console.log('data imported', hTable);
         addMapInfo();
     });
+}
+
+function pushToArchives (iso) {
+    if (archives.hasOwnProperty(iso.properties.archive)) {
+        for (let i = 0; i < archives[iso.properties.archive].length; i++) {
+            if (iso.properties.id.slice(-1) === archives[iso.properties.archive][i].slice(-1)) {
+                archives[iso.properties.archive][i] = iso.properties.id;
+                return;
+            }
+        }
+        archives[iso.properties.archive].push(iso.properties.id);
+    } else {
+        archives[iso.properties.archive] = [iso.properties.id];
+    }
+}
+
+function returnIcon(img) {
+    let imgID
+    switch (img) {
+        case 'Augustiner':
+            imgID = 'icon-aug';
+            break;
+        case 'Benediktiner':
+            imgID = 'icon-ben';
+            break;
+        case 'Dominikaner':
+            imgID = 'icon-dom';
+            break;
+        case 'Franziskaner':
+            imgID = 'icon-fran';
+            break;
+        case 'Kartäuser':
+            imgID = 'icon-kart';
+            break;
+        case 'Kreuzherren':
+            imgID = 'icon-kreu';
+            break;
+        case 'Zisterzienser':
+            imgID = 'icon-zist';
+            break;
+        case 'Sonstiges':
+            imgID = 'icon-sonst';
+            break;
+        case 'Unbekannt':
+            imgID = 'icon-unb';
+            break;
+        default:
+            imgID = 'icon-unb';
+            break;
+    }
+    return imgID;
 }
 
 function drawCircle(radius, long, lat) {

@@ -150,6 +150,66 @@ function showActiveEntries() {
 importContent();
 toggleSide('side-home');
 
+function showArchiveEntries(archiveID) {
+    // wipe table
+    const archiveTable = document.getElementById('table-archive');
+    archiveTable.innerHTML = '';
+
+    const archiveName = archiveID.split('*')[1];
+    if (archives[archiveName]) {
+        // center camera to archive
+        const archiveCoords = getItem(archiveID).geometry.coordinates;
+        let z = map.getZoom();
+        if (z < 8) {
+            z = 8;
+        }
+
+        map.flyTo({
+            center: archiveCoords,
+            zoom: z,
+            curve: 1
+        });
+
+        console.log('ids in this archive: ', archives[archiveName]);
+        for (let i = 0; i < archives[archiveName].length; i++) {
+            const item = getItem('i' + archives[archiveName][i]);
+            console.log('got item: ', item);
+            const newTR = document.createElement('tr');
+            newTR.setAttribute('id', item.properties.id);
+            newTR.className = 'row-entry';
+            newTR.role = 'button';
+            newTR.onclick = function () { showEntryInfo(newTR.id, newTR.className); };
+            const orderImg = returnIcon(item.properties.order);
+            let bgColor;
+            switch (item.properties.id.substr(0, 2)) {
+                case 'od':
+                    bgColor = '#277BB2';
+                    break;
+                case 'md':
+                    bgColor = '#7B27B2';
+                    break;
+                case 'nd':
+                    bgColor = '#B2277B';
+                    break;
+                case 'lt':
+                    bgColor = '#B27B27';
+                    break;
+                case 'fr':
+                    bgColor = '#27B27B';
+                    break;
+                default:
+                    bgColor = '#272727';
+                    console.log('background color not defined for: ', item.properties.id.substr(0, 2));
+            }
+            newTR.innerHTML = '<td><img src="assets/side/' + orderImg + '.png" alt="icon ' + item.properties.order + '" style="background-color: ' + bgColor + ';"></td><td>' + item.properties.name + '</td>';
+            archiveTable.appendChild(newTR);
+        }
+        toggleSide('side-archive');
+    } else {
+        console.log('archive not found: ', archiveName, 'in', archives);
+    }
+}
+
 function showEntryInfo(entryID, cn) {
     toggleSide('side-entry');
     const item = getItem('i' + entryID);

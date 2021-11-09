@@ -7,9 +7,8 @@
 
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
-    <!--<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />-->
     <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,900;1,300;1,400;1,500;1,900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet">
     <link href='style.css' rel='stylesheet'>
 </head>
@@ -221,11 +220,11 @@
                 <span class="side-title">Einträge</span>
             </div>
             <div id="tablinks">
-                <button id="tablink-od" class="tablink" onclick="openTab(id, 'tab-od')">OD.</button>
-                <button id="tablink-md" class="tablink" onclick="openTab(id, 'tab-md')">MD.</button>
-                <button id="tablink-nd" class="tablink" onclick="openTab(id, 'tab-nd')">ND.</button>
-                <button id="tablink-lt" class="tablink" onclick="openTab(id, 'tab-lt')">LATEIN</button>
-                <button id="tablink-fr" class="tablink" onclick="openTab(id, 'tab-fr')">ANDERE</button>
+                <button id="tablink-od" class="tablink" onclick="openTab(id, 'tab-od', '#277BB2')">OD.</button>
+                <button id="tablink-md" class="tablink" onclick="openTab(id, 'tab-md', '#7B27B2')">MD.</button>
+                <button id="tablink-nd" class="tablink" onclick="openTab(id, 'tab-nd', '#B2277B')">ND.</button>
+                <button id="tablink-lt" class="tablink" onclick="openTab(id, 'tab-lt', '#B27B27')">LATEIN</button>
+                <button id="tablink-fr" class="tablink" onclick="openTab(id, 'tab-fr', '#27B27B')">ANDERE</button>
             </div>
             <div id="tab-od" class="tabcontent">
                 <table>
@@ -355,17 +354,19 @@
                 <span class="side-title">Details zum Eintrag</span>
             </div>
             <h1 id="entry-name"></h1>
-            <div>
-                <img src="assets/side/icon-lib.png" alt="icon archiv" style="background-color: #7B7B7B">
+            <hr>
+            <div id="archive-container">
+                <img src="assets/side/icon-lib.png" alt="icon archiv">
                 <p id="entry-archive"></p>
             </div>
-            <div>
+            <div id="order-container">
                 <img id="entry-order-icon" src="assets/map/icon-unb.png" alt="icon archiv">
                 <div>
                     <p id="entry-language-text"></p>
                     <p id="entry-order-text"></p>
                 </div>
             </div>
+            <hr>
             <h2>Kategorie:</h2>
             <p id="entry-category"></p>
             <hr>
@@ -395,6 +396,23 @@
                 </tr>
                 </thead>
                 <tbody id="table-archive"></tbody>
+            </table>
+        </div>
+        <div id="side-multiple-entries" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">Einträge an diesem Ort</span>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Orden</th>
+                    <th>Signatur</th>
+                </tr>
+                </thead>
+                <tbody id="table-multiple-entries"></tbody>
             </table>
         </div>
         <script src="https://unpkg.com/papaparse@5.3.1/papaparse.min.js"></script>

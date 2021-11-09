@@ -1,5 +1,5 @@
 let hoveredIcon = new Array(5).fill(null), hoveredCircle = new Array(5).fill(null), hoveredLines = new Array(5).fill([]), hoveredDashes = new Array(5).fill([]);
-let selectedIcon = null, selectedCircle = null, selectedLines = [], selectedDashes = [];
+let selectedIcon = null, selectedCircle = null, selectedLines = [], selectedDashes = [], selectedFeatures = [];
 
 //lock screen rotation to landscape on mobile devices
 screen.orientation.lock('landscape');
@@ -14,6 +14,13 @@ const map = new mapboxgl.Map({
         [-130, 20],
         [45, 70]
     ]
+});
+
+const popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+    maxWidth: '200px',
+    offset: 12
 });
 
 map.on('style.load', () => {
@@ -42,6 +49,15 @@ function addIconImages() {
     });
 }
 
+function querySelectedFeatures() {
+    if (selectedFeatures.length === 1) {
+        showEntryInfo(selectedFeatures[0], '');
+    } else if (selectedFeatures.length > 1) {
+        showMultipleEntries();
+    }
+    selectedFeatures = [];
+}
+
 function addMapInfo() {
     // add icon layers
     for (let i = 0; i < iconLayers.length; i++) {
@@ -50,12 +66,21 @@ function addMapInfo() {
             data: iconSources[i]
         });
         map.addLayer(iconLayers[i]);
-        map.on('click', iconLayers[i].id, (e) => {
-            console.log('click event');
+        // reset selected features, when new click begins
+        map.on('mousedown', iconLayers[i].id, (e) => {
+            selectedFeatures = [];
+        });
+        map.on('mouseup', iconLayers[i].id, (e) => {
             if (e.features.length > 0) {
                 console.log('clicked on feature: ', e.features[0]);
-                showEntryInfo(e.features[0].properties.id, '');
+                //showEntryInfo(e.features[0].properties.id, '');
+                for (let i = 0; i < e.features.length; i++) {
+                    selectedFeatures.push(e.features[i].properties.id);
+                }
             }
+        });
+        map.on('click', iconLayers[i].id, (e) => {
+            querySelectedFeatures();
         });
         map.on('click', archiveIconLayer.id, (e) => {
             console.log('clicked on archive');
@@ -187,6 +212,9 @@ function addMapInfo() {
                         );
                     });
                 }
+
+                // set popup
+                popup.setLngLat(hoveredIcon[i].geometry.coordinates).setHTML(hoveredIcon[i].properties.name).addTo(map);
             }
         });
         map.on('mouseleave', iconLayers[i].id, () => {
@@ -238,6 +266,9 @@ function addMapInfo() {
             hoveredCircle[i] = null;
             hoveredLines[i] = [];
             hoveredDashes[i] = [];
+
+            // remove popup
+            popup.remove();
         });
     }
 

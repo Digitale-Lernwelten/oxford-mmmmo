@@ -86,7 +86,7 @@ function toggleSide(sideName) {
     document.getElementById(sideName).style.display = 'block';
 }
 
-function openTab(tabLink, tabName) {
+function openTab(tabLink, tabName, bgColor) {
     let tablinks = document.getElementsByClassName('tablink');
     let tabcontent = document.getElementsByClassName('tabcontent');
     for (let i = 0; i < tabcontent.length; i++) {
@@ -96,12 +96,14 @@ function openTab(tabLink, tabName) {
     activeTab = document.getElementById(tabName);
     activeTab.style.display = 'block';
     document.getElementById(tabLink).className += ' active';
+    const tablinkContainer = document.getElementById('tablinks');
+    tablinkContainer.style.backgroundColor = bgColor;
 
     showActiveEntries();
 }
 
 function showActiveEntries() {
-    const entries = activeTab.firstElementChild.children;
+    const entries = activeTab.firstElementChild.lastElementChild.children;
     const currentYear = slider.value;
 
     // set display 'none' for multiple entries (16a, 16b etc.)
@@ -135,6 +137,7 @@ function showActiveEntries() {
             }
         }
     } else {
+        console.log('grey entries');
         for (let i = 0; i < entries.length; i++) {
             if (entries[i].nodeName === 'TR') {
                 entries[i].className = entries[i].className.replace(' inactive', '');
@@ -149,6 +152,65 @@ function showActiveEntries() {
 
 importContent();
 toggleSide('side-home');
+
+function showMultipleEntries() {
+    const multipleEntriesTable = document.getElementById('table-multiple-entries');
+    multipleEntriesTable.innerHTML = '';
+
+    const multipleEntryCoords = getItem('i' + selectedFeatures[0]).geometry.coordinates;
+    console.log('fly to coords: ', multipleEntryCoords);
+    let z = map.getZoom();
+    if (z < 8) {
+        z = 8;
+    }
+
+    map.flyTo({
+        center: multipleEntryCoords,
+        zoom: z/*,
+        curve: 1*/
+    });
+
+    for (let i = selectedFeatures.length -1; i >= 0; i--) {
+        const item = getItem('i' + selectedFeatures[i]);
+        console.log('got item: ', item);
+        const newTR = document.createElement('tr');
+        //newTR.setAttribute('id', item.properties.id);
+        newTR.className = 'row-entry';
+        newTR.role = 'button';
+        newTR.onclick = function () { showEntryInfo(item.properties.id, newTR.className); };
+        const orderImg = returnIcon(item.properties.order);
+        let bgColor = '';
+        let className = '';
+        switch (item.properties.id.substr(0, 2)) {
+            case 'od':
+                bgColor = '#277BB2';
+                className = 'archive-entry-od';
+                break;
+            case 'md':
+                bgColor = '#7B27B2';
+                className = 'archive-entry-md';
+                break;
+            case 'nd':
+                bgColor = '#B2277B';
+                className = 'archive-entry-nd';
+                break;
+            case 'lt':
+                bgColor = '#B27B27';
+                className = 'archive-entry-lt';
+                break;
+            case 'fr':
+                bgColor = '#27B27B';
+                className = 'archive-entry-fr';
+                break;
+            default:
+                bgColor = '#272727';
+                console.log('background color not defined for: ', item.properties.id.substr(0, 2));
+        }
+        newTR.innerHTML = '<td><img src="assets/side/' + orderImg + '.png" alt="icon ' + item.properties.order + '" style="background-color: ' + bgColor + ';"></td><td class="' + className + '">' + item.properties.name + '</td>';
+        multipleEntriesTable.appendChild(newTR);
+    }
+    toggleSide('side-multiple-entries');
+}
 
 function showArchiveEntries(archiveID) {
     // wipe table
@@ -170,6 +232,9 @@ function showArchiveEntries(archiveID) {
             curve: 1
         });
 
+        // set h1
+        document.getElementById('archive-name').innerHTML = archiveName;
+
         console.log('ids in this archive: ', archives[archiveName]);
         for (let i = 0; i < archives[archiveName].length; i++) {
             const item = getItem('i' + archives[archiveName][i]);
@@ -180,28 +245,34 @@ function showArchiveEntries(archiveID) {
             newTR.role = 'button';
             newTR.onclick = function () { showEntryInfo(newTR.id, newTR.className); };
             const orderImg = returnIcon(item.properties.order);
-            let bgColor;
+            let bgColor = '';
+            let className = '';
             switch (item.properties.id.substr(0, 2)) {
                 case 'od':
                     bgColor = '#277BB2';
+                    className = 'archive-entry-od';
                     break;
                 case 'md':
                     bgColor = '#7B27B2';
+                    className = 'archive-entry-md';
                     break;
                 case 'nd':
                     bgColor = '#B2277B';
+                    className = 'archive-entry-nd';
                     break;
                 case 'lt':
                     bgColor = '#B27B27';
+                    className = 'archive-entry-lt';
                     break;
                 case 'fr':
                     bgColor = '#27B27B';
+                    className = 'archive-entry-fr';
                     break;
                 default:
                     bgColor = '#272727';
                     console.log('background color not defined for: ', item.properties.id.substr(0, 2));
             }
-            newTR.innerHTML = '<td><img src="assets/side/' + orderImg + '.png" alt="icon ' + item.properties.order + '" style="background-color: ' + bgColor + ';"></td><td>' + item.properties.name + '</td>';
+            newTR.innerHTML = '<td><img src="assets/side/' + orderImg + '.png" alt="icon ' + item.properties.order + '" style="background-color: ' + bgColor + ';"></td><td class="' + className + '">' + item.properties.name + '</td>';
             archiveTable.appendChild(newTR);
         }
         toggleSide('side-archive');
@@ -217,6 +288,7 @@ function showEntryInfo(entryID, cn) {
     document.getElementById('entry-archive').innerHTML = item.properties.archive;
 
     if (!cn.includes('inactive')) {
+        console.log('fly to: ', item.geometry.coordinates);
         let z = map.getZoom();
         if (z < 8) {
             z = 8;
@@ -289,26 +361,38 @@ function showEntryInfo(entryID, cn) {
     }
 
     orderIcon.src = 'assets/side/' + orderImg + '.png';
-    document.getElementById('entry-order-text').innerHTML = item.properties.order;
+    document.getElementById('entry-order-text').innerHTML = 'Orden: ' + item.properties.order;
 
     document.getElementById('entry-category').innerHTML = item.properties.category;
     document.getElementById('entry-description').innerHTML = item.properties.description;
 
-    if (item.properties.hsc.substring(0, 4) === 'http') {
-        document.getElementById('entry-hsc').innerHTML = 'HSC: <a href="' + item.properties.hsc + '" target="_blank">' + item.properties.hsc + '</a>';
+    if (item.properties.hsc !== '') {
+        if (item.properties.hsc.substring(0, 4) === 'http') {
+            document.getElementById('entry-hsc').innerHTML = 'HSC: <a href="' + item.properties.hsc + '" target="_blank">' + item.properties.hsc + '</a>';
+        } else {
+            document.getElementById('entry-hsc').innerHTML = 'HSC: ' + item.properties.hsc;
+        }
     } else {
-        document.getElementById('entry-hsc').innerHTML = 'HSC: ' + item.properties.hsc;
+        document.getElementById('entry-hsc').innerHTML = 'HSC: –';
     }
 
-    if (item.properties.catalog.substring(0, 4) === 'http') {
-        document.getElementById('entry-catalog').innerHTML = 'Katalog: <a href="' + item.properties.catalog + '" target="_blank">' + item.properties.catalog + '</a>';
+    if (item.properties.hsc !== '') {
+        if (item.properties.catalog.substring(0, 4) === 'http') {
+            document.getElementById('entry-catalog').innerHTML = 'Katalog: <a href="' + item.properties.catalog + '" target="_blank">' + item.properties.catalog + '</a>';
+        } else {
+            document.getElementById('entry-catalog').innerHTML = 'Katalog: ' + item.properties.catalog;
+        }
     } else {
-        document.getElementById('entry-catalog').innerHTML = 'Katalog: ' + item.properties.catalog;
+        document.getElementById('entry-catalog').innerHTML = 'Katalog: –';
     }
 
-    if (item.properties.digitalisat.substring(0, 4) === 'http') {
-        document.getElementById('entry-digitalisat').innerHTML = 'Digitalisat: <a href="' + item.properties.digitalisat + '" target="_blank">' + item.properties.digitalisat + '</a>';
+    if (item.properties.hsc !== '') {
+        if (item.properties.digitalisat.substring(0, 4) === 'http') {
+            document.getElementById('entry-digitalisat').innerHTML = 'Digitalisat: <a href="' + item.properties.digitalisat + '" target="_blank">' + item.properties.digitalisat + '</a>';
+        } else {
+            document.getElementById('entry-digitalisat').innerHTML = 'Digitalisat: ' + item.properties.digitalisat;
+        }
     } else {
-        document.getElementById('entry-digitalisat').innerHTML = 'Digitalisat: ' + item.properties.digitalisat;
+        document.getElementById('entry-digitalisat').innerHTML = 'Digitalisat: –';
     }
 }

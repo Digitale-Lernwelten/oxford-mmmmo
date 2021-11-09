@@ -138,7 +138,7 @@ button {
 #side {
     width: 30vw;
     height: 100vh;
-    padding: 2rem;
+    padding: 0 2rem;
     color: #3f3f3f;
     overflow-y: scroll;
     box-sizing: border-box;
@@ -195,7 +195,10 @@ button {
 .side-header {
     width: 100%;
     height: 1.5rem;
-    position: relative;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    padding: 2rem 0;
 }
 
 .side-back-button {
@@ -224,6 +227,7 @@ h1 {
     font-size: 24px;
     font-weight: 900;
     text-align: center;
+    margin-top: 0;
 }
 
 h2 {
@@ -334,10 +338,18 @@ figure img {
     overflow: hidden;
     background-color: #277BB2;
     display: flex;
-    flex-flow: row nowrap;
     justify-content: space-around;
-    align-items: stretch;
+    margin-bottom: 1rem;
+    border-radius: 0.25vw 0.25vw 0 0;
 }
+
+/*#tablinks:first-child {
+    border-top-left-radius: 0.25vw;
+}
+
+#tablinks:last-child {
+    border-top-right-radius: 0.25vw;
+}*/
 
 #tablinks button {
     background-color: inherit;
@@ -360,14 +372,67 @@ figure img {
     color: #3F3F3F;
 }
 
-.tabcontent table {
+table {
     border: none;
     border-collapse: collapse;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+td {
+    padding: 1rem 0;
+}
+
+th {
+    text-align: center;
+    padding: 0.5rem;
 }
 
 .row-entry:hover {
     cursor: pointer;
-    background-color: rgba(39, 123, 178, 0.5);
+}
+
+#table-od .row-entry:hover,
+.archive-entry-od:hover {
+    color: #277BB2;
+}
+
+#table-md .row-entry:hover,
+.archive-entry-md:hover {
+    color: #7B27B2;
+}
+
+#table-nd .row-entry:hover,
+.archive-entry-nd:hover {
+    color: #B2277B;
+}
+
+#table-lt .row-entry:hover,
+.archive-entry-lt:hover {
+    color: #B27B27;
+}
+
+#table-fr .row-entry:hover,
+.archive-entry-fr:hover {
+    color: #27B27B;
+}
+
+table img, 
+#archive-container img,
+#order-container img {
+    display: block;
+    width: 2rem;
+    height: auto;
+    background-color: #272727;
+}
+
+table img {
+    margin: 0 auto;
+}
+
+#archive-container img,
+#order-container img {
+    margin-right: 1rem;
 }
 
 #table-od img {
@@ -392,6 +457,28 @@ figure img {
 
 .inactive {
     color: #7B7B7B;
+}
+
+#archive-container,
+#order-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+#archive-container p,
+#order-container p {
+    margin: 0;
+    font-weight: 700;
+    text-align: left;
+}
+
+#order-container div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 /*

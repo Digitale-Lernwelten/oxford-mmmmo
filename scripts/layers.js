@@ -28,7 +28,7 @@ const iconLayers = [
         source: 'data-icons-od',
         type: 'symbol',
         layout: {
-            'icon-image': ['match', ['get', 'order'],
+            'icon-image': [/*'case', ['boolean', ['get', 'multiple'], false], orderIcons[9], [*/'match', ['get', 'order'],
                 'Augustiner', orderIcons[0],
                 'Benediktiner', orderIcons[1],
                 'Dominikaner', orderIcons[2],
@@ -38,9 +38,10 @@ const iconLayers = [
                 'Zisterzienser', orderIcons[6],
                 'Sonstiges', orderIcons[7],
                 'Unbekannt', orderIcons[8],
-                /*fallback*/ orderIcons[8]],
+                /*fallback*/ orderIcons[8]]/*]*/,
             'icon-size': 1,
             'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
             'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
             'symbol-sort-key': ['to-number', ['get', 'year']]
         },
@@ -70,6 +71,7 @@ const iconLayers = [
                 /*fallback*/ orderIcons[8]],
             'icon-size': 1,
             'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
             'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
             'symbol-sort-key': ['to-number', ['get', 'year']]
         },
@@ -99,6 +101,7 @@ const iconLayers = [
                 /*fallback*/ orderIcons[8]],
             'icon-size': 1,
             'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
             'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
             'symbol-sort-key': ['to-number', ['get', 'year']]
         },
@@ -128,6 +131,7 @@ const iconLayers = [
                 /*fallback*/ orderIcons[8]],
             'icon-size': 1,
             'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
             'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
             'symbol-sort-key': ['to-number', ['get', 'year']]
         },
@@ -157,6 +161,7 @@ const iconLayers = [
                 /*fallback*/ orderIcons[8]],
             'icon-size': 1,
             'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
             'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.2, 14, 0.8],
             'symbol-sort-key': ['to-number', ['get', 'year']]
         },
@@ -169,6 +174,26 @@ const iconLayers = [
         }
     }
 ];
+
+const multipleIconsLayer = {
+    id: 'layer-icons-mult',
+    source: 'data-icons-mult',
+    type: 'symbol',
+    layout: {
+        'text-field': ['get', 'count'],
+        //'text-font': ['D-DIN-PRO', 'sans-serif'],
+        'text-allow-overlap': true,
+        'text-ignore-placement': true,
+        'text-size': ['interpolate', ['linear'], ['zoom'], 4, 12, 14, 24],
+    },
+    paint: {
+        'text-color': iconColors.darkGrey,
+        'text-translate': ['interpolate', ['linear'], ['zoom'], 4, ['literal', [6, -6]], 14, ['literal', [24, -24]]],
+        'text-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 1, 14, 2],
+        'text-halo-color': '#fff',
+        'text-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 1, 14, 2],
+    }
+}
 
 const archiveIconLayer = {
     id: 'layer-icons-lib',

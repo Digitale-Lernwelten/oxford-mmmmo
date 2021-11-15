@@ -30,6 +30,8 @@ let filters = ['all', filterYear, filterOrder];
 let currentBorderLayers = borderLayers;
 let currentNameLayers = stateNameLayers.concat(otherNameLayers);
 
+let loaded; // is the map fully loaded?
+
 function UpdateYear() {
     UpdateBorderLayers(checkboxBorders.checked);
     UpdateNameLayers(checkboxNames.checked);
@@ -73,6 +75,49 @@ function UpdateFilters() {
     if (document.getElementById('side-entries').style.display === 'block') {
         showActiveEntries();
     }
+    //map.on('render', showSameLocationSources);
+    showSameLocationSources();
+}
+
+function showSameLocationSources() {
+    if (!map.loaded() && !loaded) {
+        setTimeout(showSameLocationSources, 100);
+    } else if (!loaded) {
+        loaded = true;
+        setTimeout(showSameLocationSources, 500);
+    } else {
+        // reset multiple icon sources
+        multipleIconSources.features = [];
+
+        // change icon for sources at same location
+        const features = map.queryRenderedFeatures({ layers: ['layer-icons-od', 'layer-icons-md', 'layer-icons-nd', 'layer-icons-lt', 'layer-icons-fr'] });
+        for (let i = 0; i < iconDoubleCoordinates.length; i++) {
+            let count = 0;
+            let coords = [];
+            for (let j = 0; j < iconDoubleCoordinates[i].length; j++) {
+                const feature = features.find((f) => f.properties.id === iconDoubleCoordinates[i][j]);
+                if (feature !== undefined) {
+                    count++;
+                    coords = feature.geometry.coordinates;
+                }
+            }
+            if (count > 1) {
+                multipleIconSources.features.push({
+                    'type': 'Feature',
+                    'properties': {
+                        'count': count
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': coords
+                    }
+                });
+            }
+        }
+        map.getSource(multipleIconsLayer.source).setData(multipleIconSources);
+        loaded = false;
+        //map.off('render', showSameLocationSources);
+    }
 }
 
 function UpdateLanguage(value, checked) {
@@ -98,6 +143,7 @@ function UpdateLanguage(value, checked) {
     if (document.getElementById('side-entries').style.display === 'block') {
         showActiveEntries();
     }
+    showSameLocationSources();
 }
 
 function UpdateOrder(value, checked) {

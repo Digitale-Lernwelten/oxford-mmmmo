@@ -51,6 +51,7 @@ const archives = {}
 
 const iconCoordinates = [];
 const iconDoubleCoordinates = [];
+const multipleIconSources = { 'type': 'FeatureCollection', 'features': [] };
 
 // URLs to google sheets for each language: 0 = OD, 1 = MD, 2 = ND, 3 = LT, 4 = FR
 const sheets = [
@@ -162,6 +163,7 @@ function importData() {
                             'name': results[i].data[j][1],
                             'year': parseInt(results[i].data[j][2]),
                             'order': results[i].data[j][3],
+                            'order': results[i].data[j][3],
                             'archive': results[i].data[j][4], //!!!
                             'category': results[i].data[j][5],
                             'description': results[i].data[j][6],
@@ -170,7 +172,8 @@ function importData() {
                             'digitalisat': results[i].data[j][9],
                             'moved': results[i].data[j][10],
                             'origin': results[i].data[j][11],
-                            'radius': parseFloat(results[i].data[j][12])
+                            'radius': parseFloat(results[i].data[j][12]),
+                            'multiple': false
                         },
                         'geometry': {
                             'type': 'Point',
@@ -207,6 +210,8 @@ function importData() {
 
                     //push to archive list
                     pushToArchives(iconSource);
+
+                    logCoordinates(iconSource);
 
                     // set circle if source has radius
                     if (results[i].data[j][12] > 0) {
@@ -359,6 +364,34 @@ function pushToArchives (iso) {
     } else {
         archives[iso.properties.archive] = [iso.properties.id];
     }
+}
+
+function logCoordinates(iso) {
+    for (let i = 0; i < iconCoordinates.length; i++) {
+        if (iso.geometry.coordinates[0] === iconCoordinates[i].long) {
+            // coordinates already exist. now check if it is already registered in doubleCoordinates:
+            for (let j = 0; j < iconDoubleCoordinates.length; j++) {
+                for (let k = 0; k < iconDoubleCoordinates[j].length; k++) {
+                    if (iconDoubleCoordinates[j][k] === iconCoordinates[i].id) {
+                        // already registered. only push new:
+                        iconDoubleCoordinates[j].push(iso.properties.id);
+                        return;
+                    }
+                }
+            }
+            // not registered in doubleCoordinates yet. Push both:
+            if (iso.geometry.coordinates[1] === iconCoordinates[i].lat) {
+                iconDoubleCoordinates.push([iso.properties.id, iconCoordinates[i].id]);
+                return;
+            }
+        }
+    }
+    // push to coordinates to determine sources at the same location
+    iconCoordinates.push({
+        'id': iso.properties.id,
+        'long': iso.geometry.coordinates[0],
+        'lat': iso.geometry.coordinates[1]
+    });
 }
 
 function returnIcon(img) {

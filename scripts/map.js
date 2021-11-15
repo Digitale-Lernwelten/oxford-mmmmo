@@ -214,7 +214,11 @@ function addMapInfo() {
                 }
 
                 // set popup
-                popup.setLngLat(hoveredIcon[i].geometry.coordinates).setHTML(hoveredIcon[i].properties.name).addTo(map);
+                let str = '';
+                for (let j = 0; j < e.features.length; j++) {
+                    str += e.features[j].properties.name + '<br>';
+                }
+                popup.setLngLat(hoveredIcon[i].geometry.coordinates).setHTML(str).addTo(map);
             }
         });
         map.on('mouseleave', iconLayers[i].id, () => {
@@ -271,6 +275,12 @@ function addMapInfo() {
             popup.remove();
         });
     }
+    // add layer for multiple icons at same location
+    map.addSource(multipleIconsLayer.source, {
+        type: 'geojson',
+        data: multipleIconSources
+    });
+    map.addLayer(multipleIconsLayer)
 
     // add archive layer
     map.addSource(archiveIconLayer.source, {
@@ -321,6 +331,20 @@ function addMapInfo() {
         });
         map.addLayer(archiveLineLayers[i], iconLayers[0].id);
     }
+
+    map.on('dragend', () => {
+        showSameLocationSources();
+    });
+
+    map.on('pitchend', () => {
+        showSameLocationSources();
+    });
+
+    map.on('zoomend', () => {
+        showSameLocationSources();
+    });
+
+    showSameLocationSources();
 
     console.log('map info added', map);
 }

@@ -144,6 +144,11 @@ button {
     box-sizing: border-box;
 }
 
+.geocoder-dropdown-icon {
+    width: 32px;
+    height: 32px;
+}
+
 /*#side-home {
     display: block;
 }

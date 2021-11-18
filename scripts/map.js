@@ -16,6 +16,123 @@ const map = new mapboxgl.Map({
     ]
 });
 
+// add geocoder control to the map
+const geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl,
+    zoom: 14,
+    placeholder: "Suchbegriff eingeben",
+    bbox: [-130, 20, 45, 70],
+    localGeocoder: forwardGeocoder,
+    filter: filterGeocoderItems,
+    marker: false,
+    render: renderGeocoderItems
+});
+
+// to do: outsource marker highlighting when mapbox.on('select') to function
+// also call the function here to highlight the marker
+geocoder.on('result', (result) => {
+    if (result.result.properties.id) {
+        if(result.result.properties.year) {
+            showEntryInfo(result.result.properties.id, '');
+        } else {
+            showArchiveEntries(result.result.properties.id);
+        }
+    }
+});
+
+//document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+map.addControl(geocoder)
+
+function forwardGeocoder(query) {
+    const matchingFeatures = [];
+    archiveIconSources.features.forEach((feature) => {
+        if (feature.properties.name.toLowerCase().includes(query.toLowerCase())) {
+            feature['place_name'] = feature.properties.name;
+            feature['center'] = feature.geometry.coordinates;
+            feature['place-type'] = ['poi'];
+            matchingFeatures.push(feature);
+        }
+    });
+    for (let i = 0; i < iconSources.length; i++) {
+        iconSources[i].features.forEach((feature) => {
+            if (feature.properties.name.toLowerCase().includes(query.toLowerCase())) {
+                feature['place_name'] = feature.properties.name;
+                feature['center'] = feature.geometry.coordinates;
+                feature['place-type'] = ['poi'];
+                matchingFeatures.push(feature);
+            }
+        });
+    }
+    return matchingFeatures;
+}
+
+function renderGeocoderItems(item) {
+    console.log(item);
+    let imgID = 'icon-marker';
+    let bgColor = 'white';
+    let itemName = item['place_name'];
+    if (item.properties.order) {
+        imgID = returnIcon(item.properties.order);
+        switch (item.properties.id.substr(0, 2)) {
+            case 'od':
+                bgColor = '#277BB2';
+                break;
+            case 'md':
+                bgColor = '#7B27B2';
+                break;
+            case 'nd':
+                bgColor = '#B2277B';
+                break;
+            case 'lt':
+                bgColor = '#B27B27';
+                break;
+            case 'fr':
+                bgColor = '#27B27B';
+                break;
+            default:
+                bgColor = '#272727';
+                console.log('background color not defined for: ', item.properties.id.substr(0, 2));
+        }
+        itemName = item.properties.name;
+    }
+    else if (item.properties.id) {
+        imgID = 'icon-lib';
+        bgColor = iconColors.darkGrey;
+        itemName = item.properties.name;
+    }
+    return '<div class="geocoder-dropdown-item"><img class="geocoder-dropdown-icon" src="assets/side/' + imgID + '.png" style="background-color: ' + bgColor + '"><span class="geocoder-dropdown-text">' + itemName + '</span></div>';
+}
+
+// hinzufügen: doppelte quellen (an untersch. orten) rausfiltern, nur aktuellste version anzeigen
+function filterGeocoderItems(item) {
+    if (item.properties.id) {
+        if (item.properties.year) {
+            if (item.properties.year < slider.value) {
+                if (orders.includes(item.properties.order)) {
+                    const cb = document.getElementById('checkbox-'+item.properties.id.substr(0, 2));
+                    if (cb.checked) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            if (slider.value === slider.max) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 const popup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,

@@ -252,6 +252,7 @@ function importData() {
                 'type': 'Feature',
                 'properties': {
                     'id': value + '*' + key,
+                    'name': key
                 },
                 'geometry': {
                     'type': 'Point',

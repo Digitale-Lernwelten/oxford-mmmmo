@@ -170,7 +170,7 @@ function showMultipleEntries() {
         curve: 1*/
     });
 
-    for (let i = selectedFeatures.length -1; i >= 0; i--) {
+    for (let i = selectedFeatures.length - 1; i >= 0; i--) {
         const item = getItem('i' + selectedFeatures[i]);
         console.log('got item: ', item);
         const newTR = document.createElement('tr');
@@ -219,18 +219,20 @@ function showArchiveEntries(archiveID) {
 
     const archiveName = archiveID.split('*')[1];
     if (archives[archiveName]) {
-        // center camera to archive
-        const archiveCoords = getItem(archiveID).geometry.coordinates;
-        let z = map.getZoom();
-        if (z < 8) {
-            z = 8;
-        }
+        if (slider.value === slider.max) {
+            // center camera to archive
+            const archiveCoords = getItem(archiveID).geometry.coordinates;
+            let z = map.getZoom();
+            if (z < 8) {
+                z = 8;
+            }
 
-        map.flyTo({
-            center: archiveCoords,
-            zoom: z,
-            curve: 1
-        });
+            map.flyTo({
+                center: archiveCoords,
+                zoom: z,
+                curve: 1
+            });
+        }
 
         // set h1
         document.getElementById('archive-name').innerHTML = archiveName;

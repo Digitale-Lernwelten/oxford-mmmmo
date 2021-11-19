@@ -95,6 +95,11 @@
                         <label for="kart">Kartäuser</label>
                     </div>
                     <div>
+                        <input type="checkbox" name="klar" value="Klarissen"
+                            onclick="return UpdateOrder(value, checked)" checked>
+                        <label for="klar">Klarissen</label>
+                    </div>
+                    <div>
                         <input type="checkbox" name="kreu" value="Kreuzherren"
                             onclick="return UpdateOrder(value, checked)" checked>
                         <label for="kreu">Kreuzherren</label>
@@ -370,13 +375,13 @@
                 </div>
             </div>
             <hr>
-            <h2>Kategorie:</h2>
+            <h2>Überblick:</h2>
             <p id="entry-category"></p>
             <hr>
             <h2>Beschreibung:</h2>
             <p id="entry-description"></p>
             <hr>
-            <h2>Referenzen:</h2>
+            <h2>Weiterführende Informationen:</h2>
             <ul id="entry-references">
                 <li id="entry-hsc"></li>
                 <li id="entry-catalog"></li>

@@ -21,10 +21,11 @@ const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
     zoom: 14,
+    flyTo: false,
     placeholder: "Suchbegriff eingeben",
     bbox: [-130, 20, 45, 70],
     localGeocoder: forwardGeocoder,
-    filter: filterGeocoderItems,
+    localGeocoderOnly: true,
     marker: false,
     render: renderGeocoderItems
 });
@@ -33,8 +34,10 @@ const geocoder = new MapboxGeocoder({
 // also call the function here to highlight the marker
 geocoder.on('result', (result) => {
     if (result.result.properties.id) {
-        if(result.result.properties.year) {
-            showEntryInfo(result.result.properties.id, '');
+        if (result.result.properties.year) {
+            let isInactive = '';
+            if(!filterGeocoderItems(result.result)) isInactive = 'inactive';
+            showEntryInfo(result.result.properties.id, isInactive);
         } else {
             showArchiveEntries(result.result.properties.id);
         }
@@ -101,21 +104,19 @@ function renderGeocoderItems(item) {
         bgColor = iconColors.darkGrey;
         itemName = item.properties.name;
     }
-    return '<div class="geocoder-dropdown-item"><img class="geocoder-dropdown-icon" src="assets/side/' + imgID + '.png" style="background-color: ' + bgColor + '"><span class="geocoder-dropdown-text">' + itemName + '</span></div>';
+    let isInactive = ''
+    if(!filterGeocoderItems(item)) isInactive = 'inactive';
+    return '<div class="geocoder-dropdown-item"><img class="geocoder-dropdown-icon" src="assets/side/' + imgID + '.png" style="background-color: ' + bgColor + '"><span class="geocoder-dropdown-text ' + isInactive + '">' + itemName + '</span></div>';
 }
 
 // hinzufügen: doppelte quellen (an untersch. orten) rausfiltern, nur aktuellste version anzeigen
 function filterGeocoderItems(item) {
-    if (item.properties.id) {
-        if (item.properties.year) {
-            if (item.properties.year < slider.value) {
-                if (orders.includes(item.properties.order)) {
-                    const cb = document.getElementById('checkbox-'+item.properties.id.substr(0, 2));
-                    if (cb.checked) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+    if (item.properties.year) {
+        if (item.properties.year < slider.value) {
+            if (orders.includes(item.properties.order)) {
+                const cb = document.getElementById('checkbox-' + item.properties.id.substr(0, 2));
+                if (cb.checked) {
+                    return true;
                 } else {
                     return false;
                 }
@@ -123,14 +124,15 @@ function filterGeocoderItems(item) {
                 return false;
             }
         } else {
-            if (slider.value === slider.max) {
-                return true;
-            } else {
-                return false;
-            }
+            return false;
+        }
+    } else {
+        if (slider.value === slider.max) {
+            return true;
+        } else {
+            return false;
         }
     }
-    return true;
 }
 
 const popup = new mapboxgl.Popup({

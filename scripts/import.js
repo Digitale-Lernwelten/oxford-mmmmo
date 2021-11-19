@@ -163,23 +163,26 @@ function importData() {
                             'name': results[i].data[j][1],
                             'year': parseInt(results[i].data[j][2]),
                             'order': results[i].data[j][3],
-                            'order': results[i].data[j][3],
                             'archive': results[i].data[j][4], //!!!
                             'category': results[i].data[j][5],
-                            'description': results[i].data[j][6],
-                            'hsc': results[i].data[j][7],
-                            'catalog': results[i].data[j][8],
-                            'digitalisat': results[i].data[j][9],
-                            'moved': results[i].data[j][10],
-                            'origin': results[i].data[j][11],
-                            'radius': parseFloat(results[i].data[j][12]),
+                            'date': results[i].data[j][6],
+                            'location': results[i].data[j][7],
+                            'extract': results[i].data[j][8],
+                            'description': results[i].data[j][9],
+                            'hsc': results[i].data[j][10],
+                            'catalog': results[i].data[j][11],
+                            'digitalisat': results[i].data[j][12],
+                            'references': results[i].data[j][13],
+                            'moved': results[i].data[j][14],
+                            'origin': results[i].data[j][15],
+                            'radius': parseFloat(results[i].data[j][16]),
                             'multiple': false
                         },
                         'geometry': {
                             'type': 'Point',
                             'coordinates': [
-                                parseFloat(results[i].data[j][13]),
-                                parseFloat(results[i].data[j][14])
+                                parseFloat(results[i].data[j][17]),
+                                parseFloat(results[i].data[j][18])
                             ]
                         },
                         'id': 0
@@ -214,18 +217,18 @@ function importData() {
                     logCoordinates(iconSource);
 
                     // set circle if source has radius
-                    if (results[i].data[j][12] > 0) {
+                    if (iconSource.properties.radius > 0) {
                         // draw circular polygon from coordinates and radius
-                        let points = drawCircle(results[i].data[j][12], results[i].data[j][13], results[i].data[j][14]);
+                        let points = drawCircle(iconSource.properties.radius, iconSource.geometry.coordinates[0], iconSource.geometry.coordinates[1]);
 
                         // set geojson from data
                         const circleSource = {
                             'type': 'Feature',
                             'properties': {
-                                'id': results[i].data[j][0],
-                                'year': parseInt(results[i].data[j][2]),
-                                'order': results[i].data[j][3]
-
+                                'id': iconSource.properties.id,
+                                'year': iconSource.properties.year,
+                                'order': iconSource.properties.order,
+                                'radius': iconSource.properties.radius
                             },
                             'geometry': {
                                 'type': 'Polygon',

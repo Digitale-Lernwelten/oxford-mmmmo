@@ -21,7 +21,7 @@ const checkboxNames = document.getElementById('checkbox-names');
 const checkboxRadius = document.getElementById('checkbox-radius');
 const checkboxLines = document.getElementById('checkbox-lines');
 
-let orders = ['Augustiner', 'Benediktiner', 'Dominikaner', 'Franziskaner', 'Kartäuser', 'Kreuzherren', 'Zisterzienser', 'Sonstiges', 'Unbekannt'];
+let orders = ['Augustiner', 'Benediktiner', 'Dominikaner', 'Franziskaner', 'Kartäuser', 'Klarissen', 'Kreuzherren', 'Zisterzienser', 'Sonstiges', 'Unbekannt'];
 
 let filterYear = ['>=', ['to-number', slider.value], ['to-number', ['get', 'year']]];
 let filterOrder = ['in', ['get', 'order'], ['literal', orders]];

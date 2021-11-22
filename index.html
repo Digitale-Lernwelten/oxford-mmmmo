@@ -6,9 +6,12 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <script
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
+        type="text/css">
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet">
@@ -217,8 +220,8 @@
                     <div class="tile-title">Einträge ansehen</div>
                 </button>
             </div>
-            <p id="footer"><span onclick="toggleImpress(true)">Impressum</span> | <span
-                    onclick="togglePrivacy(true)">Datenschutz</span></p>
+            <p id="footer"><span onclick="toggleSide('side-impress')">Impressum</span> | <span
+                    onclick="toggleSide('side-privacy')">Datenschutz</span></p>
         </div>
         <div id="side-entries" class="side-panel">
             <div class="side-header">
@@ -290,70 +293,202 @@
                 </table>
             </div>
         </div>
-        <div id="side-mechthild" class="side-panel">
+        <!--GERMAN-->
+        <div id="side-mechthild-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Mechthild von Hackeborn</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
             </div>
         </div>
-        <div id="side-monastery" class="side-panel">
+        <div id="side-monastery-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Kloster Helfta</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
             </div>
         </div>
-        <div id="side-liber" class="side-panel">
+        <div id="side-liber-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Der <i>Liber specialis gratiae</i></span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
             </div>
         </div>
-        <div id="side-mystic" class="side-panel">
+        <div id="side-mystic-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Die Mystik des <i>Liber</i></span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
             </div>
         </div>
-        <div id="side-info" class="side-panel">
+        <div id="side-info-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Zum Projekt 'MMMMO'</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
             </div>
         </div>
-        <div id="side-controls" class="side-panel">
+        <div id="side-controls-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Kartenoptionen</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
             </div>
         </div>
-        <div id="side-impress" class="side-panel">
+        <div id="side-impress-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Impressum</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
             </div>
         </div>
-        <div id="side-privacy" class="side-panel">
+        <div id="side-privacy-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
                     <img class="side-back-arrow" src="assets/side/arrow-back.svg">
                 </button>
                 <span class="side-title">Datenschutz</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
             </div>
         </div>
+
+        <!--ENGLISH-->
+        <div id="side-mechthild-en" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">Mechtilde of Hackeborn</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
+            </div>
+        </div>
+        <div id="side-monastery-en" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">Helfta Monastery</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
+            </div>
+        </div>
+        <div id="side-liber-en" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">The <i>Liber specialis gratiae</i></span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
+            </div>
+        </div>
+        <div id="side-mystic-en" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">The mysticism of the <i>Liber</i></span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
+            </div>
+        </div>
+        <div id="side-info-en" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">About the project 'MMMMO'</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
+            </div>
+        </div>
+        <div id="side-controls-en" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">Map options</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
+            </div>
+        </div>
+        <div id="side-impress-en" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">Legal notice</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
+            </div>
+        </div>
+        <div id="side-privacy-en" class="side-panel">
+            <div class="side-header">
+                <button class="side-back-button" onclick="toggleSide('side-home')">
+                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                </button>
+                <span class="side-title">Privacy policy</span>
+                <div class="lang-select">
+                    <span class="lang-select-de" role="button" onclick="changeLang(true)">DE</span>
+                    / <span class="lang-select-en" role="button" onclick="changeLang(false)">EN</span>
+                </div>
+            </div>
+        </div>
+
         <div id="side-entry" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
@@ -362,25 +497,24 @@
                 <span class="side-title">Details zum Eintrag</span>
             </div>
             <h1 id="entry-name"></h1>
-            <hr>
-            <div id="archive-container">
-                <img src="assets/side/icon-lib.png" alt="icon archiv">
-                <p id="entry-archive"></p>
-            </div>
-            <div id="order-container">
-                <img id="entry-order-icon" src="assets/map/icon-unb.png" alt="icon archiv">
-                <div>
-                    <p id="entry-language-text"></p>
-                    <p id="entry-order-text"></p>
-                </div>
+            <div id="entry-label">
+                <img id="entry-label-icon" src="assets/map/icon-unb.png">
+                <p id="entry-label-text">
+                    <span id="entry-label-text-lang"></span> |
+                    <span id="entry-label-text-order"></span>
+                </p>
             </div>
             <hr>
             <h2>Überblick:</h2>
-            <p id="entry-category"></p>
-            <hr>
+            <p id="entry-category">–</p>
+            <h2>Datierung:</h2>
+            <p id="entry-date">–</p>
+            <h2>Ort:</h2>
+            <p id="entry-location">–</p>
+            <h2>Inhalt:</h2>
+            <p id="entry-extract">–</p>
             <h2>Beschreibung:</h2>
-            <p id="entry-description"></p>
-            <hr>
+            <p id="entry-description">–</p>
             <h2>Weiterführende Informationen:</h2>
             <ul id="entry-references">
                 <li id="entry-hsc"></li>
@@ -398,10 +532,10 @@
             <h1 id="archive-name"></h1>
             <table>
                 <thead>
-                <tr>
-                    <th>Orden</th>
-                    <th>Signatur</th>
-                </tr>
+                    <tr>
+                        <th>Orden</th>
+                        <th>Signatur</th>
+                    </tr>
                 </thead>
                 <tbody id="table-archive"></tbody>
             </table>
@@ -415,10 +549,10 @@
             </div>
             <table>
                 <thead>
-                <tr>
-                    <th>Orden</th>
-                    <th>Signatur</th>
-                </tr>
+                    <tr>
+                        <th>Orden</th>
+                        <th>Signatur</th>
+                    </tr>
                 </thead>
                 <tbody id="table-multiple-entries"></tbody>
             </table>

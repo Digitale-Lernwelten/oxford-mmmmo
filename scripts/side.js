@@ -1,50 +1,85 @@
 const sideHome = document.getElementById('side-home');
 const sideEntries = document.getElementById('side-entries');
-const sideMechthild = document.getElementById('side-mechthild');
-const sideMonastery = document.getElementById('side-monastery');
-const sideLiber = document.getElementById('side-liber');
-const sideMystic = document.getElementById('side-mystic');
-const sideInfo = document.getElementById('side-info');
-const sideControls = document.getElementById('side-controls');
-const sideImpress = document.getElementById('side-impress');
-const sidePrivacy = document.getElementById('side-privacy');
-const sideContentPanels = [sideMechthild, sideMonastery, sideLiber, sideMystic, sideInfo, sideImpress, sidePrivacy];
 
-const contentMechthild = [];
-const contentMonastery = [];
-const contentLiber = [];
-const contentMystic = [];
-const contentInfo = [];
-const contentImpress = [];
-const contentPrivacy = [];
-const contentAll = [contentMechthild, contentMonastery, contentLiber, contentMystic, contentInfo, contentImpress, contentPrivacy];
+const sideMechthildDE = document.getElementById('side-mechthild-de');
+const sideMonasteryDE = document.getElementById('side-monastery-de');
+const sideLiberDE = document.getElementById('side-liber-de');
+const sideMysticDE = document.getElementById('side-mystic-de');
+const sideInfoDE = document.getElementById('side-info-de');
+const sideControlsDE = document.getElementById('side-controls-de');
+const sideImpressDE = document.getElementById('side-impress-de');
+const sidePrivacyDE = document.getElementById('side-privacy-de');
+
+const sideMechthildEN = document.getElementById('side-mechthild-en');
+const sideMonasteryEN = document.getElementById('side-monastery-en');
+const sideLiberEN = document.getElementById('side-liber-en');
+const sideMysticEN = document.getElementById('side-mystic-en');
+const sideInfoEN = document.getElementById('side-info-en');
+const sideControlsEN = document.getElementById('side-controls-en');
+const sideImpressEN = document.getElementById('side-impress-en');
+const sidePrivacyEN = document.getElementById('side-privacy-en');
+
+const sideContentPanels = [
+    sideMechthildDE, sideMonasteryDE, sideLiberDE, sideMysticDE, sideInfoDE, sideImpressDE, sidePrivacyDE,
+    sideMechthildEN, sideMonasteryEN, sideLiberEN, sideMysticEN, sideInfoEN, sideImpressEN, sidePrivacyEN
+];
+
+const contentMechthildDE = [];
+const contentMonasteryDE = [];
+const contentLiberDE = [];
+const contentMysticDE = [];
+const contentInfoDE = [];
+const contentImpressDE = [];
+const contentPrivacyDE = [];
+
+const contentMechthildEN = [];
+const contentMonasteryEN = [];
+const contentLiberEN = [];
+const contentMysticEN = [];
+const contentInfoEN = [];
+const contentImpressEN = [];
+const contentPrivacyEN = [];
+
+const contentAll = [
+    contentMechthildDE, contentMonasteryDE, contentLiberDE, contentMysticDE, contentInfoDE, contentImpressDE, contentPrivacyDE,
+    contentMechthildEN, contentMonasteryEN, contentLiberEN, contentMysticEN, contentInfoEN, contentImpressEN, contentPrivacyEN
+];
 
 let activeTab = document.getElementById('tab-od');
+let activeSide = 'side-home';
+let german = true;
 
 function importContent() {
     Papa.parse('https://docs.google.com/spreadsheets/d/e/2PACX-1vTnv1gJnMcFzdhlg5bjxZNOriERtTk5GiWZwezNkiqFrgnHQzoAEoIlND7enWq1BHt6VggNJeZNxQ07/pub?gid=358091174&single=true&output=csv', {
         download: true, complete: (results) => {
             for (i = 2; i < results.data.length; i++) {
                 if (results.data[i][3] !== null) {
-                    contentMechthild.push([results.data[i][2], results.data[i][3]]);
+                    contentMechthildDE.push([results.data[i][2], results.data[i][3]]);
+                    contentMechthildEN.push([results.data[i][2], results.data[i][4]]);
                 }
-                if (results.data[i][5] !== null) {
-                    contentMonastery.push([results.data[i][4], results.data[i][5]]);
-                }
-                if (results.data[i][7] !== null) {
-                    contentLiber.push([results.data[i][6], results.data[i][7]]);
+                if (results.data[i][6] !== null) {
+                    contentMonasteryDE.push([results.data[i][5], results.data[i][6]]);
+                    contentMonasteryEN.push([results.data[i][5], results.data[i][7]]);
                 }
                 if (results.data[i][9] !== null) {
-                    contentMystic.push([results.data[i][8], results.data[i][9]]);
+                    contentLiberDE.push([results.data[i][8], results.data[i][9]]);
+                    contentLiberEN.push([results.data[i][8], results.data[i][10]]);
                 }
-                if (results.data[i][11] !== null) {
-                    contentInfo.push([results.data[i][10], results.data[i][11]]);
-                }
-                if (results.data[i][13] !== null) {
-                    contentImpress.push([results.data[i][12], results.data[i][13]]);
+                if (results.data[i][12] !== null) {
+                    contentMysticDE.push([results.data[i][11], results.data[i][12]]);
+                    contentMysticEN.push([results.data[i][11], results.data[i][13]]);
                 }
                 if (results.data[i][15] !== null) {
-                    contentPrivacy.push([results.data[i][14], results.data[i][15]]);
+                    contentInfoDE.push([results.data[i][14], results.data[i][15]]);
+                    contentInfoEN.push([results.data[i][14], results.data[i][16]]);
+                }
+                if (results.data[i][18] !== null) {
+                    contentImpressDE.push([results.data[i][17], results.data[i][18]]);
+                    contentImpressEN.push([results.data[i][17], results.data[i][19]]);
+                }
+                if (results.data[i][21] !== null) {
+                    contentPrivacyDE.push([results.data[i][20], results.data[i][21]]);
+                    contentPrivacyEN.push([results.data[i][20], results.data[i][22]]);
                 }
             }
             renderContent();
@@ -55,6 +90,7 @@ function importContent() {
 function renderContent() {
     for (let i = 0; i < contentAll.length; i++) {
         for (let j = 0; j < contentAll[i].length; j++) {
+            console.log('render content for: ', contentAll[i][j]);
             if (contentAll[i][j][0] === 'h1' || contentAll[i][j][0] === 'h2' || contentAll[i][j][0] === 'h3' || contentAll[i][j][0] === 'h4' || contentAll[i][j][0] === 'p' || contentAll[i][j][0] === 'ul' || contentAll[i][j][0] === 'ol' || contentAll[i][j][0] === 'blockquote') {
                 const newElement = document.createElement(contentAll[i][j][0]);
                 newElement.innerHTML = contentAll[i][j][1];
@@ -79,6 +115,15 @@ function renderContent() {
 }
 
 function toggleSide(sideName) {
+    activeSide = sideName;
+    const langSides = ['side-mechthild', 'side-monastery', 'side-mystic', 'side-liber', 'side-info', 'side-impress', 'side-privacy'];
+    if (langSides.includes(sideName)) {
+        if (german) {
+            sideName += '-de';
+        } else {
+            sideName += '-en';
+        }
+    }
     let sidePanels = document.getElementsByClassName('side-panel');
     for (let i = 0; i < sidePanels.length; i++) {
         sidePanels[i].style.display = 'none';
@@ -100,6 +145,18 @@ function openTab(tabLink, tabName, bgColor) {
     tablinkContainer.style.backgroundColor = bgColor;
 
     showActiveEntries();
+}
+
+function changeLang(l) {
+    german = l;
+    if (german) {
+        document.querySelectorAll('.lang-select-de').forEach(e => e.style.color = '#7B27B2');
+        document.querySelectorAll('.lang-select-en').forEach(e => e.style.color = '#7B7B7B');
+    } else {
+        document.querySelectorAll('.lang-select-de').forEach(e => e.style.color = '#7B7B7B');
+        document.querySelectorAll('.lang-select-en').forEach(e => e.style.color = '#27B27B');
+    }
+    toggleSide(activeSide);
 }
 
 function showActiveEntries() {
@@ -287,7 +344,7 @@ function showEntryInfo(entryID, cn) {
     toggleSide('side-entry');
     const item = getItem('i' + entryID);
     document.getElementById('entry-name').innerHTML = item.properties.name;
-    document.getElementById('entry-archive').innerHTML = item.properties.archive;
+    //document.getElementById('entry-archive').innerHTML = item.properties.archive;
 
     if (!cn.includes('inactive')) {
         console.log('fly to: ', item.geometry.coordinates);
@@ -303,7 +360,7 @@ function showEntryInfo(entryID, cn) {
         });
     }
 
-    const orderIcon = document.getElementById('entry-order-icon');
+    const orderIcon = document.getElementById('entry-label-icon');
     let orderImg;
     switch (item.properties.order) {
         case 'Augustiner':
@@ -320,6 +377,9 @@ function showEntryInfo(entryID, cn) {
             break;
         case 'Kartäuser':
             orderImg = 'icon-kart';
+            break;
+        case 'Klarissen':
+            orderImg = 'icon-klar';
             break;
         case 'Kreuzherren':
             orderImg = 'icon-kreu';
@@ -342,31 +402,58 @@ function showEntryInfo(entryID, cn) {
     switch (entryLang) {
         case 'od':
             orderIcon.style.backgroundColor = iconColors.od;
-            document.getElementById('entry-language-text').innerHTML = 'Oberdeutsche Schrift';
+            document.getElementById('entry-label-text-lang').innerHTML = 'Oberdeutsch';
             break;
         case 'md':
             orderIcon.style.backgroundColor = iconColors.md;
-            document.getElementById('entry-language-text').innerHTML = 'Mitteldeutsche Schrift';
+            document.getElementById('entry-label-text-lang').innerHTML = 'Mitteldeutsch';
             break;
         case 'nd':
             orderIcon.style.backgroundColor = iconColors.nd;
-            document.getElementById('entry-language-text').innerHTML = 'Niederdeutsche Schrift';
+            document.getElementById('entry-label-text-lang').innerHTML = 'Niederdeutsch';
             break;
         case 'lt':
             orderIcon.style.backgroundColor = iconColors.lt;
-            document.getElementById('entry-language-text').innerHTML = 'Lateinische Schrift';
+            document.getElementById('entry-label-text-lang').innerHTML = 'Latein';
             break;
         case 'fr':
             orderIcon.style.backgroundColor = iconColors.fr;
-            document.getElementById('entry-language-text').innerHTML = 'Sonstige Schrift';
+            document.getElementById('entry-label-text-lang').innerHTML = 'Sonstige';
             break;
     }
 
     orderIcon.src = 'assets/side/' + orderImg + '.png';
-    document.getElementById('entry-order-text').innerHTML = 'Orden: ' + item.properties.order;
+    orderIcon.alt = 'Icon ' + item.properties.order;
+    document.getElementById('entry-label-text-order').innerHTML = item.properties.order;
 
-    document.getElementById('entry-category').innerHTML = item.properties.category;
-    document.getElementById('entry-description').innerHTML = item.properties.description;
+    itemCategory = document.getElementById('entry-category');
+    itemDate = document.getElementById('entry-date');
+    itemLocation = document.getElementById('entry-location');
+    itemExtract = document.getElementById('entry-extract');
+    itemDescription = document.getElementById('entry-description');
+
+    itemCategory.innerHTML = '–';
+    itemDate.innerHTML = '–';
+    itemLocation.innerHTML = '–';
+    itemExtract.innerHTML = '–';
+    itemDescription.innerHTML = '–';
+
+    if (item.properties.category) {
+        document.getElementById('entry-category').innerHTML = item.properties.category;
+    }
+    if (item.properties.date) {
+        console.log('write date: ', item.properties.date);
+        document.getElementById('entry-date').innerHTML = item.properties.date;
+    }
+    if (item.properties.location) {
+        document.getElementById('entry-location').innerHTML = item.properties.location;
+    }
+    if (item.properties.extract) {
+        document.getElementById('entry-extract').innerHTML = item.properties.extract;
+    }
+    if (item.properties.description) {
+        document.getElementById('entry-description').innerHTML = item.properties.description;
+    }
 
     if (item.properties.hsc !== '') {
         if (item.properties.hsc.substring(0, 4) === 'http') {
@@ -378,7 +465,7 @@ function showEntryInfo(entryID, cn) {
         document.getElementById('entry-hsc').innerHTML = 'HSC: –';
     }
 
-    if (item.properties.hsc !== '') {
+    if (item.properties.catalog !== '') {
         if (item.properties.catalog.substring(0, 4) === 'http') {
             document.getElementById('entry-catalog').innerHTML = 'Katalog: <a href="' + item.properties.catalog + '" target="_blank">' + item.properties.catalog + '</a>';
         } else {
@@ -388,7 +475,7 @@ function showEntryInfo(entryID, cn) {
         document.getElementById('entry-catalog').innerHTML = 'Katalog: –';
     }
 
-    if (item.properties.hsc !== '') {
+    if (item.properties.digitalisat !== '') {
         if (item.properties.digitalisat.substring(0, 4) === 'http') {
             document.getElementById('entry-digitalisat').innerHTML = 'Digitalisat: <a href="' + item.properties.digitalisat + '" target="_blank">' + item.properties.digitalisat + '</a>';
         } else {
@@ -396,5 +483,32 @@ function showEntryInfo(entryID, cn) {
         }
     } else {
         document.getElementById('entry-digitalisat').innerHTML = 'Digitalisat: –';
+    }
+
+    const references = document.getElementById('entry-references');
+    document.querySelectorAll('.additional-reference').forEach(e => e.parentNode.removeChild(e));
+    /*if (item.properties.references !== '') {
+        if (item.properties.references.substring(0, 4) === '<li>') {
+            const ref = document.createElement('template');
+            ref.innerHTML = item.properties.references;
+            re
+            console.log('template: ', ref, ' template content: ', ref.content);
+            referencesUL.appendChild(ref.content);
+        } else {
+            const ref = document.createElement('li');
+            ref.innerHTML = item.properties.references;
+            referencesUL.appendChild(ref);
+        }
+    }*/
+    if (item.properties.references !== '') {
+        const refs = item.properties.references.split('- ');
+        refs.forEach((r) => {
+            if (r !== '') {
+                const ref = document.createElement('li');
+                ref.className = 'additional-reference';
+                ref.innerHTML = r;
+                references.appendChild(ref);
+            }
+        });
     }
 }

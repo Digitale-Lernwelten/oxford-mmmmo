@@ -356,7 +356,7 @@ function importData() {
     });
 }
 
-function pushToArchives (iso) {
+function pushToArchives(iso) {
     if (archives.hasOwnProperty(iso.properties.archive)) {
         for (let i = 0; i < archives[iso.properties.archive].length; i++) {
             if (iso.properties.id.slice(-1) === archives[iso.properties.archive][i].slice(-1)) {
@@ -415,6 +415,9 @@ function returnIcon(img) {
             break;
         case 'Kartäuser':
             imgID = 'icon-kart';
+            break;
+        case 'Klarissen':
+            imgID = 'icon-klar';
             break;
         case 'Kreuzherren':
             imgID = 'icon-kreu';

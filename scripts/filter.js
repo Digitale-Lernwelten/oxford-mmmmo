@@ -5,9 +5,7 @@ const btnLanguage = document.getElementById('btn-language');
 const btnOrder = document.getElementById('btn-order');
 const btnFilter = document.getElementById('btn-filter');
 
-const selectLanguage = document.getElementById('select-language');
-const selectOrder = document.getElementById('select-order');
-const selectFilter = document.getElementById('select-filter');
+const fieldsets = document.querySelectorAll('.select-field');
 
 const checkboxOD = document.getElementById('checkbox-od');
 const checkboxMD = document.getElementById('checkbox-md');
@@ -229,7 +227,16 @@ function UpdateLineLayers(checked) {
     }
 }
 
-// called by btn-language: toggle fieldset to select languages
+function toggleFieldset(s) {
+    const fieldset = document.getElementById(s);
+    const fd = fieldset.style.display;
+    fieldsets.forEach((f) => { f.style.display = 'none' });
+    if (fd !== 'flex') {
+        fieldset.style.display = 'flex';
+    }
+}
+
+/*// called by btn-language: toggle fieldset to select languages
 function ToggleLanguageList() {
     // if fieldset is displayed, hide it
     if (selectLanguage.style.display === 'flex') {
@@ -269,7 +276,7 @@ function ToggleFilterList() {
         selectOrder.style.display = 'none';
         selectLanguage.style.display = 'none';
     }
-}
+}*/
 
 const val = ((slider.value - slider.min) / slider.step) * (slider.offsetWidth / ((slider.max - slider.min) / slider.step));
 sliderValue.style.left = `${val}px`;
@@ -293,10 +300,9 @@ function setSliderValue() {
 // prevent fieldsets from closing when clicking on a checkbox, because they are children of the toggle buttons
 function StopPropagation() {
     // get fieldsets by class
-    let fieldsets = document.querySelectorAll('.select-field');
-    fieldsets.forEach((fieldset) => {
+    fieldsets.forEach((f) => {
         // stop propagation for each fieldset
-        fieldset.addEventListener('click', (e) => {
+        f.addEventListener('click', (e) => {
             e.stopPropagation();
         });
     });

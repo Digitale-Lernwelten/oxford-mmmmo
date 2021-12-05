@@ -90,7 +90,7 @@ function createHash(s) {
             mult = 3;
             break;
         default:
-            console.log('unexpected string, creating hash failed');
+            console.log('unexpected string, creating hash failed for', s);
             return null;
     }
     switch (secondChar) {
@@ -109,7 +109,7 @@ function createHash(s) {
             m = 400;
             break;
         default:
-            console.log('unexpected string, creating hash failed');
+            console.log('unexpected string, creating hash failed for ', s);
             return null;
     }
 
@@ -154,7 +154,7 @@ function importData() {
         // set data for the first 5 sheets (od, md, nd, lt, fr)
         for (let i = 0; i < iconSources.length; i++) {
             for (let j = 1; j < results[i].data.length; j++) {
-                if (results[i].data[j][0] !== "" && results[i].data[j][1] !== "") {
+                if (results[i].data[j][0] !== "" && results[i].data[j][1] !== "" && results[i].data[j][2] !== "" && results[i].data[j][3] !== "" && results[i].data[j][4] !== "" && results[i].data[j][17] !== "" && results[i].data[j][18] !== "") {
                     // set geojson from data
                     const iconSource = {
                         'type': 'Feature',
@@ -188,6 +188,10 @@ function importData() {
                         'id': 0
                     };
 
+                    if (isNaN(iconSource.properties.radius)) {
+                        iconSource.properties.radius = 0;
+                    }
+
                     iconSources[i].features.push(iconSource); // push to layer source
                     setItem('i' + iconSource.properties.id, iconSource); // push to hash table
 
@@ -203,12 +207,13 @@ function importData() {
                         }
                     }
 
-                    const orderImg = returnIcon(iconSource.properties.order);
+                    const orderImg = returnOrderSVG(iconSource.properties.order);
+                    console.log('order img: ', orderImg);
 
                     newTR.className += 'row-entry';
                     newTR.role = 'button';
                     newTR.onclick = function () { showEntryInfo(newTR.id, newTR.className); };
-                    newTR.innerHTML = '<td><img src="assets/side/' + orderImg + '.png" alt="icon ' + iconSource.properties.order + '"></td><td>' + iconSource.properties.name + '</td>';
+                    newTR.innerHTML = '<td>'/*<img src="assets/orders-svg/' + orderImg + '.svg" alt="icon '*/ + orderImg + '</td><td>' + iconSource.properties.name + '</td>';
                     tables[i].appendChild(newTR);
 
                     //push to archive list
@@ -402,37 +407,37 @@ function returnIcon(img) {
     let imgID
     switch (img) {
         case 'Augustiner':
-            imgID = 'icon-aug';
+            imgID = 'aug';
             break;
         case 'Benediktiner':
-            imgID = 'icon-ben';
+            imgID = 'ben';
             break;
         case 'Dominikaner':
-            imgID = 'icon-dom';
+            imgID = 'dom';
             break;
         case 'Franziskaner':
-            imgID = 'icon-fran';
+            imgID = 'fra';
             break;
         case 'Kartäuser':
-            imgID = 'icon-kart';
+            imgID = 'kar';
             break;
         case 'Klarissen':
-            imgID = 'icon-klar';
+            imgID = 'kla';
             break;
         case 'Kreuzherren':
-            imgID = 'icon-kreu';
+            imgID = 'krz';
             break;
         case 'Zisterzienser':
-            imgID = 'icon-zist';
+            imgID = 'zis';
             break;
         case 'Sonstiges':
-            imgID = 'icon-sonst';
+            imgID = 'son';
             break;
         case 'Unbekannt':
-            imgID = 'icon-unb';
+            imgID = 'unb';
             break;
         default:
-            imgID = 'icon-unb';
+            imgID = 'unb';
             break;
     }
     return imgID;
@@ -454,4 +459,44 @@ function drawCircle(radius, long, lat) {
     coords.push(coords[0]);
     let polygon = [coords];
     return polygon;
+}
+
+function returnOrderSVG(i) {
+    let osvg;
+    switch (i) {
+        case 'Augustiner':
+            osvg = '<svg width="100%" height="100%" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g transform="matrix(2,0,0,2,0,0)"><path d="M15.96,32C9.079,31.978 3.5,26.385 3.5,19.5L3.5,2.5C3.5,1.337 2.736,0.736 2,0L30,0C29.291,0.709 28.5,1.182 28.5,2.515L28.5,19.5C28.5,26.399 22.899,32 16,32L15.96,32ZM4.133,1L27.829,1C27.625,1.406 27.5,1.889 27.5,2.515L27.5,19.5C27.5,25.847 22.347,31 16,31C9.653,31 4.5,25.847 4.5,19.5L4.5,2.5C4.5,1.912 4.36,1.428 4.133,1ZM14.106,10.17L12,6.959L15,7.959L16,3.959L17,7.877L20,6.959L17.894,10.17C18.758,9.855 19.765,9.926 20.565,10.383L23.071,7.877L24.132,8.938L21.62,11.45C21.859,11.884 22,12.414 22,13.041C22,16.226 18.945,17.878 17.137,20.041L23.5,20.041L23.5,26.041L8.5,26.041L8.5,20.041L14.958,20.041C13.194,17.857 10,16.236 10,13.041C10,12.414 10.141,11.884 10.38,11.45L7.868,8.938L8.929,7.877L11.435,10.383C12.235,9.926 13.242,9.855 14.106,10.17Z"/></g></svg>';
+            break;
+        /*case 'Benediktiner':
+            orderImg = 'ben';
+            break;
+        case 'Dominikaner':
+            orderImg = 'dom';
+            break;
+        case 'Franziskaner':
+            orderImg = 'fra';
+            break;
+        case 'Kartäuser':
+            orderImg = 'kar';
+            break;
+        case 'Klarissen':
+            orderImg = 'kla';
+            break;
+        case 'Kreuzherren':
+            orderImg = 'krz';
+            break;
+        case 'Zisterzienser':
+            orderImg = 'zis';
+            break;
+        case 'Sonstiges':
+            orderImg = 'son';
+            break;
+        case 'Unbekannt':
+            orderImg = 'unb';
+            break;*/
+        default:
+            osvg = '<svg width="100%" height="100%" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g transform="matrix(2,0,0,2,0,0)"><path d="M30.5,0L1.5,0L1.5,17.5C1.5,25.503 7.997,32 16,32L16.094,32C24.053,31.949 30.5,25.472 30.5,17.5L30.5,0ZM15.741,22.431C15.062,22.437 14.504,22.649 14.066,23.066C13.622,23.489 13.4,24.027 13.4,24.679C13.4,25.322 13.617,25.852 14.052,26.271C14.486,26.689 15.06,26.898 15.773,26.898C16.486,26.898 17.06,26.689 17.494,26.271C17.929,25.852 18.146,25.322 18.146,24.679C18.146,24.027 17.924,23.489 17.479,23.066C17.035,22.642 16.466,22.431 15.773,22.431L15.741,22.431ZM17.575,20.189L17.633,19.295C17.741,18.337 18.166,17.501 18.908,16.788L20.094,15.659C21.022,14.759 21.671,13.941 22.042,13.203C22.414,12.465 22.599,11.68 22.599,10.849C22.599,9.021 22.028,7.606 20.885,6.605C19.761,5.618 18.186,5.117 16.163,5.102L16.066,5.102C14.015,5.102 12.396,5.629 11.21,6.685C10.023,7.741 9.42,9.202 9.401,11.069L13.649,11.069C13.668,10.286 13.896,9.672 14.33,9.227C14.765,8.781 15.343,8.559 16.066,8.559C17.589,8.559 18.351,9.385 18.351,11.038C18.351,11.586 18.205,12.107 17.912,12.601C17.619,13.095 17.03,13.735 16.146,14.522C15.263,15.309 14.655,16.108 14.323,16.92C13.991,17.731 13.825,18.821 13.825,20.189L17.575,20.189Z"/></g></svg>';
+            break;
+    }
+    return osvg;
 }

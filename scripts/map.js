@@ -100,13 +100,13 @@ function renderGeocoderItems(item) {
         itemName = item.properties.name;
     }
     else if (item.properties.id) {
-        imgID = 'icon-lib';
+        imgID = 'lib';
         bgColor = iconColors.darkGrey;
         itemName = item.properties.name;
     }
     let isInactive = ''
     if(!filterGeocoderItems(item)) isInactive = 'inactive';
-    return '<div class="geocoder-dropdown-item"><img class="geocoder-dropdown-icon" src="assets/side/' + imgID + '.png" style="background-color: ' + bgColor + '"><span class="geocoder-dropdown-text ' + isInactive + '">' + itemName + '</span></div>';
+    return '<div class="geocoder-dropdown-item"><img class="geocoder-dropdown-icon" src="assets/orders-svg/' + imgID + '.svg" style="background-color: ' + bgColor + '"><span class="geocoder-dropdown-text ' + isInactive + '">' + itemName + '</span></div>';
 }
 
 // hinzufügen: doppelte quellen (an untersch. orten) rausfiltern, nur aktuellste version anzeigen
@@ -151,20 +151,18 @@ map.on('style.load', () => {
 
 function addIconImages() {
     orderIcons.forEach((icon) => {
-        map.loadImage('assets/map/' + icon + '.png', (error, imgData) => {
+        map.loadImage('assets/orders-png/' + icon + '.png', (error, imgData) => {
             if (error) throw error;
             map.addImage(icon, imgData, {
                 sdf: true
             });
         });
     });
-    map.loadImage('assets/map/line.png', (error, imgData) => {
-        if (error) throw error;
-        map.addImage('line', imgData);
-    });
-    map.loadImage('assets/map/dash.png', (error, imgData) => {
-        if (error) throw error;
-        map.addImage('dash', imgData);
+    mapIcons.forEach((icon) => {
+        map.loadImage('assets/map/' + icon + '.png', (error, imgData) => {
+            if (error) throw error;
+            map.addImage(icon, imgData);
+        });
     });
 }
 

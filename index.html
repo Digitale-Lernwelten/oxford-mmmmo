@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>MMMMO Interactive Map</title>
+    <title>MMMMO | Mechthild's Medieval Mystical Manuscripts Online</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
@@ -13,7 +13,7 @@
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
         type="text/css">
     <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet">
     <link href='style.css' rel='stylesheet'>
 </head>
@@ -25,16 +25,9 @@
                 <input type="range" min="1300" max="1850" value="1850" step="50" id="slider">
                 <output id="slider-value">Heute</output>
             </div>
-            <button id="btn-language" onclick="ToggleLanguageList()">
-                <svg width="100%" height="100%" viewBox="0 0 64 64"
-                    style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-                    <g transform="matrix(-1.0888,-8.88461e-17,1.04904e-16,-1.05644,173.171,49.5164)">
-                        <path
-                            d="M129.657,0C151.561,-10.978 154.108,-12.274 154.108,-12.274C154.108,-12.274 153.575,-9.573 150.435,6.657C155.754,10.769 159.047,16.449 159.047,22.718C159.047,35.256 145.878,45.435 129.657,45.435C113.436,45.435 100.267,35.256 100.267,22.718C100.267,10.179 113.436,0 129.657,0ZM129.657,5.679C130.492,5.679 131.316,5.484 132.067,5.108C138.337,1.965 143.023,-0.385 146.519,-2.139C146.103,0.006 145.611,2.545 145.03,5.546C144.616,7.69 145.431,9.889 147.128,11.201C150.977,14.176 153.536,18.182 153.536,22.718C153.536,26.264 151.955,29.502 149.433,32.161C144.983,36.851 137.751,39.756 129.657,39.756C121.563,39.756 114.33,36.851 109.881,32.161C107.359,29.502 105.777,26.264 105.777,22.718C105.777,19.171 107.359,15.934 109.881,13.275C114.33,8.584 121.563,5.679 129.657,5.679Z"
-                            style="fill:rgb(70,70,70);" />
-                    </g>
-                </svg>
-                <fieldset id="select-language" class="select-field">
+            <button id="btn-language" onclick="toggleFieldset('select-lang')">
+                <img src="assets/taskbar/lang.svg" alt="Icon Sprache">
+                <fieldset id="select-lang" class="select-field">
                     <div>
                         <input id="checkbox-od" type="checkbox" name="od" value="od"
                             onclick="return UpdateLanguage(value, checked)" checked>
@@ -62,15 +55,8 @@
                     </div>
                 </fieldset>
             </button>
-            <button id="btn-order" onclick="ToggleOrderList()">
-                <svg width="100%" height="100%" viewBox="0 0 64 64"
-                    style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-                    <g transform="matrix(1.33327,0,0,1.33327,-3.7428,-21.3292)">
-                        <path
-                            d="M5.057,15.998L48.559,15.998L48.559,42.249C48.559,54.254 38.813,64 26.808,64C14.804,64 5.057,54.254 5.057,42.249L5.057,15.998ZM9.558,20.498L44.059,20.498C44.059,20.498 44.059,42.249 44.059,42.249C44.059,51.77 36.329,59.5 26.808,59.5C17.287,59.5 9.558,51.77 9.558,42.249L9.558,20.498Z"
-                            style="fill:rgb(70,70,70);" />
-                    </g>
-                </svg>
+            <button id="btn-order" onclick="toggleFieldset('select-order')">
+                <img src="assets/taskbar/order.svg" alt="Icon Orden">
                 <fieldset id="select-order" class="select-field">
                     <div>
                         <input type="checkbox" name="aug" value="Augustiner"
@@ -124,28 +110,29 @@
                     </div>
                 </fieldset>
             </button>
-            <button id="btn-filter" onclick="ToggleFilterList()">
-                <svg width="100%" height="100%" viewBox="0 0 64 64"
-                    style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-                    <g transform="matrix(0.996976,0,0,0.860596,-171.286,22.2773)">
-                        <rect x="187.854" y="7.812" width="48.146" height="6.972" style="fill:rgb(70,70,70);" />
-                    </g>
-                    <g transform="matrix(0.996976,0,0,0.860596,-171.286,4.27725)">
-                        <rect x="187.854" y="7.812" width="48.146" height="6.972" style="fill:rgb(70,70,70);" />
-                    </g>
-                    <g transform="matrix(0.996976,0,0,0.860596,-171.286,40.2773)">
-                        <rect x="187.854" y="7.812" width="48.146" height="6.972" style="fill:rgb(70,70,70);" />
-                    </g>
-                    <g transform="matrix(0.860264,0,0,0.860264,-151.733,0.537097)">
-                        <circle cx="181.03" cy="15.65" r="4.65" style="fill:rgb(70,70,70);" />
-                    </g>
-                    <g transform="matrix(0.860264,0,0,0.860264,-151.733,18.5371)">
-                        <circle cx="181.03" cy="15.65" r="4.65" style="fill:rgb(70,70,70);" />
-                    </g>
-                    <g transform="matrix(0.860264,0,0,0.860264,-151.733,36.5371)">
-                        <circle cx="181.03" cy="15.65" r="4.65" style="fill:rgb(70,70,70);" />
-                    </g>
-                </svg>
+            <button id="btn-layer" onclick="toggleFieldset('select-layer')">
+                <img src="assets/taskbar/flag.svg" alt="Icon Ebenen">
+                <fieldset id="select-layer" class="select-field">
+                    </div>
+                    <div>
+                        <input id="checkbox-radius" type="checkbox" name="radius"
+                            onclick="return UpdateCircleLayers(checked)" checked>
+                        <label for="radius">Radius</label>
+                    </div>
+                    <div>
+                        <input id="checkbox-lines" type="checkbox" name="lines"
+                            onclick="return UpdateLineLayers(checked)" checked>
+                        <label for="lines">Verbindungen</label>
+                    </div>
+                    <div>
+                        <input id="checkbox-lib" type="checkbox" name="lib"
+                            onclick="" checked>
+                        <label for="lib">Bibliotheken</label>
+                    </div>
+                </fieldset>
+            </button>
+            <button id="btn-filter" onclick="toggleFieldset('select-filter')">
+                <img src="assets/taskbar/flag.svg" alt="Icon Flagge">
                 <fieldset id="select-filter" class="select-field">
                     <div>
                         <input id="checkbox-names" type="checkbox" name="names"
@@ -162,16 +149,6 @@
                             onclick="return UpdateInfrastructureLayers(checked)" checked>
                         <label for="infrastructure">Infrastruktur</label>
                     </div>
-                    <div>
-                        <input id="checkbox-radius" type="checkbox" name="radius"
-                            onclick="return UpdateCircleLayers(checked)" checked>
-                        <label for="radius">Radius</label>
-                    </div>
-                    <div>
-                        <input id="checkbox-lines" type="checkbox" name="lines"
-                            onclick="return UpdateLineLayers(checked)" checked>
-                        <label for="lines">Verbindungen</label>
-                    </div>
                 </fieldset>
             </button>
             <!--<input id="searchbar" type="text" placeholder="Suchbegriff eingeben">-->
@@ -179,44 +156,36 @@
         </div>
     </div>
     <div id="side">
-        <!--<nav>
-            <ul>
-                <li id="nav-home" onclick="NavControls(this)">HOME</li>
-                <li id="nav-manuscripts" onclick="NavControls(this)">MANUSKRIPTE</li>
-                <li id="nav-mechthild" onclick="NavControls(this)">MECHTHILD</li>
-                <li id="nav-controls" onclick="NavControls(this)">BEDIENUNG</li>
-            </ul>
-        </nav>-->
         <div id="side-home" class="side-panel">
             <img id="logo" src="assets/side/logo.svg">
             <div class="tile-container">
                 <button class="tile-button" onclick="toggleSide('side-controls')">
-                    <div class="tile-icon"><img src="assets/side/icon-map.svg"></div>
+                    <div class="tile-icon"><img src="assets/side/map.svg"></div>
                     <div class="tile-title">Kartenoptionen</div>
                 </button>
                 <button class="tile-button" onclick="toggleSide('side-info')">
-                    <div class="tile-icon"><img src="assets/side/icon-info.svg"></div>
+                    <div class="tile-icon"><img src="assets/side/info.svg"></div>
                     <div class="tile-title">Zum Projekt<br>'MMMMO'</div>
                 </button>
                 <button class="tile-button" onclick="toggleSide('side-mystic')">
-                    <div class="tile-icon"><img src="assets/side/icon-mystic.svg"></div>
+                    <div class="tile-icon"><img src="assets/side/mystic.svg"></div>
                     <div class="tile-title">Die Mystik<br>des <i>Liber</i></div>
                 </button>
                 <button class="tile-button" onclick="toggleSide('side-liber')">
-                    <div class="tile-icon"><img src="assets/side/icon-liber.svg"></div>
+                    <div class="tile-icon"><img src="assets/side/liber.svg"></div>
                     <div class="tile-title">Der <i>Liber<br>specialis gratiae</i></div>
                 </button>
                 <button class="tile-button" onclick="toggleSide('side-monastery')">
-                    <div class="tile-icon"><img src="assets/side/icon-monastery.svg"></div>
+                    <div class="tile-icon"><img src="assets/side/monas.svg"></div>
                     <div class="tile-title">Kloster Helfta</div>
                 </button>
                 <button class="tile-button" onclick="toggleSide('side-mechthild')">
-                    <div class="tile-icon"><img src="assets/side/icon-nun.svg"></div>
+                    <div class="tile-icon"><img src="assets/side/nun.svg"></div>
                     <div class="tile-title">Mechthild v.<br>Hackeborn</div>
                 </button>
                 <button class="tile-button" style="flex-grow: 2"
                     onclick="toggleSide('side-entries'); openTab('tablink-od', 'tab-od')">
-                    <div class="tile-icon"><img src="assets/side/icon-sources.svg"></div>
+                    <div class="tile-icon"><img src="assets/side/sources.svg"></div>
                     <div class="tile-title">Einträge ansehen</div>
                 </button>
             </div>
@@ -226,7 +195,7 @@
         <div id="side-entries" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Einträge</span>
             </div>
@@ -297,7 +266,7 @@
         <div id="side-mechthild-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Mechthild von Hackeborn</span>
                 <div class="lang-select">
@@ -309,7 +278,7 @@
         <div id="side-monastery-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Kloster Helfta</span>
                 <div class="lang-select">
@@ -321,7 +290,7 @@
         <div id="side-liber-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Der <i>Liber specialis gratiae</i></span>
                 <div class="lang-select">
@@ -333,7 +302,7 @@
         <div id="side-mystic-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Die Mystik des <i>Liber</i></span>
                 <div class="lang-select">
@@ -345,7 +314,7 @@
         <div id="side-info-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Zum Projekt 'MMMMO'</span>
                 <div class="lang-select">
@@ -357,7 +326,7 @@
         <div id="side-controls-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Kartenoptionen</span>
                 <div class="lang-select">
@@ -369,7 +338,7 @@
         <div id="side-impress-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Impressum</span>
                 <div class="lang-select">
@@ -381,7 +350,7 @@
         <div id="side-privacy-de" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Datenschutz</span>
                 <div class="lang-select">
@@ -395,7 +364,7 @@
         <div id="side-mechthild-en" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Mechtilde of Hackeborn</span>
                 <div class="lang-select">
@@ -407,7 +376,7 @@
         <div id="side-monastery-en" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Helfta Monastery</span>
                 <div class="lang-select">
@@ -419,7 +388,7 @@
         <div id="side-liber-en" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">The <i>Liber specialis gratiae</i></span>
                 <div class="lang-select">
@@ -431,7 +400,7 @@
         <div id="side-mystic-en" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">The mysticism of the <i>Liber</i></span>
                 <div class="lang-select">
@@ -443,7 +412,7 @@
         <div id="side-info-en" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">About the project 'MMMMO'</span>
                 <div class="lang-select">
@@ -455,7 +424,7 @@
         <div id="side-controls-en" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Map options</span>
                 <div class="lang-select">
@@ -467,7 +436,7 @@
         <div id="side-impress-en" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Legal notice</span>
                 <div class="lang-select">
@@ -479,7 +448,7 @@
         <div id="side-privacy-en" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Privacy policy</span>
                 <div class="lang-select">
@@ -492,13 +461,13 @@
         <div id="side-entry" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Details zum Eintrag</span>
             </div>
             <h1 id="entry-name"></h1>
             <div id="entry-label">
-                <img id="entry-label-icon" src="assets/map/icon-unb.png">
+                <img id="entry-label-icon" src="assets/orders-svg/unb.svg">
                 <p id="entry-label-text">
                     <span id="entry-label-text-lang"></span> |
                     <span id="entry-label-text-order"></span>
@@ -525,7 +494,7 @@
         <div id="side-archive" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Einträge</span>
             </div>
@@ -543,7 +512,7 @@
         <div id="side-multiple-entries" class="side-panel">
             <div class="side-header">
                 <button class="side-back-button" onclick="toggleSide('side-home')">
-                    <img class="side-back-arrow" src="assets/side/arrow-back.svg">
+                    <img class="side-back-arrow" src="assets/side/back.svg">
                 </button>
                 <span class="side-title">Einträge an diesem Ort</span>
             </div>

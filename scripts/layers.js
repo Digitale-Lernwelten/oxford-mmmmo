@@ -1,4 +1,5 @@
-const orderIcons = ['icon-aug', 'icon-ben', 'icon-dom', 'icon-fran', 'icon-kart', 'icon-klar', 'icon-kreu', 'icon-zist', 'icon-sonst', 'icon-unb', 'icon-lib'];
+const orderIcons = ['aug', 'ben', 'dom', 'fra', 'kar', 'kla', 'krz', 'zis', 'son', 'unb'];
+const mapIcons = ['lib', 'line', 'dash', 'mult'];
 
 const iconColors = {
     od: '#277BB2',
@@ -51,7 +52,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, ['interpolate', ['linear'], ['get', 'radius'], 10, 0.3, 200, 0.1]]
         }
     },
     {
@@ -82,7 +83,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, ['interpolate', ['linear'], ['get', 'radius'], 10, 0.3, 200, 0.1]]
         }
     },
     {
@@ -113,7 +114,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, ['interpolate', ['linear'], ['get', 'radius'], 10, 0.3, 200, 0.1]]
         }
     },
     {
@@ -144,7 +145,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, ['interpolate', ['linear'], ['get', 'radius'], 10, 0.3, 200, 0.1]]
         }
     },
     {
@@ -175,7 +176,7 @@ const iconLayers = [
             'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
             'icon-halo-color': iconColors.darkGrey,
             'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
-            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]
+            'icon-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, ['interpolate', ['linear'], ['get', 'radius'], 10, 0.3, 200, 0.1]]
         }
     }
 ];
@@ -205,7 +206,7 @@ const archiveIconLayer = {
     source: 'data-icons-lib',
     type: 'symbol',
     layout: {
-        'icon-image': orderIcons[10],
+        'icon-image': mapIcons[0],
         'icon-size': 1,
         'icon-allow-overlap': true,
         'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.25, 14, 1],
@@ -295,7 +296,7 @@ const lineLayers = [
             'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
-            'line-pattern': ['image', 'line']
+            'line-pattern': ['image', mapIcons[1]]
         }
     },
     {
@@ -309,7 +310,7 @@ const lineLayers = [
             'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
-            'line-pattern': ['image', 'line']
+            'line-pattern': ['image', mapIcons[1]]
         }
     },
     {
@@ -323,7 +324,7 @@ const lineLayers = [
             'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
-            'line-pattern': ['image', 'line']
+            'line-pattern': ['image', mapIcons[1]]
         }
     },
     {
@@ -337,7 +338,7 @@ const lineLayers = [
             'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
-            'line-pattern': ['image', 'line']
+            'line-pattern': ['image', mapIcons[1]]
         }
     },
     {
@@ -351,7 +352,7 @@ const lineLayers = [
             'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
-            'line-pattern': ['image', 'line']
+            'line-pattern': ['image', mapIcons[1]]
         }
     }
 ];
@@ -368,7 +369,7 @@ const dashLayers = [
             'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
-            'line-pattern': ['image', 'dash']
+            'line-pattern': ['image', mapIcons[2]]
         }
     },
     {
@@ -382,7 +383,7 @@ const dashLayers = [
             'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
-            'line-pattern': ['image', 'dash']
+            'line-pattern': ['image', mapIcons[2]]
         }
     },
     {
@@ -396,7 +397,7 @@ const dashLayers = [
             'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
-            'line-pattern': ['image', 'dash']
+            'line-pattern': ['image', mapIcons[2]]
         }
     },
     {
@@ -410,7 +411,7 @@ const dashLayers = [
             'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
-            'line-pattern': ['image', 'dash']
+            'line-pattern': ['image', mapIcons[2]]
         }
     },
     {
@@ -424,7 +425,7 @@ const dashLayers = [
             'line-opacity': 0.1,
             'line-width': 32,
             'line-blur': 1,
-            'line-pattern': ['image', 'dash']
+            'line-pattern': ['image', mapIcons[2]]
         }
     }
 ];

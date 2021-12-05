@@ -1,6 +1,13 @@
 @font-face {
     font-family: 'D-DIN-PRO';
     src: url('assets/fonts/D-DIN-PRO-400-Regular.otf');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'D-DIN-PRO';
+    src: url('assets/fonts/D-DIN-PRO-600-SemiBold.otf');
+    font-weight: 600;
 }
 
 body {
@@ -456,24 +463,26 @@ table img {
     margin-right: 1rem;
 }
 
-#table-od img {
-    background-color: #277BB2;
+#table-od path {
+    /*filter: invert(43%) sepia(26%) saturate(1423%) hue-rotate(160deg) brightness(91%) contrast(85%);*/
+    fill: blue;
 }
 
-#table-md img {
-    background-color: #7B27B2;
+#table-md path {
+    /*filter: invert(15%) sepia(55%) saturate(5739%) hue-rotate(273deg) brightness(93%) contrast(87%);*/
+    fill: purple;
 }
 
 #table-nd img {
-    background-color: #B2277B;
+    filter: invert(25%) sepia(26%) saturate(6014%) hue-rotate(300deg) brightness(86%) contrast(92%);
 }
 
 #table-lt img {
-    background-color: #B27B27;
+    filter: invert(50%) sepia(29%) saturate(1033%) hue-rotate(357deg) brightness(94%) contrast(92%);
 }
 
 #table-fr img {
-    background-color: #27B27B;
+    filter: invert(63%) sepia(45%) saturate(3257%) hue-rotate(112deg) brightness(92%) contrast(69%);
 }
 
 .inactive {

@@ -90,7 +90,6 @@ function importContent() {
 function renderContent() {
     for (let i = 0; i < contentAll.length; i++) {
         for (let j = 0; j < contentAll[i].length; j++) {
-            console.log('render content for: ', contentAll[i][j]);
             if (contentAll[i][j][0] === 'h1' || contentAll[i][j][0] === 'h2' || contentAll[i][j][0] === 'h3' || contentAll[i][j][0] === 'h4' || contentAll[i][j][0] === 'p' || contentAll[i][j][0] === 'ul' || contentAll[i][j][0] === 'ol' || contentAll[i][j][0] === 'blockquote') {
                 const newElement = document.createElement(contentAll[i][j][0]);
                 newElement.innerHTML = contentAll[i][j][1];
@@ -263,7 +262,7 @@ function showMultipleEntries() {
                 bgColor = '#272727';
                 console.log('background color not defined for: ', item.properties.id.substr(0, 2));
         }
-        newTR.innerHTML = '<td><img src="assets/side/' + orderImg + '.png" alt="icon ' + item.properties.order + '" style="background-color: ' + bgColor + ';"></td><td class="' + className + '">' + item.properties.name + '</td>';
+        newTR.innerHTML = '<td><img src="assets/orders-svg/' + orderImg + '.svg" alt="icon ' + item.properties.order + '" style="background-color: ' + bgColor + ';"></td><td class="' + className + '">' + item.properties.name + '</td>';
         multipleEntriesTable.appendChild(newTR);
     }
     toggleSide('side-multiple-entries');
@@ -303,7 +302,7 @@ function showArchiveEntries(archiveID) {
             newTR.className = 'row-entry';
             newTR.role = 'button';
             newTR.onclick = function () { showEntryInfo(newTR.id, newTR.className); };
-            const orderImg = returnIcon(item.properties.order);
+            const orderImg = returnOrderSVG(item.properties.order);
             let bgColor = '';
             let className = '';
             switch (item.properties.id.substr(0, 2)) {
@@ -331,7 +330,8 @@ function showArchiveEntries(archiveID) {
                     bgColor = '#272727';
                     console.log('background color not defined for: ', item.properties.id.substr(0, 2));
             }
-            newTR.innerHTML = '<td><img src="assets/side/' + orderImg + '.png" alt="icon ' + item.properties.order + '" style="background-color: ' + bgColor + ';"></td><td class="' + className + '">' + item.properties.name + '</td>';
+            newTR.innerHTML = '<td>' + orderImg +/*<img src="assets/orders-svg/' + orderImg + '.svg" alt="icon ' + item.properties.order + '" style="background-color: ' + bgColor + ';">*/'</td><td class="' + className + '">' + item.properties.name + '</td>';
+            console.log('order img: ', orderImg);
             archiveTable.appendChild(newTR);
         }
         toggleSide('side-archive');
@@ -360,70 +360,34 @@ function showEntryInfo(entryID, cn) {
         });
     }
 
-    const orderIcon = document.getElementById('entry-label-icon');
-    let orderImg;
-    switch (item.properties.order) {
-        case 'Augustiner':
-            orderImg = 'icon-aug';
-            break;
-        case 'Benediktiner':
-            orderImg = 'icon-ben';
-            break;
-        case 'Dominikaner':
-            orderImg = 'icon-dom';
-            break;
-        case 'Franziskaner':
-            orderImg = 'icon-fran';
-            break;
-        case 'Kartäuser':
-            orderImg = 'icon-kart';
-            break;
-        case 'Klarissen':
-            orderImg = 'icon-klar';
-            break;
-        case 'Kreuzherren':
-            orderImg = 'icon-kreu';
-            break;
-        case 'Zisterzienser':
-            orderImg = 'icon-zist';
-            break;
-        case 'Sonstiges':
-            orderImg = 'icon-sonst';
-            break;
-        case 'Unbekannt':
-            orderImg = 'icon-unb';
-            break;
-        default:
-            orderImg = 'icon-unb';
-            break;
-    }
-
+    let orderImg = returnOrderSVG(item.properties.order);
+    
     const entryLang = entryID.substring(0, 2);
     switch (entryLang) {
         case 'od':
-            orderIcon.style.backgroundColor = iconColors.od;
+            //orderIcon.style.backgroundColor = iconColors.od;
             document.getElementById('entry-label-text-lang').innerHTML = 'Oberdeutsch';
             break;
         case 'md':
-            orderIcon.style.backgroundColor = iconColors.md;
+            //orderIcon.style.backgroundColor = iconColors.md;
             document.getElementById('entry-label-text-lang').innerHTML = 'Mitteldeutsch';
             break;
         case 'nd':
-            orderIcon.style.backgroundColor = iconColors.nd;
+            //orderIcon.style.backgroundColor = iconColors.nd;
             document.getElementById('entry-label-text-lang').innerHTML = 'Niederdeutsch';
             break;
         case 'lt':
-            orderIcon.style.backgroundColor = iconColors.lt;
+            //orderIcon.style.backgroundColor = iconColors.lt;
             document.getElementById('entry-label-text-lang').innerHTML = 'Latein';
             break;
         case 'fr':
-            orderIcon.style.backgroundColor = iconColors.fr;
+            //orderIcon.style.backgroundColor = iconColors.fr;
             document.getElementById('entry-label-text-lang').innerHTML = 'Sonstige';
             break;
     }
 
-    orderIcon.src = 'assets/side/' + orderImg + '.png';
-    orderIcon.alt = 'Icon ' + item.properties.order;
+    //orderIcon.src = 'assets/orders-svg/' + orderImg + '.svg';
+    //orderIcon.alt = 'Icon ' + item.properties.order;
     document.getElementById('entry-label-text-order').innerHTML = item.properties.order;
 
     itemCategory = document.getElementById('entry-category');

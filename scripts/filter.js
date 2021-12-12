@@ -1,305 +1,218 @@
-const slider = document.getElementById('slider');
-const sliderValue = document.getElementById('slider-value');
-
-const btnLanguage = document.getElementById('btn-language');
-const btnOrder = document.getElementById('btn-order');
-const btnFilter = document.getElementById('btn-filter');
-
+const cbLang = [document.getElementById('cb-od'), document.getElementById('cb-md'), document.getElementById('cb-nd'), document.getElementById('cb-lt'), document.getElementById('cb-fr')];
+const cbOther = [document.getElementById('cb-lib'), document.getElementById('cb-radius'), document.getElementById('cb-line'), document.getElementById('cb-label'), document.getElementById('cb-border')];
 const fieldsets = document.querySelectorAll('.select-field');
 
-const checkboxOD = document.getElementById('checkbox-od');
-const checkboxMD = document.getElementById('checkbox-md');
-const checkboxND = document.getElementById('checkbox-nd');
-const checkboxLT = document.getElementById('checkbox-lt');
-const checkboxFR = document.getElementById('checkbox-fr');
-const checkboxesLang = [checkboxOD, checkboxMD, checkboxND, checkboxLT, checkboxFR];
-
-const checkboxBorders = document.getElementById('checkbox-borders');
-const checkboxNames = document.getElementById('checkbox-names');
-const checkboxRadius = document.getElementById('checkbox-radius');
-const checkboxLines = document.getElementById('checkbox-lines');
+const slider = document.getElementById('slider-range');
 
 let orders = ['Augustiner', 'Benediktiner', 'Dominikaner', 'Franziskaner', 'Kartäuser', 'Klarissen', 'Kreuzherren', 'Zisterzienser', 'Sonstiges', 'Unbekannt'];
+let currentLabels = slLayers.concat(olLayers), currentBorders = borderLayers;
+let invMult = [];
 
+// filters are static and do not react to any changes made to their values (e.g. slider.value, orders)
+// that is why filters are stores as variables and get reapplied after every change of year or orders
 let filterYear = ['>=', ['to-number', slider.value], ['to-number', ['get', 'year']]];
 let filterOrder = ['in', ['get', 'order'], ['literal', orders]];
-let filters = ['all', filterYear, filterOrder];
 
-let currentBorderLayers = borderLayers;
-let currentNameLayers = stateNameLayers.concat(otherNameLayers);
-
-let loaded; // is the map fully loaded?
-
-function UpdateYear() {
-    UpdateBorderLayers(checkboxBorders.checked);
-    UpdateNameLayers(checkboxNames.checked);
+function updateYear() {
+    updateLabel(cbOther[3].checked);
+    updateBorder(cbOther[4].checked);
     filterYear = ['>=', ['to-number', slider.value], ['to-number', ['get', 'year']]];
-    const checkVisibility = map.getLayoutProperty(archiveIconLayer.id, 'visibility');
-    if (slider.value === slider.max && checkVisibility === 'none') {
-        for (let i = 0; i < iconLayers.length; i++) {
-            map.setPaintProperty(iconLayers[i].id, 'icon-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.3]);
-            map.setPaintProperty(circleLayers[i].id, 'fill-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, ['boolean', ['feature-state', 'selected'], false], 0.2, 0.05]);
-            map.setPaintProperty(lineLayers[i].id, 'line-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.6, ['boolean', ['feature-state', 'selected'], false], 0.6, 0.1]);
-            map.setPaintProperty(dashLayers[i].id, 'line-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.6, ['boolean', ['feature-state', 'selected'], false], 0.6, 0.1]);
-            map.setPaintProperty(archiveLineLayers[i].id, 'line-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.6, ['boolean', ['feature-state', 'selected'], false], 0.6, 0.3]);
-        }
-        map.setLayoutProperty(archiveIconLayer.id, 'visibility', 'visible');
-    } else if (slider.value !== slider.max && checkVisibility === 'visible') {
-        for (let i = 0; i < iconLayers.length; i++) {
-            map.setPaintProperty(iconLayers[i].id, 'icon-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 1, ['boolean', ['feature-state', 'selected'], false], 1, 0.6]);
-            map.setPaintProperty(circleLayers[i].id, 'fill-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.2, ['boolean', ['feature-state', 'selected'], false], 0.2, 0.1]);
-            map.setPaintProperty(lineLayers[i].id, 'line-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.6, ['boolean', ['feature-state', 'selected'], false], 0.6, 0.3]);
-            map.setPaintProperty(dashLayers[i].id, 'line-opacity', ['case', ['boolean', ['feature-state', 'hover'], false], 0.6, ['boolean', ['feature-state', 'selected'], false], 0.6, 0.3]);
-            map.setPaintProperty(archiveLineLayers[i].id, 'line-opacity', 0);
-        }
-        map.setLayoutProperty(archiveIconLayer.id, 'visibility', 'none');
-    }
-    UpdateFilters();
+    updateFilters();
 }
 
-function UpdateFilters() {
-    iconLayers.forEach((layer) => {
-        map.setFilter(layer.id, ['all', filterYear, filterOrder]);
-    });
-    for (let i = 0; i < iconLayers.length; i++) {
-        map.setFilter(iconLayers[i].id, ['all', filterYear, filterOrder]);
-        map.setFilter(circleLayers[i].id, ['all', filterYear, filterOrder]);
-        map.setFilter(lineLayers[i].id, ['all', filterYear, filterOrder]);
-        map.setFilter(dashLayers[i].id, ['all', filterYear, filterOrder]);
-        map.setFilter(archiveLineLayers[i].id, filterOrder);
-    }
-
-    // if entries in the sidebar are currently shown, update which entries are currently visible
-    if (document.getElementById('side-entries').style.display === 'block') {
-        showActiveEntries();
-    }
-    //map.on('render', showSameLocationSources);
-    showSameLocationSources();
-}
-
-function showSameLocationSources() {
-    if (!map.loaded() && !loaded) {
-        setTimeout(showSameLocationSources, 100);
-    } else if (!loaded) {
-        loaded = true;
-        setTimeout(showSameLocationSources, 500);
-    } else {
-        // reset multiple icon sources
-        multipleIconSources.features = [];
-
-        // change icon for sources at same location
-        const features = map.queryRenderedFeatures({ layers: ['layer-icons-od', 'layer-icons-md', 'layer-icons-nd', 'layer-icons-lt', 'layer-icons-fr'] });
-        for (let i = 0; i < iconDoubleCoordinates.length; i++) {
-            let count = 0;
-            let coords = [];
-            for (let j = 0; j < iconDoubleCoordinates[i].length; j++) {
-                const feature = features.find((f) => f.properties.id === iconDoubleCoordinates[i][j]);
-                if (feature !== undefined) {
-                    count++;
-                    coords = feature.geometry.coordinates;
-                }
-            }
-            if (count > 1) {
-                multipleIconSources.features.push({
-                    'type': 'Feature',
-                    'properties': {
-                        'count': count
-                    },
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': coords
-                    }
-                });
-            }
-        }
-        map.getSource(multipleIconsLayer.source).setData(multipleIconSources);
-        loaded = false;
-        //map.off('render', showSameLocationSources);
-    }
-}
-
-function UpdateLanguage(value, checked) {
+function updateOrder(val, checked) {
     if (checked) {
-        map.setLayoutProperty('layer-icons-' + value, 'visibility', 'visible');
-        if (checkboxRadius.checked) {
-            map.setLayoutProperty('layer-circles-' + value, 'visibility', 'visible');
-        }
-        if (checkboxLines.checked) {
-            map.setLayoutProperty('layer-lines-' + value, 'visibility', 'visible');
-            map.setLayoutProperty('layer-dashes-' + value, 'visibility', 'visible');
-            map.setLayoutProperty('layer-archive-lines-' + value, 'visibility', 'visible');
+        if (!orders.includes(val)) {
+            orders.push(val);
         }
     } else {
-        map.setLayoutProperty('layer-icons-' + value, 'visibility', 'none');
-        map.setLayoutProperty('layer-circles-' + value, 'visibility', 'none');
-        map.setLayoutProperty('layer-lines-' + value, 'visibility', 'none');
-        map.setLayoutProperty('layer-dashes-' + value, 'visibility', 'none');
-        map.setLayoutProperty('layer-archive-lines-' + value, 'visibility', 'none');
-    }
-
-    // if entries in the sidebar are currently shown, update which entries are currently visible
-    if (document.getElementById('side-entries').style.display === 'block') {
-        showActiveEntries();
-    }
-    showSameLocationSources();
-}
-
-function UpdateOrder(value, checked) {
-    if (checked) {
-        if (!orders.includes(value)) {
-            orders.push(value);
-        }
-    } else {
-        orders = orders.filter(item => item !== value);
+        orders = orders.filter(o => o !== val);
     }
     filterOrder = ['in', ['get', 'order'], ['literal', orders]];
-    UpdateFilters();
+    updateFilters();
 }
 
-function UpdateNameLayers(checked) {
-    currentNameLayers.forEach((layer) => { map.setLayoutProperty(layer, 'visibility', 'none') });
-    if (slider.value === slider.max) {
-        currentNameLayers = stateNameLayers.concat(otherNameLayers);
+function updateLang(val, checked) {
+    if (checked) {
+        map.setLayoutProperty(`el-${val}`, 'visibility', 'visible');
+        if (cbOther[1].checked) map.setLayoutProperty(`rl-${val}`, 'visibility', 'visible');
+        if (cbOther[2].checked) {
+            map.setLayoutProperty(`lil-${val}`, 'visibility', 'visible');
+            map.setLayoutProperty(`dal-${val}`, 'visibility', 'visible');
+            if (cbOther[0].checked) map.setLayoutProperty(`rl-${val}`, 'visibility', 'visible');
+        }
     } else {
-        historicalMaps.forEach((year) => {
-            if (year < slider.value) {
-                currentNameLayers = ['world-' + year + '-names'].concat(otherNameLayers);
-            } else {
-                return;
+        map.setLayoutProperty(`el-${val}`, 'visibility', 'none');
+        map.setLayoutProperty(`rl-${val}`, 'visibility', 'none');
+        map.setLayoutProperty(`lil-${val}`, 'visibility', 'none');
+        map.setLayoutProperty(`dal-${val}`, 'visibility', 'none');
+        map.setLayoutProperty(`dol-${val}`, 'visibility', 'none');
+    }
+    displayMultIcon();
+}
+
+function updateFilters() {
+    for (let i = 0; i < entryLayers.length; i++) {
+        map.setFilter(entryLayers[i].id, ['all', filterYear, filterOrder]);
+        map.setFilter(radiusLayers[i].id, ['all', filterYear, filterOrder]);
+        map.setFilter(lineLayers[i].id, ['all', filterYear, filterOrder]);
+        map.setFilter(dashLayers[i].id, ['all', filterYear, filterOrder]);
+        map.setFilter(dotLayers[i].id, ['all', filterYear, filterOrder]);
+    }
+    displayMultIcon();
+}
+
+function displayMultIcon() {
+    switch (activeSide) {
+        case 'side-entries': displayEntries(); break;
+        case 'side-lib': displayLibEntries(selectedLibSide, false); break;
+        case 'side-mult': displayMultEntries(selectedMultSide, false); break;
+        default: break;
+    }
+
+    // reset invisible icons
+    invMult.forEach((im) => {
+        map.setFeatureState({ source: entryLayers[returnPrefix(features[im].properties.pid)].source, id: im }, { mult: false });
+    });
+
+    const multSources = { type: 'FeatureCollection', features: [] };
+    multEntries.forEach((multArray) => {
+        let cm = [];
+        for (let i = 0; i < multArray.length; i++) {
+            if (features[multArray[i]].properties.year <= slider.value && orders.includes(features[multArray[i]].properties.order) && cbLang[returnPrefix(features[multArray[i]].properties.pid)].checked) {
+                cm.push(multArray[i]);
             }
-        });
-    } if (checked) {
-        currentNameLayers.forEach((layer) => { map.setLayoutProperty(layer, 'visibility', 'visible') });
-    }
-}
-
-function UpdateBorderLayers(checked) {
-    currentBorderLayers.forEach((layer) => { map.setLayoutProperty(layer, 'visibility', 'none') });
-    if (slider.value === slider.max) {
-        currentBorderLayers = borderLayers;
-    } else {
-        historicalMaps.forEach((year) => {
-            if (year < slider.value) {
-                currentBorderLayers = ['world-' + year + '-lines'];
-            } else {
-                return;
+        }
+        if (cm.length > 1) {
+            multSources.features.push({
+                type: 'Feature',
+                geometry: { type: 'Point', coordinates: features[multArray[0]].geometry.coordinates }
+            });
+            for (let i = 1; i < cm.length; i++) {
+                map.setFeatureState({ source: entryLayers[returnPrefix(features[cm[i]].properties.pid)].source, id: cm[i] }, { mult: true });
+                invMult.push(cm[i]);
             }
-        });
-    }
-    if (checked) {
-        currentBorderLayers.forEach((layer) => { map.setLayoutProperty(layer, 'visibility', 'visible') });
-    }
+        }
+    });
+    map.getSource(multLayer.source).setData(multSources);
 }
 
-function UpdateInfrastructureLayers(checked) {
+function updateLib(checked) {
     if (checked) {
-        infrastructureLayers.forEach((layer) => { map.setLayoutProperty(layer, 'visibility', 'visible') });
-    } else {
-        infrastructureLayers.forEach((layer) => { map.setLayoutProperty(layer, 'visibility', 'none') });
-    }
-}
-
-function UpdateCircleLayers(checked) {
-    if (checked) {
-        for (let i = 0; i < circleLayers.length; i++) {
-            if (checkboxesLang[i].checked) {
-                map.setLayoutProperty(circleLayers[i].id, 'visibility', 'visible');
+        map.setLayoutProperty(libLayer.id, 'visibility', 'visible');
+        if (cbOther[2].checked) {
+            for (let i = 0; i < dotLayers.length; i++) {
+                if (cbLang[i].checked) map.setLayoutProperty(dotLayers[i].id, 'visibility', 'visible');
             }
         }
     } else {
-        circleLayers.forEach((layer) => { map.setLayoutProperty(layer.id, 'visibility', 'none') });
+        map.setLayoutProperty(libLayer.id, 'visibility', 'none');
+        dotLayers.forEach((l) => { map.setLayoutProperty(l.id, 'visibility', 'none') });
     }
 }
 
-function UpdateLineLayers(checked) {
+function updateRadius(checked) {
+    if (checked) {
+        for (let i = 0; i < radiusLayers.length; i++) {
+            if (cbLang[i].checked) {
+                map.setLayoutProperty(radiusLayers[i].id, 'visibility', 'visible');
+            }
+        }
+    } else {
+        radiusLayers.forEach((l) => { map.setLayoutProperty(l.id, 'visibility', 'none') });
+    }
+}
+
+function updateLine(checked) {
     if (checked) {
         for (let i = 0; i < lineLayers.length; i++) {
-            if (checkboxesLang[i].checked) {
+            if (cbLang[i].checked) {
                 map.setLayoutProperty(lineLayers[i].id, 'visibility', 'visible');
                 map.setLayoutProperty(dashLayers[i].id, 'visibility', 'visible');
-                map.setLayoutProperty(archiveLineLayers[i].id, 'visibility', 'visible');
+                if (cbOther[0].checked) map.setLayoutProperty(dotLayers[i].id, 'visibility', 'visible');
             }
         }
     } else {
-        lineLayers.forEach((layer) => { map.setLayoutProperty(layer.id, 'visibility', 'none') });
-        dashLayers.forEach((layer) => { map.setLayoutProperty(layer.id, 'visibility', 'none') });
-        archiveLineLayers.forEach((layer) => { map.setLayoutProperty(layer.id, 'visibility', 'none') });
+        for (let i = 0; i < lineLayers.length; i++) {
+            map.setLayoutProperty(lineLayers[i].id, 'visibility', 'none');
+            map.setLayoutProperty(dashLayers[i].id, 'visibility', 'none');
+            map.setLayoutProperty(dotLayers[i].id, 'visibility', 'none');
+        }
     }
+}
+
+function updateLabel(checked) {
+    currentLabels.forEach((l) => { map.setLayoutProperty(l, 'visibility', 'none') });
+    if (slider.value === slider.max) {
+        currentLabels = slLayers.concat(olLayers);
+    } else {
+        histMaps.forEach((year) => {
+            if (year < slider.value) {
+                currentLabels = ['world-' + year + '-labels'].concat(olLayers);
+            } else {
+                return;
+            }
+        });
+    }
+    if (checked) {
+        currentLabels.forEach((l) => { map.setLayoutProperty(l, 'visibility', 'visible') });
+    }
+}
+
+function updateBorder(checked) {
+    currentBorders.forEach((l) => { map.setLayoutProperty(l, 'visibility', 'none') });
+    if (slider.value === slider.max) {
+        currentBorders = borderLayers;
+    } else {
+        histMaps.forEach((year) => {
+            if (year < slider.value) {
+                currentBorders = ['world-' + year + '-lines'];
+            } else {
+                return;
+            }
+        });
+    }
+    if (checked) {
+        currentBorders.forEach((l) => { map.setLayoutProperty(l, 'visibility', 'visible') });
+    }
+}
+
+function updateInf(checked) {
+    if (checked) {
+        infLayers.forEach((l) => { map.setLayoutProperty(l, 'visibility', 'visible') });
+    } else {
+        infLayers.forEach((l) => { map.setLayoutProperty(l, 'visibility', 'none') });
+    }
+}
+
+function toggleSearch() {
+    fieldsets.forEach((f) => { f.style.display = 'none' });
+    const gd = document.querySelector('.mapboxgl-ctrl-geocoder');
+    gd.style.display === 'none' ? gd.style.display = 'block' : gd.style.display = 'none';
 }
 
 function toggleFieldset(s) {
-    const fieldset = document.getElementById(s);
-    const fd = fieldset.style.display;
+    document.querySelector('.mapboxgl-ctrl-geocoder').style.display = 'none';
+    const fs = document.getElementById(s);
+    const fd = fs.style.display;
     fieldsets.forEach((f) => { f.style.display = 'none' });
-    if (fd !== 'flex') {
-        fieldset.style.display = 'flex';
-    }
+    if (fd !== 'flex') fs.style.display = 'flex';
 }
 
-/*// called by btn-language: toggle fieldset to select languages
-function ToggleLanguageList() {
-    // if fieldset is displayed, hide it
-    if (selectLanguage.style.display === 'flex') {
-        selectLanguage.style.display = 'none';
-    }
-    // if it is hidden, display it and hide other fieldsets
-    else {
-        selectLanguage.style.display = 'flex';
-        selectOrder.style.display = 'none';
-        selectFilter.style.display = 'none';
-    }
-}
-
-// called by btn-order: toggle fieldset to select orders
-function ToggleOrderList() {
-    // if fieldset is displayed, hide it
-    if (selectOrder.style.display === 'flex') {
-        selectOrder.style.display = 'none';
-    }
-    // if it is hidden, display it and hide other fieldsets
-    else {
-        selectOrder.style.display = 'flex';
-        selectLanguage.style.display = 'none';
-        selectFilter.style.display = 'none';
-    }
-}
-
-// called by btn-filter: toggle fieldset to select additional filter options
-function ToggleFilterList() {
-    // if fieldset is displayed, hide it
-    if (selectFilter.style.display === 'flex') {
-        selectFilter.style.display = 'none';
-    }
-    // if it is hidden, display it and hide other fieldsets
-    else {
-        selectFilter.style.display = 'flex';
-        selectOrder.style.display = 'none';
-        selectLanguage.style.display = 'none';
-    }
-}*/
-
-const val = ((slider.value - slider.min) / slider.step) * (slider.offsetWidth / ((slider.max - slider.min) / slider.step));
-sliderValue.style.left = `${val}px`;
-slider.addEventListener('input', setSliderValue);
-
-// called by slider input: set position and text for the slider output, update markers
+// SET POSITION AND TEXT FOR SLIDER OUTPUT, UPDATE YEAR
 function setSliderValue() {
+    const sliderValue = document.getElementById('slider-value');
     // set position
     const val = ((slider.value - slider.min) / slider.step) * (slider.offsetWidth / ((slider.max - slider.min) / slider.step));
     sliderValue.style.left = `${val}px`;
     // set text
-    if (slider.value === slider.max) {
-        sliderValue.innerHTML = 'Heute';
-    } else {
-        sliderValue.innerHTML = slider.value;
-    }
-    // update markers on map
-    UpdateYear();
+    slider.value === slider.max ? sliderValue.innerHTML = 'Heute' : sliderValue.innerHTML = slider.value;
+    // update icons after setting the year
+    updateYear();
 }
 
-// prevent fieldsets from closing when clicking on a checkbox, because they are children of the toggle buttons
-function StopPropagation() {
-    // get fieldsets by class
+// prevent fieldsets from closing when clicking on a checkbox
+function stopFieldsetPropagation() {
     fieldsets.forEach((f) => {
         // stop propagation for each fieldset
         f.addEventListener('click', (e) => {
@@ -308,4 +221,9 @@ function StopPropagation() {
     });
 }
 
-StopPropagation();
+stopFieldsetPropagation();
+
+document.getElementById('taskbar').addEventListener('mousedown', () => {
+    resetEntryHover();
+    resetLibHover();
+});

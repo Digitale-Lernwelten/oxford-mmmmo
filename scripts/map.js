@@ -1,8 +1,6 @@
-let hoveredIcon = new Array(5).fill(null), hoveredCircle = new Array(5).fill(null), hoveredLines = new Array(5).fill([]), hoveredDashes = new Array(5).fill([]);
-let selectedIcon = null, selectedCircle = null, selectedLines = [], selectedDashes = [], selectedFeatures = [];
+let selectedLib = null, selectedEntry = null; selectedRadius = null, selectedLines = [], selectedDashes = [], selectedDots = [];
 
-//lock screen rotation to landscape on mobile devices
-screen.orientation.lock('landscape');
+let selected = false;
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZGx3LW1tbW1vIiwiYSI6ImNrcXRvZ2JuaTAwMmkzMW8zMmJlOGpveDUifQ.5XieGJGXyN1EOV0i-fDReA';
 const map = new mapboxgl.Map({
@@ -16,452 +14,228 @@ const map = new mapboxgl.Map({
     ]
 });
 
-// add geocoder control to the map
-const geocoder = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    mapboxgl: mapboxgl,
-    zoom: 14,
-    flyTo: false,
-    placeholder: "Suchbegriff eingeben",
-    bbox: [-130, 20, 45, 70],
-    localGeocoder: forwardGeocoder,
-    localGeocoderOnly: true,
-    marker: false,
-    render: renderGeocoderItems
-});
-
-// to do: outsource marker highlighting when mapbox.on('select') to function
-// also call the function here to highlight the marker
-geocoder.on('result', (result) => {
-    if (result.result.properties.id) {
-        if (result.result.properties.year) {
-            let isInactive = '';
-            if(!filterGeocoderItems(result.result)) isInactive = 'inactive';
-            showEntryInfo(result.result.properties.id, isInactive);
-        } else {
-            showArchiveEntries(result.result.properties.id);
-        }
-    }
-});
-
-//document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
-map.addControl(geocoder)
-
-function forwardGeocoder(query) {
-    const matchingFeatures = [];
-    archiveIconSources.features.forEach((feature) => {
-        if (feature.properties.name.toLowerCase().includes(query.toLowerCase())) {
-            feature['place_name'] = feature.properties.name;
-            feature['center'] = feature.geometry.coordinates;
-            feature['place-type'] = ['poi'];
-            matchingFeatures.push(feature);
-        }
-    });
-    for (let i = 0; i < iconSources.length; i++) {
-        iconSources[i].features.forEach((feature) => {
-            if (feature.properties.name.toLowerCase().includes(query.toLowerCase())) {
-                feature['place_name'] = feature.properties.name;
-                feature['center'] = feature.geometry.coordinates;
-                feature['place-type'] = ['poi'];
-                matchingFeatures.push(feature);
-            }
-        });
-    }
-    return matchingFeatures;
-}
-
-function renderGeocoderItems(item) {
-    console.log(item);
-    let imgID = 'icon-marker';
-    let bgColor = 'white';
-    let itemName = item['place_name'];
-    if (item.properties.order) {
-        imgID = returnIcon(item.properties.order);
-        switch (item.properties.id.substr(0, 2)) {
-            case 'od':
-                bgColor = '#277BB2';
-                break;
-            case 'md':
-                bgColor = '#7B27B2';
-                break;
-            case 'nd':
-                bgColor = '#B2277B';
-                break;
-            case 'lt':
-                bgColor = '#B27B27';
-                break;
-            case 'fr':
-                bgColor = '#27B27B';
-                break;
-            default:
-                bgColor = '#272727';
-                console.log('background color not defined for: ', item.properties.id.substr(0, 2));
-        }
-        itemName = item.properties.name;
-    }
-    else if (item.properties.id) {
-        imgID = 'lib';
-        bgColor = iconColors.darkGrey;
-        itemName = item.properties.name;
-    }
-    let isInactive = ''
-    if(!filterGeocoderItems(item)) isInactive = 'inactive';
-    return '<div class="geocoder-dropdown-item"><img class="geocoder-dropdown-icon" src="assets/orders-svg/' + imgID + '.svg" style="background-color: ' + bgColor + '"><span class="geocoder-dropdown-text ' + isInactive + '">' + itemName + '</span></div>';
-}
-
-// hinzufügen: doppelte quellen (an untersch. orten) rausfiltern, nur aktuellste version anzeigen
-function filterGeocoderItems(item) {
-    if (item.properties.year) {
-        if (item.properties.year < slider.value) {
-            if (orders.includes(item.properties.order)) {
-                const cb = document.getElementById('checkbox-' + item.properties.id.substr(0, 2));
-                if (cb.checked) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    } else {
-        if (slider.value === slider.max) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
-
 const popup = new mapboxgl.Popup({
     closeButton: false,
-    closeOnClick: false,
+    closeOnMove: true,
     maxWidth: '200px',
     offset: 12
 });
 
+function addImages() {
+    orderIcons.forEach((icon) => {
+        map.loadImage(`assets/orders/${icon}.png`, (error, data) => {
+            map.addImage(icon, data, { sdf: true });
+        });
+    });
+    mapIcons.forEach((icon) => {
+        map.loadImage(`assets/map/${icon}.png`, (error, data) => {
+            map.addImage(icon, data, { sdf: true });
+        });
+    });
+}
+
+// called by import.js after all data is imported
+function addFeatures() {
+    for (let i = 0; i < entryLayers.length; i++) {
+        // add radius layers
+        map.addSource(radiusLayers[i].source, { type: 'geojson', data: radiusSources[i] });
+        map.addLayer(radiusLayers[i]);
+        // add dot layers
+        map.addSource(dotLayers[i].source, { type: 'geojson', data: dotSources[i] });
+        map.addLayer(dotLayers[i]);
+        // add dash layers
+        map.addSource(dashLayers[i].source, { type: 'geojson', data: dashSources[i] });
+        map.addLayer(dashLayers[i]);
+        // add line layers
+        map.addSource(lineLayers[i].source, { type: 'geojson', data: lineSources[i] });
+        map.addLayer(lineLayers[i]);
+        // add entry layers
+        map.addSource(entryLayers[i].source, { type: 'geojson', data: entrySources[i] });
+        map.addLayer(entryLayers[i]);
+        map.on('mousemove', entryLayers[i].id, (e) => {
+            map.getCanvas().style.cursor = 'pointer';
+            let s = '';
+            e.features.forEach((f) => { s += f.properties.sig + '<br>' });
+            popup.setLngLat(e.features[0].geometry.coordinates).setHTML(s).addTo(map);
+            if (!selected && e.features.length > 0) setEntryHover(e.features[0]);
+        });
+        map.on('mouseleave', entryLayers[i].id, () => {
+            map.getCanvas().style.cursor = '';
+            popup.remove();
+            if (!selected) resetEntryHover();
+        });
+        map.on('click', entryLayers[i].id, (e) => {
+            if (e.features.length === 1) {
+                displayEntry(e.features[0].id, '');
+            } else if (e.features.length > 1) {
+                displayMultEntries(e.features, true);
+            }
+        });
+    }
+    // add arrow layer
+    map.addSource(arrowLayer.source, { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+    map.addLayer(arrowLayer, entryLayers[0].id);
+    // add mult layer
+    map.addSource(multLayer.source, { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+    map.addLayer(multLayer);
+    // add lib layer
+    map.addSource(libLayer.source, { type: 'geojson', data: libSources });
+    map.addLayer(libLayer);
+    map.on('mousemove', libLayer.id, (e) => {
+        map.getCanvas().style.cursor = 'pointer';
+        if (!selected && e.features.length > 0) setLibHover(e.features[0]);
+    });
+    map.on('mouseleave', libLayer.id, () => {
+        map.getCanvas().style.cursor = '';
+        if (!selected) resetLibHover();
+    });
+
+    map.on('click', libLayer.id, (e) => {
+        if (e.features.length > 0) {
+            setLibHover(e.features[0]);
+            displayLibEntries(e.features[0].id, true);
+        }
+    });
+
+    /*map.on('mousedown', () => {
+        if (selected) {
+            selected = false;
+            resetEntryHover();
+            resetLibHover();
+        }
+    });
+    map.on('touchstart', () => {
+        if (selected) {
+            selected = false;
+            resetEntryHover();
+            resetLibHover();
+        }
+    });*/
+    // remove loading screen, set slider
+    document.getElementById('loading-screen').style.display = 'none';
+    slider.addEventListener('input', setSliderValue);
+    window.addEventListener('resize', setSliderValue);
+    setSliderValue();
+}
+
+function setEntryHover(e) {
+    // reset hover in case the cursor moves from one entry onto another right next to it, so 'mouseleave' does not trigger
+    if (selectedEntry !== e) {
+        resetEntryHover();
+        resetLibHover();
+    }
+    // set entry
+    selectedEntry = e;
+    // set radius
+    if (e.properties.radius > 0) selectedRadius = radiusSources[returnPrefix(e.properties.pid)].features.find(r => r.properties.pid === e.properties.pid);
+    // if entry has moved, push lines that start and end at this icon
+    if (isNaN(e.properties.pid.slice(-1))) {
+        const me = movedEntries[e.properties.pid.substring(0, e.properties.pid.length - 1)];
+        for (let i = 1; i < me.length; i++) {
+            if (e.id === me[i] || e.id === me[i - 1]) {
+
+                selectedLines.push(lineSources[returnPrefix(e.properties.pid)].features.find(l => l.properties.pid === features[me[i]].properties.pid));
+            }
+        }
+    }
+    // push dashes that start and end at this icon
+    for (let i = 0; i < dashSources.length; i++) {
+        dashSources[i].features.forEach((d) => { if (d.properties.pid === e.properties.pid || d.properties.origin === e.properties.pid) selectedDashes.push(d); });
+    }
+    // push dot
+    selectedDots.push(dotSources[returnPrefix(e.properties.pid)].features.find(d => d.properties.pid === e.properties.pid));
+    // set feature states
+    map.setFeatureState({ source: entryLayers[returnPrefix(selectedEntry.properties.pid)].source, id: selectedEntry.id }, { hover: true });
+    if (selectedRadius !== null) map.setFeatureState({ source: radiusLayers[returnPrefix(selectedRadius.properties.pid)].source, id: selectedRadius.id }, { hover: true });
+    selectedLines.forEach((l) => { map.setFeatureState({ source: lineLayers[returnPrefix(l.properties.pid)].source, id: l.id }, { hover: true }); });
+    selectedDashes.forEach((d) => { map.setFeatureState({ source: dashLayers[returnPrefix(d.properties.pid)].source, id: d.id }, { hover: true }); });
+    selectedDots.forEach((d) => { map.setFeatureState({ source: dotLayers[returnPrefix(d.properties.pid)].source, id: d.id }, { hover: true }); });
+    // set arrows
+    setArrows(selectedLines.concat(selectedDashes, selectedDots));
+}
+
+function resetEntryHover() {
+    // reset feature states for entries, radius, lines and dashes
+    if (selectedEntry !== null) map.setFeatureState({ source: entryLayers[returnPrefix(selectedEntry.properties.pid)].source, id: selectedEntry.id }, { hover: false });
+    if (selectedRadius !== null) map.setFeatureState({ source: radiusLayers[returnPrefix(selectedRadius.properties.pid)].source, id: selectedRadius.id }, { hover: false });
+    if (selectedLines.length > 0) {
+        selectedLines.forEach((l) => { map.setFeatureState({ source: lineLayers[returnPrefix(l.properties.pid)].source, id: l.id }, { hover: false }); });
+    }
+    if (selectedDashes.length > 0) {
+        selectedDashes.forEach((d) => { map.setFeatureState({ source: dashLayers[returnPrefix(d.properties.pid)].source, id: d.id }, { hover: false }); });
+    }
+    if (selectedDots.length > 0) {
+        selectedDots.forEach((d) => { map.setFeatureState({ source: dotLayers[returnPrefix(d.properties.pid)].source, id: d.id }, { hover: false }); });
+    }
+    // reset values
+    selectedEntry = null;
+    selectedRadius = null;
+    selectedLines = [];
+    selectedDashes = [];
+    selectedDots = [];
+    map.setLayoutProperty(arrowLayer.id, 'visibility', 'none');
+}
+
+function setLibHover(l) {
+    // reset hover in case the cursor moves from one lib onto another right next to it, so 'mouseleave' does not trigger
+    if (selectedLib !== l) {
+        resetEntryHover();
+        resetLibHover();
+    }
+    // set hover for lib
+    selectedLib = l; // store lib id so it can be reset
+    map.setFeatureState({ source: libLayer.source, id: l.id }, { hover: true });
+    // set hover for dots
+    for (let i = 0; i < dotSources.length; i++) {
+        dotSources[i].features.forEach((d) => {
+            // only set hover if lib property of dot matches name property of lib
+            if (d.properties.lib === l.properties.name) {
+                selectedDots.push(d); // store lib id so it can be reset
+                map.setFeatureState({ source: dotLayers[i].source, id: d.id }, { hover: true });
+            }
+        });
+    }
+    setArrows(selectedDots);
+}
+
+function resetLibHover() {
+    // reset feature states if lib and/or dots were selected
+    if (selectedLib !== null) map.setFeatureState({ source: libLayer.source, id: selectedLib.id }, { hover: false });
+    if (selectedDots.length > 0) {
+        selectedDots.forEach((d) => {
+            map.setFeatureState({ source: dotLayers[returnPrefix(d.properties.pid)].source, id: d.id }, { hover: false });
+        });
+    }
+    // reset values
+    selectedLib = null;
+    selectedDots = [];
+    map.setLayoutProperty(arrowLayer.id, 'visibility', 'none');
+}
+
+function setArrows(arr) {
+    const arrowSources = { type: 'FeatureCollection', features: [] };
+    arr.forEach((a) => {
+        arrowSources.features.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: a.geometry.coordinates } })
+    });
+    map.getSource(arrowLayer.source).setData(arrowSources);
+    map.setLayoutProperty(arrowLayer.id, 'visibility', 'visible');
+}
+
 map.on('style.load', () => {
     importData();
-    addIconImages();
+    addImages();
+    map.addControl(geocoder);
+    map.addControl(new mapboxgl.ScaleControl({ maxWidth: 200, unit: 'metric' }), 'bottom-right');
+    toggleSearch(); // hide geocoder
     map.dragRotate.disable();
     map.touchZoomRotate.disableRotation();
 });
 
-function addIconImages() {
-    orderIcons.forEach((icon) => {
-        map.loadImage('assets/orders-png/' + icon + '.png', (error, imgData) => {
-            if (error) throw error;
-            map.addImage(icon, imgData, {
-                sdf: true
-            });
-        });
-    });
-    mapIcons.forEach((icon) => {
-        map.loadImage('assets/map/' + icon + '.png', (error, imgData) => {
-            if (error) throw error;
-            map.addImage(icon, imgData);
-        });
-    });
-}
 
-function querySelectedFeatures() {
-    if (selectedFeatures.length === 1) {
-        showEntryInfo(selectedFeatures[0], '');
-    } else if (selectedFeatures.length > 1) {
-        showMultipleEntries();
-    }
-    selectedFeatures = [];
-}
-
-function addMapInfo() {
-    // add icon layers
-    for (let i = 0; i < iconLayers.length; i++) {
-        map.addSource(iconLayers[i].source, {
-            type: 'geojson',
-            data: iconSources[i]
-        });
-        map.addLayer(iconLayers[i]);
-        // reset selected features, when new click begins
-        map.on('mousedown', iconLayers[i].id, (e) => {
-            selectedFeatures = [];
-        });
-        map.on('mouseup', iconLayers[i].id, (e) => {
-            if (e.features.length > 0) {
-                console.log('clicked on feature: ', e.features[0]);
-                //showEntryInfo(e.features[0].properties.id, '');
-                for (let i = 0; i < e.features.length; i++) {
-                    selectedFeatures.push(e.features[i].properties.id);
-                }
-            }
-        });
-        map.on('click', iconLayers[i].id, (e) => {
-            querySelectedFeatures();
-        });
-        map.on('click', archiveIconLayer.id, (e) => {
-            console.log('clicked on archive');
-            if (e.features.length > 0) {
-                console.log('clicked on archive: ', e.features[0]);
-                showArchiveEntries(e.features[0].properties.id);
-            }
-        });
-        map.on('mousemove', iconLayers[i].id, (e) => {
-            map.getCanvas().style.cursor = 'pointer';
-            if (e.features.length > 0) {
-                // reset hover state on previous icon
-                // reset icon
-                if (hoveredIcon[i] !== null) {
-                    map.setFeatureState(
-                        { source: iconLayers[i].source, id: hoveredIcon[i].id },
-                        { hover: false }
-                    );
-                }
-                // reset radius
-                if (hoveredCircle[i] !== null) {
-                    map.setFeatureState(
-                        { source: circleLayers[i].source, id: hoveredCircle[i].id },
-                        { hover: false }
-                    );
-                }
-                // reset lines (moved & target)
-                if (hoveredLines[i].length > 0) {
-                    hoveredLines[i].forEach((lineID) => {
-                        map.setFeatureState(
-                            { source: lineLayers[i].source, id: lineID },
-                            { hover: false }
-                        );
-                    });
-                }
-                // reset dashes (origin & copies) depending on their layer (since origin/copies can have a different language)
-                if (hoveredDashes[i] !== null) {
-                    hoveredDashes[i].forEach((dashID) => {
-                        let dashSource;
-                        if (dashID < 3700) {
-                            dashSource = dashLayers[0].source;
-                        } else if (dashID < 3900) {
-                            dashSource = dashLayers[1].source;
-                        } else if (dashID < 4100) {
-                            dashSource = dashLayers[2].source;
-                        } else if (dashID < 4300) {
-                            dashSource = dashLayers[3].source;
-                        } else {
-                            dashSource = dashLayers[4].source;
-                        }
-                        map.setFeatureState(
-                            { source: dashSource, id: dashID },
-                            { hover: false }
-                        );
-                    });
-                }
-
-                // set feature state for icon
-                hoveredIcon[i] = e.features[0];
-                map.setFeatureState(
-                    { source: iconLayers[i].source, id: hoveredIcon[i].id },
-                    { hover: true }
-                );
-
-                // set feature state for radius
-                if (hoveredIcon[i].properties.radius > 0) {
-                    hoveredCircle[i] = getItem('c' + hoveredIcon[i].properties.id);
-                    map.setFeatureState(
-                        { source: circleLayers[i].source, id: hoveredCircle[i].id },
-                        { hover: true }
-                    );
-                }
-
-                // add line that ends at this icon
-                if (hoveredIcon[i].properties.moved) {
-                    const item = getItem('l' + hoveredIcon[i].properties.id);
-                    hoveredLines[i].push(item.id);
-                }
-
-                // add line that starts at this icon
-                if (hoveredIcon[i].properties.target) {
-                    const item = getItem('l' + hoveredIcon[i].properties.target);
-                    hoveredLines[i].push(item.id);
-                }
-
-                // set feature state for all lines
-                if (hoveredLines[i].length > 0) {
-                    hoveredLines[i].forEach((lineID) => {
-                        map.setFeatureState(
-                            { source: lineLayers[i].source, id: lineID },
-                            { hover: true }
-                        );
-                    });
-                }
-
-                // add dash that ends at this icon
-                if (hoveredIcon[i].properties.origin) {
-                    const item = getItem('d' + hoveredIcon[i].properties.id);
-                    hoveredDashes[i].push(item.id);
-                }
-
-                // add dashes that start at this icon (one source can have multiple copies)
-                if (hoveredIcon[i].properties.copies) {
-                    const copiesArray = hoveredIcon[i].properties.copies.split(',');
-                    copiesArray.forEach((copyID) => {
-                        const item = getItem('d' + copyID);
-                        hoveredDashes[i].push(item.id);
-                    });
-                }
-
-                // set feature state for all dashes depending on their layer (since origin/copies can have a different language)
-                if (hoveredDashes[i].length > 0) {
-                    hoveredDashes[i].forEach((dashID) => {
-                        let dashSource;
-                        if (dashID <= 3700) {
-                            dashSource = dashLayers[0].source;
-                        } else if (dashID <= 3900) {
-                            dashSource = dashLayers[1].source;
-                        } else if (dashID <= 4100) {
-                            dashSource = dashLayers[2].source;
-                        } else if (dashID <= 4300) {
-                            dashSource = dashLayers[3].source;
-                        } else {
-                            dashSource = dashLayers[4].source;
-                        }
-                        map.setFeatureState(
-                            { source: dashSource, id: dashID },
-                            { hover: true }
-                        );
-                    });
-                }
-
-                // set popup
-                let str = '';
-                for (let j = 0; j < e.features.length; j++) {
-                    str += e.features[j].properties.name + '<br>';
-                }
-                popup.setLngLat(hoveredIcon[i].geometry.coordinates).setHTML(str).addTo(map);
-            }
-        });
-        map.on('mouseleave', iconLayers[i].id, () => {
-            map.getCanvas().style.cursor = '';
-            if (hoveredIcon[i] !== null) {
-                map.setFeatureState(
-                    { source: iconLayers[i].source, id: hoveredIcon[i].id },
-                    { hover: false }
-                );
-            }
-            if (hoveredCircle[i] !== null) {
-                map.setFeatureState(
-                    { source: circleLayers[i].source, id: hoveredCircle[i].id },
-                    { hover: false }
-                );
-            }
-            if (hoveredLines[i] != null) {
-                const linesArray = String(hoveredLines[i]).split(',');
-                linesArray.forEach((lineID) => {
-                    map.setFeatureState(
-                        { source: lineLayers[i].source, id: lineID },
-                        { hover: false }
-                    );
-                });
-            }
-            if (hoveredDashes[i] != null) {
-                const dashArray = String(hoveredDashes[i]).split(',');
-                dashArray.forEach((dashID) => {
-                    let dashSource;
-                    if (dashID < 3700) {
-                        dashSource = dashLayers[0].source;
-                    } else if (dashID < 3900) {
-                        dashSource = dashLayers[1].source;
-                    } else if (dashID < 4100) {
-                        dashSource = dashLayers[2].source;
-                    } else if (dashID < 4300) {
-                        dashSource = dashLayers[3].source;
-                    } else {
-                        dashSource = dashLayers[4].source;
-                    }
-                    map.setFeatureState(
-                        { source: dashSource, id: dashID },
-                        { hover: false }
-                    );
-                });
-            }
-
-            hoveredIcon[i] = null;
-            hoveredCircle[i] = null;
-            hoveredLines[i] = [];
-            hoveredDashes[i] = [];
-
-            // remove popup
-            popup.remove();
-        });
-    }
-    // add layer for multiple icons at same location
-    map.addSource(multipleIconsLayer.source, {
-        type: 'geojson',
-        data: multipleIconSources
-    });
-    map.addLayer(multipleIconsLayer)
-
-    // add archive layer
-    map.addSource(archiveIconLayer.source, {
-        type: 'geojson',
-        data: archiveIconSources
-    });
-    map.addLayer(archiveIconLayer);
-    map.on('mousemove', archiveIconLayer.id, (e) => {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-    map.on('mouseleave', archiveIconLayer.id, (e) => {
-        map.getCanvas().style.cursor = '';
-    });
-
-    // add radius layers
-    for (let i = 0; i < circleLayers.length; i++) {
-        map.addSource(circleLayers[i].source, {
-            type: 'geojson',
-            data: circleSources[i]
-        });
-        map.addLayer(circleLayers[i], iconLayers[0].id);
-    }
-
-    // add line layers
-    for (let i = 0; i < lineLayers.length; i++) {
-        map.addSource(lineLayers[i].source, {
-            type: 'geojson',
-            data: lineSources[i]
-        });
-        map.addLayer(lineLayers[i], circleLayers[0].id);
-    }
-
-    // add dash layers
-    for (let i = 0; i < dashLayers.length; i++) {
-        map.addSource(dashLayers[i].source, {
-            type: 'geojson',
-            lineMetrics: true,
-            data: dashSources[i]
-        });
-        map.addLayer(dashLayers[i], lineLayers[0].id);
-    }
-
-    // add archive lines
-    for (let i = 0; i < archiveLineLayers.length; i++) {
-        map.addSource(archiveLineLayers[i].source, {
-            type: 'geojson',
-            data: archiveLineSources[i]
-        });
-        map.addLayer(archiveLineLayers[i], iconLayers[0].id);
-    }
-
-    map.on('dragend', () => {
-        showSameLocationSources();
-    });
-
-    map.on('pitchend', () => {
-        showSameLocationSources();
-    });
-
-    map.on('zoomend', () => {
-        showSameLocationSources();
-    });
-
-    showSameLocationSources();
-
-    console.log('map info added', map);
+function setCam(c) {
+    // zoom in if zoom < 8, but don't zoom out
+    let z = map.getZoom();
+    if (z < 8) z = 8;
+    // start camera animation
+    map.flyTo({ center: c, zoom: z });
 }

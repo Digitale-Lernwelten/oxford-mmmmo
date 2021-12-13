@@ -71,20 +71,6 @@ input:focus {
     outline: none;
 }
 
-/* FORCE LANDSCAPE MODE ONE MOBILE DEVICES */
-@media screen and (orientation: portrait) and (max-width: 768px) {
-    html {
-        transform: rotate(-90deg);
-        transform-origin: left top;
-        width: 100vh;
-        height: 100vw;
-        overflow-x: hidden;
-        position: absolute;
-        top: 100%;
-        left: 0;
-    }
-}
-
 /*** MAP ***/
 
 #map {
@@ -432,7 +418,7 @@ input:focus {
 
 @media (max-width: 900px) {
     #side {
-        padding: 0.2rem;
+        padding: 0 0.2rem;
     }
 }
 

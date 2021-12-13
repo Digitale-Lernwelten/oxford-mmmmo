@@ -15,7 +15,7 @@ geocoder.on('results', () => {
     setTimeout(function () {
         document.querySelectorAll('.geocoder-dropdown-item > .list-entry-profile').forEach((item) => {
             item = setEntryEvents(item, features[item.id.substring(0, item.id.length - 4)]);
-            item.addEventListener('mousedown', () => { displayEntry(item.id.substring(0, item.id.length - 4), item.className) });
+            item.addEventListener('mousedown', () => { displayEntry(item.id.substring(0, item.id.length - 4), item.className); revSide = 'side-home' });
         });
         document.querySelectorAll('.geocoder-dropdown-item > .geocoder-entry-lib').forEach((item) => {
             console.log('set events for: ', item);

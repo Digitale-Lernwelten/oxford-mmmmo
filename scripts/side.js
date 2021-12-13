@@ -6,7 +6,7 @@ const content = [[/* 0: mechthild-de */], [/* 1: mechthild-en */], [/* 2: monas-
 [/* 9: info-en */], [/* 10: legal-de */], [/* 11: legal-en */], [/* 12: privacy-de */], [/* 13: privacy-en */]];
 
 let activeSide = 'side-home'; // side panel that is currently shown
-let prevSide; // previous side that was shown (to go back from entry to entry list, lib list or mult list)
+let prevSide = 'side-home'; // previous side that was shown (to go back from entry to entry list, lib list or mult list)
 let activeTab; // active tab to display on side entries
 let german = true; // store selected language as bool: true = german, false = english
 
@@ -102,7 +102,7 @@ function switchLang(l) {
 }
 
 function toggleSide(s) {
-    s === activeSide ? prevSide = 'side-home' : prevSide = activeSide;
+    //s === activeSide ? prevSide = 'side-home' : prevSide = activeSide;
     activeSide = s;
 
     const langSides = ['side-mechthild', 'side-monas', 'side-mystic', 'side-liber', 'side-info', 'side-options', 'side-legal', 'side-privacy'];

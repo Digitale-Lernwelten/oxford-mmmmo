@@ -286,7 +286,7 @@ function setListEntry(e, apx) {
         newDiv.className += ' inactive';
     }
     newDiv.setAttribute('role', 'button');
-    newDiv.onclick = function () { displayEntry(newDiv.id.substring(0, newDiv.id.length - apx.length), newDiv.className) };
+    newDiv.onclick = function () { prevSide = activeSide; displayEntry(newDiv.id.substring(0, newDiv.id.length - apx.length), newDiv.className) };
     newDiv = setEntryEvents(newDiv, e);
     newDiv.innerHTML = returnOrderSVG(e.properties.order) + '<div><div><svg viewBox="0 0 32 32"><g transform="matrix(1.6,0,0,1.6,-3.2,-3.2)"><path d="M11.99,2C6.47,2 2,6.48 2,12C2,17.52 6.47,22 11.99,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 11.99,2ZM12,20C7.58,20 4,16.42 4,12C4,7.58 7.58,4 12,4C16.42,4 20,7.58 20,12C20,16.42 16.42,20 12,20ZM12.5,7L11,7L11,13L16.25,16.15L17,14.92L12.5,12.25L12.5,7Z" style="fill-rule:nonzero;"/></g></svg><p>' + e.properties.date +
         '</p></div><div><svg viewBox="0 0 32 32"><path d="M16,-0C9.808,-0 4.8,5.008 4.8,11.2C4.8,19.6 16,32 16,32C16,32 27.2,19.6 27.2,11.2C27.2,5.008 22.192,-0 16,-0ZM8,11.2C8,6.784 11.584,3.2 16,3.2C20.416,3.2 24,6.784 24,11.2C24,15.808 19.392,22.704 16,27.008C12.672,22.736 8,15.76 8,11.2ZM16,7.2C18.208,7.2 20,8.992 20,11.2C20,13.408 18.208,15.2 16,15.2C13.792,15.2 12,13.408 12,11.2C12,8.992 13.792,7.2 16,7.2Z" style="fill-rule:nonzero;"/></svg><p>' + e.properties.loc + '</p></div></div>';

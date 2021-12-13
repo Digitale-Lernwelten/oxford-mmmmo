@@ -2,7 +2,7 @@ let selectedLib = null, selectedEntry = null; selectedRadius = null, selectedLin
 
 let selected = false;
 
-screen.orientation.lock('landscape');
+window.screen.orientation.lock('landscape');
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZGx3LW1tbW1vIiwiYSI6ImNrcXRvZ2JuaTAwMmkzMW8zMmJlOGpveDUifQ.5XieGJGXyN1EOV0i-fDReA';
 const map = new mapboxgl.Map({

@@ -11,7 +11,8 @@ const map = new mapboxgl.Map({
     maxBounds: [
         [-130, 20],
         [45, 70]
-    ]
+    ],
+    minPitch: 0, maxPitch: 0, touchPitch: false // disable pitch
 });
 
 const popup = new mapboxgl.Popup({

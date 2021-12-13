@@ -71,6 +71,20 @@ input:focus {
     outline: none;
 }
 
+/* FORCE LANDSCAPE MODE ONE MOBILE DEVICES */
+@media screen and (orientation: portrait) and (max-width: 768px) {
+    html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        width: 100vh;
+        height: 100vw;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+}
+
 /*** MAP ***/
 
 #map {
@@ -115,7 +129,7 @@ input:focus {
     width: 90%;
     height: 3rem;
     left: 5%;
-    bottom: 3rem;
+    top: calc(100vh - 6rem);
     z-index: 100;
     display: flex;
     align-items: center;
@@ -155,6 +169,7 @@ input:focus {
     width: 4px;
     height: 8px;
     background: #272727;
+    border: none;
     border-radius: 2px;
     z-index: 101;
 }
@@ -169,6 +184,7 @@ input:focus {
     left: 0;
     bottom: 0;
     line-height: normal;
+    hyphens: none;
 }
 
 #taskbar > button {
@@ -250,7 +266,8 @@ input:focus {
 }
 
 .mapboxgl-ctrl-bottom-right > .mapboxgl-ctrl-attrib {
-    padding: 0;
+    margin: 0;
+    padding: 4px 24px 4px 4px;
     background-color: transparent;
     display: flex;
     align-items: center;
@@ -259,9 +276,13 @@ input:focus {
 
 .mapboxgl-ctrl-attrib > .mapboxgl-ctrl-attrib-button {
     top: auto;
-    right: auto;
+    right: 0;
     background-color: transparent;
     background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='24' height='24' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd'%3E %3Cpath d='M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0' style='fill: %237b7b7b;' /%3E %3C/svg%3E");
+}
+
+.mapboxgl-ctrl-attrib-button:focus, .mapboxgl-ctrl-group button:focus {
+    box-shadow: none;
 }
 
 .mapboxgl-ctrl-attrib a,
@@ -281,9 +302,6 @@ input:focus {
     }
     .mapboxgl-ctrl-bottom-right > .mapboxgl-ctrl-scale {
         display: none;
-    }
-    .mapboxgl-ctrl-attrib > .mapboxgl-ctrl-attrib-button {
-        margin-right: -12px;
     }
 }
 
@@ -317,6 +335,7 @@ input:focus {
     top: 0.75rem;
     width: 1rem;
     height: 1rem;
+    background: transparent;
 }
 
 .mapboxgl-ctrl-geocoder--icon {

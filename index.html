@@ -23,7 +23,7 @@
 </head>
 
 <body>
-    <div id="mobile-disclaimer">
+    <div id="mobile-disclaimer" lang="en">
         <p>Please use your device in landscape mode while browsing this site. For an optimal experience, a desktop
             browser is recommended.</p>
         <button onclick="document.getElementById('mobile-disclaimer').style.visibility = 'hidden'"><svg
@@ -417,7 +417,8 @@
                     <p class="lang-de" lang="de">Kartenoptionen</p>
                     <p class="lang-en ds-none" lang="en">Map options</p>
                 </button>
-                <p id="footer">
+                <div id="footer">
+                    <p>
                     <span class="lang-de" lang="de" role="button" onclick="toggleSide('side-legal')">Impressum</span>
                     <span class="lang-en ds-none" lang="en" role="button" onclick="toggleSide('side-legal')">Legal
                         notice</span> |
@@ -425,7 +426,12 @@
                         onclick="toggleSide('side-privacy')">Datenschutz</span>
                     <span class="lang-en ds-none" lang="en" role="button" onclick="toggleSide('side-privacy')">Privacy
                         policy</span>
-                </p>
+                    </p>
+                    <div class="lang-side">
+                        <span class="lang-side-de" role="button" onclick="switchLang(true)">DE</span> /
+                        <span class="lang-side-en" role="button" onclick="switchLang(false)">EN</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -442,10 +448,10 @@
                 </button>
                 <span class="side-title lang-de" lang="de">Handschriften</span>
                 <span class="side-title lang-en ds-none" lang="en">Manuscripts</span>
-                <div class="lang-side">
+                <!--<div class="lang-side">
                     <span class="lang-side-de" role="button" onclick="switchLang(true)">DE</span> /
                     <span class="lang-side-en" role="button" onclick="switchLang(false)">EN</span>
-                </div>
+                </div>-->
             </div>
 
             <!--TABLINKS-->
@@ -1994,10 +2000,10 @@
                 </button>
                 <span class="side-title lang-de">Details zur Handschrift</span>
                 <span class="side-title lang-en ds-none">Manuscript details</span>
-                <div class="lang-side">
+                <!--<div class="lang-side">
                     <span class="lang-side-de" role="button" onclick="switchLang(true)">DE</span> /
                     <span class="lang-side-en" role="button" onclick="switchLang(false)">EN</span>
-                </div>
+                </div>-->
             </div>
 
             <!--ENTRY DETAILS-->
@@ -2043,10 +2049,10 @@
                 </button>
                 <span class="side-title lang-de">Handschriften</span>
                 <span class="side-title lang-en ds-none">Manuscripts</span>
-                <div class="lang-side">
+                <!--<div class="lang-side">
                     <span class="lang-side-de" role="button" onclick="switchLang(true)">DE</span> /
                     <span class="lang-side-en" role="button" onclick="switchLang(false)">EN</span>
-                </div>
+                </div>-->
             </div>
 
             <h1 id="lib-name"></h1>
@@ -2068,10 +2074,10 @@
                 </button>
                 <span class="side-title lang-de">Handschriften an diesem Ort</span>
                 <span class="side-title lang-en ds-none">Manuscripts at this location</span>
-                <div class="lang-side">
+                <!--<div class="lang-side">
                     <span class="lang-side-de" role="button" onclick="switchLang(true)">DE</span> /
                     <span class="lang-side-en" role="button" onclick="switchLang(false)">EN</span>
-                </div>
+                </div>-->
             </div>
 
             <ul id="list-mult">

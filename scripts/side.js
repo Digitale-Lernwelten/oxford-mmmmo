@@ -87,17 +87,16 @@ function renderContent() {
 function switchLang(l) {
     german = l;
     if (l) {
-        //document.querySelectorAll('.lang-de').forEach(e => e.className.replace(' ds-none', ''));
-        //document.querySelectorAll('.lang-en').forEach(e => e.className += ' ds-none');
+        document.querySelectorAll('.lang-de').forEach(e => e.classList.remove('ds-none'));
+        document.querySelectorAll('.lang-en').forEach(e => { if (!e.classList.contains('ds-none')) e.classList.add('ds-none') });
         document.querySelectorAll('.lang-side-de').forEach(e => e.style.color = '#7B27B2');
         document.querySelectorAll('.lang-side-en').forEach(e => e.style.color = '#7B7B7B');
     } else {
         document.querySelectorAll('.lang-side-de').forEach(e => e.style.color = '#7B7B7B');
         document.querySelectorAll('.lang-side-en').forEach(e => e.style.color = '#27B27B');
-        //document.querySelectorAll('.lang-de').forEach(e => e.className += ' ds-none');
-        //document.querySelectorAll('.lang-en').forEach(e => e.className.replace(' ds-none', ''));
+        document.querySelectorAll('.lang-de').forEach(e => { if (!e.classList.contains('ds-none')) e.classList.add('ds-none') });
+        document.querySelectorAll('.lang-en').forEach(e => e.classList.remove('ds-none'));
     }
-    document.querySelectorAll('.lang-de, .lang-en').forEach(e => e.classList.toggle('ds-none'));
     toggleSide(activeSide);
 }
 

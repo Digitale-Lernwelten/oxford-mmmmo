@@ -8,7 +8,9 @@ const geocoder = new MapboxGeocoder({
     localGeocoder: forwardGeocoder,
     localGeocoderOnly: true,
     marker: false,
-    render: renderGeocoderItems
+    render: renderGeocoderItems,
+    keepOpen: true,
+    enableEventLogging: false
 });
 
 geocoder.on('results', () => {

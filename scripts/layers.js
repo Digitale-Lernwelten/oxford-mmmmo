@@ -12,7 +12,7 @@ const infLayers = ['aeroway-line', 'aeroway-polygon', 'bridge-major-link', 'brid
     'road-minor-case', 'road-minor-low', 'road-motorway-trunk', 'road-motorway-trunk-case', 'road-primary', 'road-primary-case', 'road-rail', 'road-secondary-tertiary', 'road-secondary-tertiary-case',
     'road-street', 'road-street-case', 'road-street-low', 'tunnel-major-link', 'tunnel-major-link-case', 'tunnel-motorway-trunk', 'tunnel-motorway-trunk-case', 'tunnel-primary-secondary-tertiary',
     'tunnel-primary-secondary-tertiary-case', 'tunnel-street-minor', 'tunnel-street-minor-case', 'tunnel-street-minor-low', 'waterway', 'waterway-shadow']; // infrastructure layers
-const histMaps = [1279, 1492, 1530, 1650, 1715, 1783]; // years for which historical map layers exist (numbers will be compared to slider.value to display the latest corresponding name and border layers)
+const histMaps = [1300, 1400, 1500, 1530, 1600, 1650, 1700, 1715, 1800]; // years for which historical map layers exist (numbers will be compared to slider.value to display the latest corresponding name and border layers)
 
 // ENTRY LAYER PROPERTIES
 const elLayout = {

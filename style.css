@@ -29,6 +29,7 @@
 body {
     display: flex;
     max-height: 100vh;
+    max-height: calc(var(--vh, 1vh) * 100);
     overflow: hidden;
     overflow-wrap: break-word;
     font-family: 'Roboto', sans-serif;
@@ -112,6 +113,7 @@ input:focus {
 #map {
     width: 70vw;
     height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
 }
 
 /* LOADING SCREEN */
@@ -152,6 +154,7 @@ input:focus {
     height: 3rem;
     left: 5%;
     top: calc(100vh - 6rem);
+    top: calc(var(--vh, 1vh) * 100 - 6rem);
     z-index: 100;
     display: flex;
     align-items: center;
@@ -230,8 +233,17 @@ input:focus {
     font-size: 0.8rem;
     width: auto;
     height: auto;
-    flex-flow: column wrap;
+    max-height: calc(100vh - 6rem);
+    max-height: calc(var(--vh, 1vh) * 100 - 6rem);
+    flex-flow: column nowrap;
     justify-content: center;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+#taskbar fieldset::-webkit-scrollbar {
+    display: none;
 }
 
 #taskbar fieldset div {
@@ -342,6 +354,7 @@ input:focus {
     margin: 0;
     height: 2.5rem;
     top: calc(100vh - 9rem);
+    top: calc(var(--vh, 1vh) * 100 -9rem);
     right: calc(70vw * 0.05);
     border-radius: 1.25rem;
     font-family: 'Roboto', sans-serif;
@@ -392,6 +405,7 @@ input:focus {
     top: auto;
     bottom: calc(100% + 0.5rem);
     max-height: calc(100vh - 10rem);
+    max-height: calc(var(--vh, 1vh) * 100 - 10rem);
     background-color: rgba(255, 255, 255, 0.8);
     padding: 0.5rem 0;
     border-radius: 1.25rem;
@@ -450,6 +464,7 @@ input:focus {
 #side {
     width: 30vw;
     height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     padding: 0 2rem;
     overflow-y: scroll;
 }
@@ -560,6 +575,18 @@ input:focus {
     font-size: 0.8rem;
     text-align: center;
     margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+@media (max-width: 1060px) {
+    #footer {
+        flex-direction: column;
+    }
+
+    #footer > p {
+        margin-bottom: 0.5rem;
+    }
 }
 
 /* ENTRY LISTS */

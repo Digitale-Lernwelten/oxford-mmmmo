@@ -40,19 +40,19 @@ function addFeatures() {
     for (let i = 0; i < entryLayers.length; i++) {
         // add radius layers
         map.addSource(radiusLayers[i].source, { type: 'geojson', data: radiusSources[i] });
-        map.addLayer(radiusLayers[i]);
+        i > 0 ? map.addLayer(radiusLayers[i], radiusLayers[0].id) : map.addLayer(radiusLayers[i]);
         // add dot layers
         map.addSource(dotLayers[i].source, { type: 'geojson', data: dotSources[i] });
-        map.addLayer(dotLayers[i]);
+        i > 0 ? map.addLayer(dotLayers[i], dotLayers[0].id) : map.addLayer(dotLayers[i]);
         // add dash layers
         map.addSource(dashLayers[i].source, { type: 'geojson', data: dashSources[i] });
-        map.addLayer(dashLayers[i]);
+        i > 0 ? map.addLayer(dashLayers[i], dashLayers[0].id) : map.addLayer(dashLayers[i]);
         // add line layers
         map.addSource(lineLayers[i].source, { type: 'geojson', data: lineSources[i] });
-        map.addLayer(lineLayers[i]);
+        i > 0 ? map.addLayer(lineLayers[i], lineLayers[0].id) : map.addLayer(lineLayers[i]);
         // add entry layers
         map.addSource(entryLayers[i].source, { type: 'geojson', data: entrySources[i] });
-        map.addLayer(entryLayers[i]);
+        i > 0 ? map.addLayer(entryLayers[i], entryLayers[0].id) : map.addLayer(entryLayers[i]);
         map.on('mousemove', entryLayers[i].id, (e) => {
             map.getCanvas().style.cursor = 'pointer';
             let s = '';
@@ -215,12 +215,18 @@ function resetLibHover() {
 }
 
 function setArrows(arr) {
-    const arrowSources = { type: 'FeatureCollection', features: [] };
-    arr.forEach((a) => {
-        arrowSources.features.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: a.geometry.coordinates } })
-    });
-    map.getSource(arrowLayer.source).setData(arrowSources);
-    map.setLayoutProperty(arrowLayer.id, 'visibility', 'visible');
+    if (cbOther[2].checked) {
+        const arrowSources = { type: 'FeatureCollection', features: [] };
+        arr.forEach((a) => {
+            if (!a.properties.lib || (a.properties.lib && cbOther[0].checked)) {
+                if (a.properties.year <= slider.value && orders.includes(a.properties.order) && cbLang[returnPrefix(a.properties.pid)].checked) {
+                    arrowSources.features.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: a.geometry.coordinates } });
+                }
+            }
+        });
+        map.getSource(arrowLayer.source).setData(arrowSources);
+        map.setLayoutProperty(arrowLayer.id, 'visibility', 'visible');
+    }
 }
 
 map.on('style.load', () => {

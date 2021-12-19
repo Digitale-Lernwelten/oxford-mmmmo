@@ -40,6 +40,10 @@ i {
     font-style: italic;
 }
 
+b {
+    font-weight: 500;
+}
+
 ul {
     padding-left: 1.2rem;
 }

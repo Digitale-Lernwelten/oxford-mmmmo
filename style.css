@@ -28,7 +28,7 @@
 
 body {
     display: flex;
-    max-height: 100vh;
+    max-height: 100vh; /*fallback*/
     max-height: calc(var(--vh, 1vh) * 100);
     overflow: hidden;
     overflow-wrap: break-word;
@@ -116,7 +116,7 @@ input:focus {
 
 #map {
     width: 70vw;
-    height: 100vh;
+    height: 100vh; /*fallback*/
     height: calc(var(--vh, 1vh) * 100);
 }
 
@@ -157,7 +157,7 @@ input:focus {
     width: 90%;
     height: 3rem;
     left: 5%;
-    top: calc(100vh - 6rem);
+    top: calc(100vh - 6rem); /*fallback*/
     top: calc(var(--vh, 1vh) * 100 - 6rem);
     z-index: 100;
     display: flex;
@@ -237,7 +237,7 @@ input:focus {
     font-size: 0.8rem;
     width: auto;
     height: auto;
-    max-height: calc(100vh - 6rem);
+    max-height: calc(100vh - 6rem); /*fallback*/
     max-height: calc(var(--vh, 1vh) * 100 - 6rem);
     flex-flow: column nowrap;
     justify-content: center;
@@ -357,8 +357,8 @@ input:focus {
     position: absolute;
     margin: 0;
     height: 2.5rem;
-    top: calc(100vh - 9rem);
-    top: calc(var(--vh, 1vh) * 100 -9rem);
+    top: calc(100vh - 9rem); /*fallback*/
+    top: calc(var(--vh, 1vh) * 100 - 9rem);
     right: calc(70vw * 0.05);
     border-radius: 1.25rem;
     font-family: 'Roboto', sans-serif;
@@ -408,7 +408,7 @@ input:focus {
 .mapboxgl-ctrl-geocoder > .suggestions-wrapper > .suggestions {
     top: auto;
     bottom: calc(100% + 0.5rem);
-    max-height: calc(100vh - 10rem);
+    max-height: calc(100vh - 10rem); /*fallback*/
     max-height: calc(var(--vh, 1vh) * 100 - 10rem);
     background-color: rgba(255, 255, 255, 0.8);
     padding: 0.5rem 0;
@@ -467,7 +467,7 @@ input:focus {
 
 #side {
     width: 30vw;
-    height: 100vh;
+    height: 100vh; /*fallback*/
     height: calc(var(--vh, 1vh) * 100);
     padding: 0 2rem;
     overflow-y: scroll;

@@ -9,9 +9,9 @@ const libSources = { type: 'FeatureCollection', features: [] }; // lib sources
 
 let features; // array to store all imported features
 const multEntries = []; // array to store ids with same coordinates
-const movedEntries = {}; // array to store moved entries (same manuscripts with different locations) to prevent showing up multiple times in the sidebar
+const movedEntries = {}; // object to store moved entries (same manuscripts with different locations) to prevent showing up multiple times in the sidebar
 
-const lists = [document.getElementById('list-od'), document.getElementById('list-md'), document.getElementById('list-nd'), document.getElementById('list-lt'), document.getElementById('list-fr')];
+const lists = [document.getElementById('list-od'), document.getElementById('list-md'), document.getElementById('list-nd'), document.getElementById('list-lt'), document.getElementById('list-fr')]; // entry lists in the sidebar
 
 // URLS TO GOOGLE SHEETS (0 = OD, 1 = MD, 2 = ND, 3 = LT, 4 = FR, 5 = LIB)
 const sheets = [
@@ -30,47 +30,42 @@ Papa.parsePromise = function (file) {
     });
 };
 
-// CALLED BY MAP.JS AND CALLS ALL OTHER FUNCTIONS IN THIS SCRIPT TO IMPORT AND STRUCTURE THE GOOGLE SHEET DATA
+// CALLED BY MAP.JS TO START IMPORTING AND FORMATTING THE GOOGLE SHEET DATA
 function importData() {
     // create array of promises
     const papaPromises = [];
     for (let i = 0; i < sheets.length; i++) {
         papaPromises.push(Papa.parsePromise(sheets[i]));
     }
-
     // set data after promises are fulfilled
     Promise.all(papaPromises).then(results => {
-        // set data for lib sources
-        setLibData(results[5].data);
-        // set data for entry sources
+        setLibData(results[5].data); // set data for lib sources
         for (let i = 0; i < entrySources.length; i++) {
-            setEntryData(i, results[i].data);
+            setEntryData(i, results[i].data); // set data for entry sources
         }
-
         // store all imported features in one array to make them indexable
         features = libSources.features.concat(entrySources[0].features, entrySources[1].features, entrySources[2].features, entrySources[3].features, entrySources[4].features,
             radiusSources[0].features, radiusSources[1].features, radiusSources[2].features, radiusSources[3].features, radiusSources[4].features,
             lineSources[0].features, lineSources[1].features, lineSources[2].features, lineSources[3].features, lineSources[4].features,
             dashSources[0].features, dashSources[1].features, dashSources[2].features, dashSources[3].features, dashSources[4].features,
             dotSources[0].features, dotSources[1].features, dotSources[2].features, dotSources[3].features, dotSources[4].features);
-        // apply index to features, so features can be found via the index
         for (let i = 0; i < features.length; i++) {
-            features[i].id = i;
+            features[i].id = i; // apply index to features, so features can be found via the index
         }
-        setAdditionalData(); // set additional data (lib entries, mult entries, coordinates for lines, dashes and dots etc.)
+        setAdditionalData(); // set additional data that depends on other features (lib entries, mult entries, coordinates for lines, dashes and dots etc.)
         addFeatures(); // add imported features to map in map.js
     }).catch(() => {
         document.getElementById('loading-screen-load').style.display = 'none';
-        document.getElementById('loading-screen-failed').style.display = 'block';
+        document.getElementById('loading-screen-failed').style.display = 'block'; // if there was an error, swap the loading message with an error message
     });
 }
 
 // SET DATA FOR LIBS
 function setLibData(d) {
     for (let i = 1; i < d.length; i++) {
-        // only set lib if it has a name
-        if (d[i][0] !== '') {
-            // apply data values to lib source
+        // only set lib if it has a name and coordinates
+        if (d[i][0] !== '' && d[i][1] !== '' && d[i][2] !== '') {
+            // apply data values to lib source (geojson-format)
             const ls = {
                 type: 'Feature',
                 properties: { name: d[i][0], entries: [] },
@@ -86,7 +81,7 @@ function setEntryData(i, d) {
     for (let j = 1; j < d.length; j++) {
         // only set entry if it has an id signature, year, order, lib and coordinates
         if (d[j][0] !== '' && d[j][1] !== '' && d[j][2] !== '' && d[j][3] !== '' && d[j][4] !== '' && d[j][17] !== '' && d[j][18] !== '') {
-            // apply data values to entry source
+            // apply data values to entry source (geojson-format)
             const es = {
                 type: 'Feature',
                 properties: {
@@ -95,14 +90,12 @@ function setEntryData(i, d) {
                 },
                 geometry: { type: 'Point', coordinates: [parseFloat(d[j][16]), parseFloat(d[j][17])] }
             };
-
             entrySources[i].features.push(es); // push to sources
-
-            // if the last char of property id is not a number (e.g. for od4a, od4b etc.), there are multiple entries for the same manuscript, because it has moved and/or changed its owner
             if (es.properties.radius > 0) setRadiusData(i, es); // if entry has a radius, set radius
-            if (isNaN(es.properties.pid.slice(-1)) && es.properties.pid.slice(-1) !== 'a') setLineData(i, es); // if entry has moved, set line (from moved source to this source)
-            if (es.properties.origin !== '') setDashData(i, es); // if entry has origin, set dashed line (from origin source to this source)
-            setDotData(i, es); // set dotted line (from this source to lib)
+            // if the last char of property id is not a number (e.g. for od4a, od4b etc.), there are multiple entries for the same manuscript, because it has moved and/or changed its owner
+            if (isNaN(es.properties.pid.slice(-1)) && es.properties.pid.slice(-1) !== 'a') setLineData(i, es); // if entry has moved, set line (from previous entry source to this entry)
+            if (es.properties.origin !== '') setDashData(i, es); // if entry has origin, set dashed line (from origin source to this entry)
+            setDotData(i, es); // set dotted line (from this entry to lib)
         }
     }
 }
@@ -110,7 +103,7 @@ function setEntryData(i, d) {
 // SET DATA FOR RADIUS SOURCES
 function setRadiusData(i, e) {
     let points = drawRadius(e.properties.radius, e.geometry.coordinates[0], e.geometry.coordinates[1]); // draw circular polygon
-    // apply data values to radius source
+    // apply data values to radius source (geojson-format)
     const rs = {
         type: 'Feature',
         properties: { pid: e.properties.pid, year: e.properties.year, order: e.properties.order, radius: e.properties.radius },
@@ -119,7 +112,7 @@ function setRadiusData(i, e) {
     radiusSources[i].features.push(rs); // push to sources
 }
 
-// DRAW CIRCULAR POLYGON BY TAKING CENTER COORDINATES AND RADIUS
+// HELPER FUNCTION CALLED BY setRadiusData(): DRAW CIRCULAR POLYGON BY TAKING CENTER COORDINATES AND RADIUS
 function drawRadius(r, long, lat) {
     const coords = [];
     for (let i = 0; i < 32; i++) {
@@ -131,18 +124,19 @@ function drawRadius(r, long, lat) {
         coords.push([setX, setY]);
     }
     coords.push(coords[0]); // push starting coords again to close the shape
-    let polygon = [coords];
-    return polygon;
+    return [coords];
 }
 
 // SET DATA FOR LINE SOURCES
 function setLineData(i, e) {
+    // apply values to line source (geojson-format)
+    // start coordinates will be set in setAdditionalData(), because the origin source could potentially not be set yet
     const ls = {
         type: 'Feature',
         properties: { pid: e.properties.pid, year: e.properties.year, order: e.properties.order },
         geometry: { type: 'LineString', coordinates: [[0, 0], e.geometry.coordinates] }
     }
-    lineSources[i].features.push(ls);
+    lineSources[i].features.push(ls); // push to sources
 }
 
 // SET DATA FOR DASH SOURCES
@@ -161,7 +155,7 @@ function setDashData(i, e) {
 function setDotData(i, e) {
     // get lib
     let libSource = libSources.features.find(s => s.properties.name === e.properties.lib);
-    // apply data values to dash source
+    // apply data values to dot source (geojson-format)
     const ds = {
         type: 'Feature',
         properties: { pid: e.properties.pid, year: e.properties.year, order: e.properties.order, lib: e.properties.lib },
@@ -170,7 +164,7 @@ function setDotData(i, e) {
     dotSources[i].features.push(ds); // push to sources
 }
 
-// ADDITIONAL DATA THAT CAN ONLY BE SET ON SOURCES AFTER ALL FEATURES ARE SET
+// ADDITIONAL DATA THAT CAN ONLY BE SET AFTER ALL FEATURES ARE SET AND INDEXABLE
 function setAdditionalData() {
     const libList = {}; // stores an array for each lib with all contained entries
     const coords = []; // stores coordinates of all entries to determine which entries have the same coordinates
@@ -181,45 +175,36 @@ function setAdditionalData() {
             // if the last char of property id is not a number (e.g. for od4a, od4b etc.), there are multiple entries for the same manuscript, because it has moved and/or changed its owner
             if (isNaN(es.properties.pid.slice(-1))) {
                 if (es.properties.pid.substring(0, es.properties.pid.length - 1) in movedEntries) {
-                    movedEntries[es.properties.pid.substring(0, es.properties.pid.length - 1)].push(es.id);
+                    movedEntries[es.properties.pid.substring(0, es.properties.pid.length - 1)].push(es.id); // if there is an array with this property id already, push this id to the array
                 } else {
-                    movedEntries[es.properties.pid.substring(0, es.properties.pid.length - 1)] = [es.id];
+                    movedEntries[es.properties.pid.substring(0, es.properties.pid.length - 1)] = [es.id]; // else create a key for this property id and an array with this id as value
                 }
             }
-            // set lib entry
-            if (libList[es.properties.lib]) {
-                // if lib already exist in libList: push entry id to this lib
-                libList[es.properties.lib].push(es.id);
-            }
-            else {
-                // else: create this lib in libList and initialize it with an array containing this entry id
-                libList[es.properties.lib] = [es.id];
-            }
-            // set mult entries
-            setMultEntries(coords, es);
-            // push entry coordinates to coords
-            coords.push({ id: es.id, coordinates: es.geometry.coordinates });
+            // set lib entry: if an array for this lib already exists in libList: push entry id to array : else create array with this entry id for this lib in libList
+            libList[es.properties.lib] ? libList[es.properties.lib].push(es.id) : libList[es.properties.lib] = [es.id];
+            setMultEntries(coords, es); // set mult entries
+            coords.push({ id: es.id, coordinates: es.geometry.coordinates }); // push entry coordinates to coords
         });
     }
-    // store entries from lib list in the entries property of the corresponding lib source
+    // apply libList arrays to the 'entries' property of the corresponding libs
     for (let i = 0; i < libSources.features.length; i++) {
         if (libSources.features[i].properties.name in libList) {
             libSources.features[i].properties.entries = libList[libSources.features[i].properties.name];
         }
     }
-
+    // query all lines
     for (let i = 0; i < lineSources.length; i++) {
         // set start coordinates for lines
         lineSources[i].features.forEach((ls) => {
             const movedEntriesArray = movedEntries[ls.properties.pid.substring(0, ls.properties.pid.length - 1)];
             for (let j = 1; j < movedEntriesArray.length; j++) {
                 if (ls.properties.pid === features[movedEntriesArray[j]].properties.pid) {
-                    ls.geometry.coordinates[0] = features[movedEntriesArray[j - 1]].geometry.coordinates;
+                    ls.geometry.coordinates[0] = features[movedEntriesArray[j - 1]].geometry.coordinates; // set start coordinates
                 }
             }
         });
     }
-
+    // query all dashes
     for (let i = 0; i < dashSources.length; i++) {
         // set start coordinates for dashes
         for (let j = 0; j < dashSources[i].features.length; j++) {
@@ -235,7 +220,7 @@ function setMultEntries(c, e) {
     // loop through all currently stored coords
     for (let i = 0; i < c.length; i++) {
         if (e.geometry.coordinates[0] === c[i].coordinates[0] && e.geometry.coordinates[1] === c[i].coordinates[1]) {
-            // if the coordinates of this entry == previously stored coordinates, check if entry id of the stored coordinates is already included in mult entries
+            // if the coordinates of this entry === previously stored coordinates, check if entry id of the stored coordinates is already included in mult entries
             for (let j = 0; j < multEntries.length; j++) {
                 // if an array with ids for these coordinates already exists, push id of this entry to the array (happens if at least 3 entries have the same coordinates)
                 if (multEntries[j].includes(c[i].id)) {
@@ -249,7 +234,7 @@ function setMultEntries(c, e) {
     }
 }
 
-// RETURN INDEX DEPENDING ON THE PROPERTY ID (0 = OD, 1 = MD, 2 = ND, 3 = LT, 4 = FR)
+// HELPER FUNCTION: RETURN INDEX DEPENDING ON THE PROPERTY ID (0 = OD, 1 = MD, 2 = ND, 3 = LT, 4 = FR)
 function returnPrefix(s) {
     switch (s.substring(0, 2)) {
         case 'od': return 0;
@@ -261,47 +246,48 @@ function returnPrefix(s) {
     }
 }
 
-// PUSH ENTRY TO LIST
+// CREATE LIST ITEM AND PUSH IT TO LIST (ALSO CALLED FROM side.js TO CREATE LISTS FOR LIB ENTRIES AND MULT ENTRIES)
 function pushToList(e, l, apx) {
     let newLi;
     if (isNaN(e.properties.pid.slice(-1)) && document.getElementById(e.properties.pid.slice(0, -1) + apx) !== null) {
-        newLi = document.getElementById(e.properties.pid.slice(0, -1) + apx);
+        newLi = document.getElementById(e.properties.pid.slice(0, -1) + apx); // if there exists a list item for this property already (because a manuscript has moved and has multiple entries), get list item
     } else {
-        // create list item
+        // else create list item, set attributes and content
         newLi = document.createElement('li');
         isNaN(e.properties.pid.slice(-1)) ? newLi.setAttribute('id', e.properties.pid.slice(0, -1) + apx) : newLi.setAttribute('id', e.properties.pid + apx);
         newLi.className = 'list-entry';
         newLi.innerHTML = `<p>${e.properties.sig}</p>`;
         l.appendChild(newLi);
     }
-    newLi.appendChild(setListEntry(e, apx));
+    newLi.appendChild(setListEntry(e, apx)); // set entry information for this list item (can be called multiple times if multiple entries belong to the same manuscript, because it has moved)
 }
 
+// SET ENTRY IN LIST ITEM
 function setListEntry(e, apx) {
     let newDiv = document.createElement('div');
     newDiv.setAttribute('id', String(e.id) + apx);
     newDiv.className = 'list-entry-profile entry-' + e.properties.pid.substring(0, 2);
-    // check if entry is currently displayed on map
     if (e.properties.year > slider.value || !orders.includes(e.properties.order) || !cbLang[returnPrefix(e.properties.pid)].checked) {
-        newDiv.className += ' inactive';
+        newDiv.className += ' inactive'; // if entry is not currently displayed on the map, add css class to grey out the icon
     }
     newDiv.setAttribute('role', 'button');
     newDiv.onclick = function () { prevSide = activeSide; displayEntry(newDiv.id.substring(0, newDiv.id.length - apx.length), newDiv.className) };
-    newDiv = setEntryEvents(newDiv, e);
+    newDiv = setEntryEvents(newDiv, e); // add hover effects to div
     newDiv.innerHTML = returnOrderSVG(e.properties.order) + '<div><div><svg viewBox="0 0 32 32"><g transform="matrix(1.6,0,0,1.6,-3.2,-3.2)"><path d="M11.99,2C6.47,2 2,6.48 2,12C2,17.52 6.47,22 11.99,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 11.99,2ZM12,20C7.58,20 4,16.42 4,12C4,7.58 7.58,4 12,4C16.42,4 20,7.58 20,12C20,16.42 16.42,20 12,20ZM12.5,7L11,7L11,13L16.25,16.15L17,14.92L12.5,12.25L12.5,7Z" style="fill-rule:nonzero;"/></g></svg><p>' + e.properties.date +
         '</p></div><div><svg viewBox="0 0 32 32"><path d="M16,-0C9.808,-0 4.8,5.008 4.8,11.2C4.8,19.6 16,32 16,32C16,32 27.2,19.6 27.2,11.2C27.2,5.008 22.192,-0 16,-0ZM8,11.2C8,6.784 11.584,3.2 16,3.2C20.416,3.2 24,6.784 24,11.2C24,15.808 19.392,22.704 16,27.008C12.672,22.736 8,15.76 8,11.2ZM16,7.2C18.208,7.2 20,8.992 20,11.2C20,13.408 18.208,15.2 16,15.2C13.792,15.2 12,13.408 12,11.2C12,8.992 13.792,7.2 16,7.2Z" style="fill-rule:nonzero;"/></svg><p>' + e.properties.loc + '</p></div></div>';
     return newDiv;
 }
 
+// ADD HOVER EFFECTS TO ENTRY IN SIDEBAR (ALSO CALLED BY search.js TO SET ENTRY EVENTS FOR SEARCH SUGGESTIONS)
 function setEntryEvents(d, e) {
     d.addEventListener('mouseenter', () => {
-        let sl = selectedLib;
+        let sl = selectedLib; // if a lib is selected, store it in temporary variable
         setEntryHover(e);
         selectedLib = sl;
     });
     d.addEventListener('mouseleave', () => {
         if (activeSide !== 'side-entry') resetEntryHover();
-        if (selectedLib) setLibHover(selectedLib);
+        if (selectedLib) setLibHover(selectedLib); // if a lib was selected, restore hovered states for this lib
     });
     return d;
 }

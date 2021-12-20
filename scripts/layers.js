@@ -1,5 +1,5 @@
-const orderIcons = ['aug', 'ben', 'dom', 'fra', 'kar', 'kla', 'krz', 'zis', 'son', 'unb'];
-const mapIcons = ['arrow', 'lib', 'mult'];
+const orderIcons = ['aug', 'ben', 'dom', 'fra', 'kar', 'kla', 'krz', 'zis', 'son', 'unb']; // order icons located in 'assets/orders'
+const mapIcons = ['arrow', 'lib', 'mult']; // map icons located in 'assets/map'
 const iconColors = { od: '#277BB2', md: '#7B27B2', nd: '#B2277B', lt: '#B27B27', fr: '#27B27B', dg: '#272727', lg: '#7B7B7B' }; // icon colors
 
 // MAPBOX LAYERS
@@ -16,7 +16,7 @@ const histMaps = [1300, 1400, 1500, 1530, 1600, 1650, 1700, 1715, 1800]; // year
 
 // ENTRY LAYER PROPERTIES
 const elLayout = {
-    'icon-image': ['match', ['get', 'order'],
+    'icon-image': ['match', ['get', 'order'], // display icon depending on order
         'Augustiner', orderIcons[0],
         'Benediktiner', orderIcons[1],
         'Dominikaner', orderIcons[2],
@@ -34,48 +34,44 @@ const elLayout = {
     'symbol-sort-key': ['to-number', ['get', 'year']]
 };
 
-const elPaint = ((col100, col050, col020) => {
+const elPaint = ((c) => {
     return {
-        'icon-color': col100/*['case',
-            ['boolean', ['feature-state', 'hover'], false], col100,
-            ['interpolate', ['linear'], ['get', 'radius'], 10, col050, 200, col020]],
-        'icon-halo-blur': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6]*/,
+        'icon-color': c,
         'icon-halo-width': ['interpolate', ['linear'], ['zoom'], 4, 0.4, 14, 1.6],
         'icon-halo-color': iconColors.dg,
         'icon-opacity': ['case',
-            ['boolean', ['feature-state', 'hover'], false], 1,
-            ['boolean', ['feature-state', 'mult'], false], 0,
-            ['interpolate', ['linear'], ['get', 'radius'], 10, 0.4, 200, 0.15]]
+            ['boolean', ['feature-state', 'hover'], false], 1, // if icon is hovered, set opacity to 1
+            ['boolean', ['feature-state', 'mult'], false], 0, // else if there are multiple icons at the same location, set opacity to 0
+            ['interpolate', ['linear'], ['get', 'radius'], 10, 0.4, 200, 0.15]] // else set opacity depending on size of radius (bigger radius = less opacity)
     }
 });
 
 // ENTRY LAYERS
 const entryLayers = [
-    { id: 'el-od', source: 'ed-od', type: 'symbol', layout: elLayout, paint: elPaint(iconColors.od, '#93BDD9', '#D4E5F0') },
-    { id: 'el-md', source: 'ed-md', type: 'symbol', layout: elLayout, paint: elPaint(iconColors.md, '#BD93D9', '#E5D4F0') },
-    { id: 'el-nd', source: 'ed-nd', type: 'symbol', layout: elLayout, paint: elPaint(iconColors.nd, '#D993BD', '#F0D4E5') },
-    { id: 'el-lt', source: 'ed-lt', type: 'symbol', layout: elLayout, paint: elPaint(iconColors.lt, '#D9BD93', '#F0E5D4') },
-    { id: 'el-fr', source: 'ed-fr', type: 'symbol', layout: elLayout, paint: elPaint(iconColors.fr, '#93D9BD', '#D4F0E5') }];
+    { id: 'el-od', source: 'ed-od', type: 'symbol', layout: elLayout, paint: elPaint(iconColors.od) }, // oberdeutsch = blue
+    { id: 'el-md', source: 'ed-md', type: 'symbol', layout: elLayout, paint: elPaint(iconColors.md) }, // mitteldeutsch = purple
+    { id: 'el-nd', source: 'ed-nd', type: 'symbol', layout: elLayout, paint: elPaint(iconColors.nd) }, // niederdeutsch = magenta
+    { id: 'el-lt', source: 'ed-lt', type: 'symbol', layout: elLayout, paint: elPaint(iconColors.lt) }, // latein = orange
+    { id: 'el-fr', source: 'ed-fr', type: 'symbol', layout: elLayout, paint: elPaint(iconColors.fr) }]; // other languages = green
 
 // RADIUS LAYER PROPERTIES
 const rlLayout = { 'fill-sort-key': ['to-number', ['get', 'year']] };
-const rlPaint = ((color) => {
+const rlPaint = ((c) => {
     return {
-        'fill-color': color,
+        'fill-color': c,
         'fill-opacity': ['case',
-            ['boolean', ['feature-state', 'hover'], false], 0.2,
-            ['boolean', ['feature-state', 'disabled'], false], 0,
-            ['interpolate', ['linear'], ['get', 'radius'], 10, 0.05, 200, 0.02]]
+            ['boolean', ['feature-state', 'hover'], false], 0.2, // if icon is hovered, set opacity to 0.2
+            ['interpolate', ['linear'], ['get', 'radius'], 10, 0.05, 200, 0.02]] // else set opacity depending on size of radius (bigger radius = less opacity)
     }
 });
 
 // RADIUS LAYERS
 const radiusLayers = [
-    { id: 'rl-od', source: 'rd-od', type: 'fill', layout: rlLayout, paint: rlPaint(iconColors.od) },
-    { id: 'rl-md', source: 'rd-md', type: 'fill', layout: rlLayout, paint: rlPaint(iconColors.md) },
-    { id: 'rl-nd', source: 'rd-nd', type: 'fill', layout: rlLayout, paint: rlPaint(iconColors.nd) },
-    { id: 'rl-lt', source: 'rd-lt', type: 'fill', layout: rlLayout, paint: rlPaint(iconColors.lt) },
-    { id: 'rl-fr', source: 'rd-fr', type: 'fill', layout: rlLayout, paint: rlPaint(iconColors.fr) }];
+    { id: 'rl-od', source: 'rd-od', type: 'fill', layout: rlLayout, paint: rlPaint(iconColors.od) }, // oberdeutsch = blue
+    { id: 'rl-md', source: 'rd-md', type: 'fill', layout: rlLayout, paint: rlPaint(iconColors.md) }, // mitteldeutsch = purple
+    { id: 'rl-nd', source: 'rd-nd', type: 'fill', layout: rlLayout, paint: rlPaint(iconColors.nd) }, // niederdeutsch = magenta
+    { id: 'rl-lt', source: 'rd-lt', type: 'fill', layout: rlLayout, paint: rlPaint(iconColors.lt) }, // latein = orange
+    { id: 'rl-fr', source: 'rd-fr', type: 'fill', layout: rlLayout, paint: rlPaint(iconColors.fr) }]; // other languages = green
 
 // LINE LAYER PROPERTIES
 const lilLayout = { 'line-sort-key': ['to-number', ['get', 'year']] };
@@ -113,7 +109,7 @@ const dotLayers = [
     { id: 'dol-lt', source: 'dod-lt', type: 'line', layout: dolLayout, paint: dolPaint },
     { id: 'dol-fr', source: 'dod-fr', type: 'line', layout: dolLayout, paint: dolPaint }];
 
-// MULT LAYER
+// MULT LAYER (LITTLE ICON DISPLAYED ON TOP OF ICONS TO SHOW THAT THERE ARE MULTIPLE ENTRIES AT THE SAME LOCATION)
 const multLayer = {
     id: 'l-mult',
     source: 'd-mult',

@@ -1,7 +1,8 @@
 # MMMMO
-## Mechthild's Medieval Mystical Manuscripts Online
+**Mechthild's Medieval Mystical Manuscripts Online**
 
 Hosted via GitHub Pages.
+
 Website available at: https://digitale-lernwelten.github.io/oxford-mmmmo/
 
 ## About

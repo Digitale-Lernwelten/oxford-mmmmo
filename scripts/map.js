@@ -232,7 +232,7 @@ function setCam(c) {
 window.addEventListener('load', () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
-    // reset checkboxes on load
+    // reset inputs on load
     slider.value = slider.max;
     document.querySelectorAll('input[type=checkbox]').forEach((cb) => {
         cb.checked = true;

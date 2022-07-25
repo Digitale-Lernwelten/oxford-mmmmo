@@ -200,6 +200,19 @@ function displayMultEntries(sf, fly) {
             }
         }
     }
+    console.log(cm);
+    // sort mult entries by id so they appear in alphabetical order
+    cm.sort((a, b) => {
+        if (a === null || b === null) {
+            return 0;
+        } else if (a.id > b.id) {
+            return 1;
+        } else if (b.id > a.id) {
+            return -1;
+        } else {
+            return 0;
+        }
+    });
     cm.forEach((c) => { if (c !== null) pushToList(c, listMult, '-mult'); }); // push entries to list (by calling pushToList in import.js)
     toggleSide('side-mult'); // set side panel
 }
@@ -264,7 +277,7 @@ function returnLang(l) {
     switch (l) {
         case 'od': return 'Oberdeutsch';
         case 'md': return 'Mitteldeutsch';
-        case 'nd': return 'Niederdeutsch';
+        case 'nd': return 'Niederdeutsch / Niederländisch';
         case 'lt': return 'Latein';
         case 'fr': return 'Sonstige';
     }

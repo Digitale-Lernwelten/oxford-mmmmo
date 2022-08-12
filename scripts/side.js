@@ -200,17 +200,12 @@ function displayMultEntries(sf, fly) {
             }
         }
     }
-    console.log(cm);
-    // sort mult entries by id so they appear in alphabetical order
+    // sort mult entries by signature so they appear in alphabetical order
     cm.sort((a, b) => {
         if (a === null || b === null) {
             return 0;
-        } else if (a.id > b.id) {
-            return 1;
-        } else if (b.id > a.id) {
-            return -1;
         } else {
-            return 0;
+            return a.properties.sig.localeCompare(b.properties.sig); // sort alphabetically
         }
     });
     cm.forEach((c) => { if (c !== null) pushToList(c, listMult, '-mult'); }); // push entries to list (by calling pushToList in import.js)
